@@ -40,6 +40,7 @@ import com.xc.fast_deploy.vo.module_vo.ModuleDeployVo;
 import com.xc.fast_deploy.vo.module_vo.ModuleEnvCenterManageVo;
 import com.xc.fast_deploy.vo.module_vo.param.ModuleDeployYamlSelectParamVo;
 import com.xc.fast_deploy.websocketConfig.myThread.ShutDownThread;
+
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1LabelSelector;
@@ -418,6 +419,7 @@ public class ModuleDeployYamlServiceImpl extends BaseServiceImpl<ModuleDeployYam
               if (K8sKindTypeEnum.DEPLOYMENT.getKindType().equals(k8sYamlVoPath.getKind())) {
                 V1Deployment deployment;
                 if (K8sApiversionTypeEnum.EXTENSIONAPI.getApiVersionType().equals(k8sYamlVoPath.getApiVersion())) {
+  
                   V1Deployment beta1Deployment =
                       K8sUtils.getObject(k8sYamlVoPath.getO(), V1Deployment.class);
                   deployment = K8sUtils.toV1Deploy(beta1Deployment);
@@ -456,6 +458,7 @@ public class ModuleDeployYamlServiceImpl extends BaseServiceImpl<ModuleDeployYam
               if (K8sKindTypeEnum.DEPLOYMENT.getKindType().equals(k8sYamlVoPath.getKind())) {
                 V1Deployment deployment;
                 if (K8sApiversionTypeEnum.EXTENSIONAPI.getApiVersionType().equals(k8sYamlVoPath.getApiVersion())) {
+  
                   V1Deployment beta1Deployment =
                       K8sUtils.getObject(k8sYamlVoPath.getO(), V1Deployment.class);
                   deployment = K8sUtils.toV1Deploy(beta1Deployment);
@@ -911,6 +914,7 @@ public class ModuleDeployYamlServiceImpl extends BaseServiceImpl<ModuleDeployYam
           load = io.kubernetes.client.util.Yaml.load(s);
           k8sYamlVo = K8sUtils.transObject2Vo(load);
           if (K8sApiversionTypeEnum.EXTENSIONAPI.getApiVersionType().equals(k8sYamlVo.getApiVersion())) {
+  
             V1Deployment beta1Deployment =
                 K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
             deployment = K8sUtils.toV1Deploy(beta1Deployment);

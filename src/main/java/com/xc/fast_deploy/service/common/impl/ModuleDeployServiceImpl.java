@@ -57,6 +57,8 @@ import io.kubernetes.client.Exec;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.apis.AutoscalingV1Api;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.AutoscalingV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -864,6 +866,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
                 case DEPLOYMENT:
                   V1Deployment newDeployment =
                       K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
+  
                   if (newDeployment != null) {
                     V1Deployment deployment =
                         k8sService.readNameSpacedResource(moduleDeployYaml.getYamlName(),
@@ -1674,6 +1677,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       stratgyMap.put("rollingUpdate", rollingMap);
       String op = null;
       if (deployment.getSpec().getStrategy() == null) op = "add";
+  
       AppsV1Api extensionsV1beta1Api = k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
       try {
         ArrayList<JsonObject> jsonObjects = K8sUtils.generatePatchPath(K8sPatchMirror.SPEC_STRATEGY, stratgyMap, op);

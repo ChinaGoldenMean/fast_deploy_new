@@ -62,6 +62,7 @@ public class K8sPodServiceImpl implements K8sPodService {
           k8sPodDTO.setContainerSize(v1Pod.getSpec().getContainers().size());
           if (v1Pod.getStatus().getStartTime() != null) {
             k8sPodDTO.setStartTime(Date.from(v1Pod.getStatus().getStartTime().toInstant()));
+  
           } else {
             k8sPodDTO.setStartTime(null);
           }
@@ -340,6 +341,7 @@ public class K8sPodServiceImpl implements K8sPodService {
         CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(moduleEnv);
         log.info("开始创建pod操作");
         podResult = coreV1Api.createNamespacedPod(namespace, v1Pod, null, null, null, null);
+  
       }
     }
     return podResult;

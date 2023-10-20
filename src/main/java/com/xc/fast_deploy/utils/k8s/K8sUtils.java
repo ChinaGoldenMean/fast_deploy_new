@@ -473,6 +473,7 @@ public class K8sUtils {
   }
   
   public static V1DeploymentSpec toV1Spec(V1DeploymentSpec spec) {
+  
     V1DeploymentSpec v1Spec = new V1DeploymentSpec();
     if (spec != null) {
       v1Spec.setReplicas(spec.getReplicas());
@@ -488,6 +489,7 @@ public class K8sUtils {
   }
   
   public static V1DeploymentStrategy toV1Strategy(V1DeploymentStrategy strategy) {
+  
     V1DeploymentStrategy v1strategy = new V1DeploymentStrategy();
     if (strategy != null) {
       v1strategy.setType(strategy.getType());
@@ -497,6 +499,7 @@ public class K8sUtils {
   }
   
   public static V1RollingUpdateDeployment toV1RollingUpdate(V1RollingUpdateDeployment rollingUpdateDeployment) {
+  
     V1RollingUpdateDeployment v1RollingUpdateDeployment = new V1RollingUpdateDeployment();
     if (rollingUpdateDeployment != null) {
       v1RollingUpdateDeployment.setMaxSurge(rollingUpdateDeployment.getMaxSurge());

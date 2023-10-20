@@ -6,6 +6,14 @@ import com.xc.fast_deploy.utils.k8s.dto.K8sConfigDTO;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.*;
+import io.kubernetes.client.util.Config;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
@@ -88,9 +96,9 @@ public class K8sManagement {
     try {
       resourceAsStream = new ByteArrayInputStream(k8sConfig.getBytes());
       StringReader stringReader = new StringReader(k8sConfig);
-      
+  
       apiClient = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(stringReader)).build();
-      
+  
       OkHttpClient client = K8sUtils.getHttpClient(dto);
       apiClient.setHttpClient(client);
       Configuration.setDefaultApiClient(apiClient);
@@ -114,7 +122,7 @@ public class K8sManagement {
     try {
       resourceAsStream = new ByteArrayInputStream(k8sConfig.getBytes());
       StringReader stringReader = new StringReader(k8sConfig);
-      
+  
       apiClient = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(stringReader)).build();
       FileUtil.createTempFile();
       OkHttpClient client = K8sUtils.getHttpClient(dto);
