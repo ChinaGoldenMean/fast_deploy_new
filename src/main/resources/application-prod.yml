@@ -1,0 +1,80 @@
+server:
+  port: 8095
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      master:
+        url: jdbc:mysql://134.96.252.44:8806/zdyw?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: root
+        password: admin@123456
+      slave:
+        url: jdbc:mysql://134.96.252.44:8806/psotdata?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: root
+        password: admin@123456
+      initial-size: 3
+      min-idle: 5
+      max-active: 50
+      max-wait: 600000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+      poolPreparedStatements: true
+jenkins:
+  url: http://134.108.3.222:8001/jenkins
+  username: jellf
+  password: jellf1q2w3e!@#$
+#jenkins:
+#  url: http://134.108.3.224:8001/jenkins
+#  username: jellf
+#  password: jellf1q2w3e!@#$
+logging:
+  path: /app/fast_deploy_new/logs
+file:
+  storge:
+    path:
+      prefix: /data2/storge/
+      uploadPath: /data2/storge/svn_module_excel/
+      excelPath: /data2/storge/model_file/svn_module.xlsx
+      modelPath: /data2/storge/model_file/model.zip
+      moduleUploadPath: /data2/storge/upload_path/
+      moduleExportPath: /data2/storge/export_path/
+      deploySelfYamlPath: /data2/storge/deploy_self_yaml/
+local:
+  ipAddr: 134.108.3.223:8095
+netty:
+  websocket:
+    port: 6001
+    host: 0.0.0.0
+    bossLoopGroupThreads: 100
+    workerLoopGroupThreads: 100
+    optionSoBacklog: 128
+    childOptionSoRcvbuf: 1024
+    childOptionSoSndbuf: 1024
+myself:
+  httpUrl:
+    getPermissionUrl: http://134.96.252.42:8000/multiauth/fast_deploy/listemid_roleid2/?empid=
+    judgeIsLogin: http://134.96.252.42:8000/multiauth/Session_online/islogin/
+    getNodeResources: http://134.108.6.244:8000/multiauth/K8s_monitor/listnode/?page=1&page_size=100&
+    redirectLogin: loginurl=http://134.108.3.223:8095/loginHtml
+    loginUrl: http://134.108.3.223:8095/loginHtml
+    logoutUrl: http://134.108.3.223:8095/loginHtml
+    loginIp: 134.108.3.223
+    zdywCookeyKey: zdywtestsession
+  pspass:
+    prod: false
+    ids: 4,10,19,25,26,27,29
+    prodId: 10
+    realprodid:
+    oldversion:
+  queue:
+    size: 3
+redisConfig:
+  ip: 134.108.11.175
+  port: 9054
+  database: 0
+  password: TEST_BSS_DEPLOY_001_USER#TEST_BSS_DEPLOY_001_USER123
+  maxIdle: 30
+  minIdle: 5
+  maxTotal: 50
+  MaxWaitMillis: 3000

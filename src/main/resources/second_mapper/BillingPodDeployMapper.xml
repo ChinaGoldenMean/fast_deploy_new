@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.slave_dao.BillingPodDeployMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="podname" property="podname" jdbcType="VARCHAR"/>
+        <result column="appname" property="appname" jdbcType="VARCHAR"/>
+        <result column="imagename" property="imagename" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="env_code" property="envCode" jdbcType="VARCHAR"/>
+        <result column="is_delete" property="isDelete" jdbcType="INTEGER"/>
+        <result column="create_result" property="createResult" jdbcType="INTEGER"/>
+        <result column="create_result_info" property="createResultInfo" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.xc.fast_deploy.model.slave_model.BillingPodDeploy"
+               extends="BaseResultMap">
+        <result column="pod_args" property="podArgs" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , podname, appname, imagename, env_id, env_code, is_delete, create_result, create_result_info,
+        create_time, update_time
+    </sql>
+    <sql id="Blob_Column_List">
+        pod_args
+    </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs"
+            parameterType="com.xc.fast_deploy.model.slave_model.example.BillingPodDeployExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from billing_pod_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.slave_model.example.BillingPodDeployExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from billing_pod_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from billing_pod_deploy
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from billing_pod_deploy
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExample"
+            parameterType="com.xc.fast_deploy.model.slave_model.example.BillingPodDeployExample">
+        delete from billing_pod_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into billing_pod_deploy (podname, appname, imagename,
+        env_id, env_code, is_delete,
+        create_result, create_result_info, create_time,
+        update_time, pod_args)
+        values (#{podname,jdbcType=VARCHAR}, #{appname,jdbcType=VARCHAR}, #{imagename,jdbcType=VARCHAR},
+        #{envId,jdbcType=INTEGER}, #{envCode,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER},
+        #{createResult,jdbcType=INTEGER}, #{createResultInfo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{podArgs,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into billing_pod_deploy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="podname != null">
+                podname,
+            </if>
+            <if test="appname != null">
+                appname,
+            </if>
+            <if test="imagename != null">
+                imagename,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="envCode != null">
+                env_code,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+            <if test="createResult != null">
+                create_result,
+            </if>
+            <if test="createResultInfo != null">
+                create_result_info,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="podArgs != null">
+                pod_args,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="podname != null">
+                #{podname,jdbcType=VARCHAR},
+            </if>
+            <if test="appname != null">
+                #{appname,jdbcType=VARCHAR},
+            </if>
+            <if test="imagename != null">
+                #{imagename,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="createResult != null">
+                #{createResult,jdbcType=INTEGER},
+            </if>
+            <if test="createResultInfo != null">
+                #{createResultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="podArgs != null">
+                #{podArgs,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample"
+            parameterType="com.xc.fast_deploy.model.slave_model.example.BillingPodDeployExample"
+            resultType="java.lang.Integer">
+        select count(*) from billing_pod_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update billing_pod_deploy
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.podname != null">
+                podname = #{record.podname,jdbcType=VARCHAR},
+            </if>
+            <if test="record.appname != null">
+                appname = #{record.appname,jdbcType=VARCHAR},
+            </if>
+            <if test="record.imagename != null">
+                imagename = #{record.imagename,jdbcType=VARCHAR},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.envCode != null">
+                env_code = #{record.envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isDelete != null">
+                is_delete = #{record.isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="record.createResult != null">
+                create_result = #{record.createResult,jdbcType=INTEGER},
+            </if>
+            <if test="record.createResultInfo != null">
+                create_result_info = #{record.createResultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.podArgs != null">
+                pod_args = #{record.podArgs,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update billing_pod_deploy
+        set id = #{record.id,jdbcType=BIGINT},
+        podname = #{record.podname,jdbcType=VARCHAR},
+        appname = #{record.appname,jdbcType=VARCHAR},
+        imagename = #{record.imagename,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        env_code = #{record.envCode,jdbcType=VARCHAR},
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+        create_result = #{record.createResult,jdbcType=INTEGER},
+        create_result_info = #{record.createResultInfo,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        pod_args = #{record.podArgs,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update billing_pod_deploy
+        set id = #{record.id,jdbcType=BIGINT},
+        podname = #{record.podname,jdbcType=VARCHAR},
+        appname = #{record.appname,jdbcType=VARCHAR},
+        imagename = #{record.imagename,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        env_code = #{record.envCode,jdbcType=VARCHAR},
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+        create_result = #{record.createResult,jdbcType=INTEGER},
+        create_result_info = #{record.createResultInfo,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        update billing_pod_deploy
+        <set>
+            <if test="podname != null">
+                podname = #{podname,jdbcType=VARCHAR},
+            </if>
+            <if test="appname != null">
+                appname = #{appname,jdbcType=VARCHAR},
+            </if>
+            <if test="imagename != null">
+                imagename = #{imagename,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                env_code = #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="createResult != null">
+                create_result = #{createResult,jdbcType=INTEGER},
+            </if>
+            <if test="createResultInfo != null">
+                create_result_info = #{createResultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="podArgs != null">
+                pod_args = #{podArgs,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs"
+            parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        update billing_pod_deploy
+        set podname            = #{podname,jdbcType=VARCHAR},
+            appname            = #{appname,jdbcType=VARCHAR},
+            imagename          = #{imagename,jdbcType=VARCHAR},
+            env_id             = #{envId,jdbcType=INTEGER},
+            env_code           = #{envCode,jdbcType=VARCHAR},
+            is_delete          = #{isDelete,jdbcType=INTEGER},
+            create_result      = #{createResult,jdbcType=INTEGER},
+            create_result_info = #{createResultInfo,jdbcType=VARCHAR},
+            create_time        = #{createTime,jdbcType=TIMESTAMP},
+            update_time        = #{updateTime,jdbcType=TIMESTAMP},
+            pod_args           = #{podArgs,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy">
+        update billing_pod_deploy
+        set podname            = #{podname,jdbcType=VARCHAR},
+            appname            = #{appname,jdbcType=VARCHAR},
+            imagename          = #{imagename,jdbcType=VARCHAR},
+            env_id             = #{envId,jdbcType=INTEGER},
+            env_code           = #{envCode,jdbcType=VARCHAR},
+            is_delete          = #{isDelete,jdbcType=INTEGER},
+            create_result      = #{createResult,jdbcType=INTEGER},
+            create_result_info = #{createResultInfo,jdbcType=VARCHAR},
+            create_time        = #{createTime,jdbcType=TIMESTAMP},
+            update_time        = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectInfoByPodName" parameterType="com.xc.fast_deploy.model.slave_model.BillingPodDeploy"
+            resultMap="BaseResultMap">
+        SELECT id, appname
+        FROM billing_pod_deploy
+        WHERE podname = #{podname,jdbcType=VARCHAR}
+          AND env_code = #{envCode,jdbcType=VARCHAR}
+          AND is_delete = 0
+          AND create_result = 200
+    </select>
+
+    <select id="selectPageInfo" parameterType="com.xc.fast_deploy.vo.module_vo.param.BillingPodDeployParamVo"
+            resultType="com.xc.fast_deploy.dto.module.BillingPodDeployDTO">
+        SELECT a.id AS id,a.imagename AS imagename,a.podname AS podname,a.env_id AS envId,a.env_code AS envCode,
+        a.is_delete AS isDelete, a.create_time AS createTime,a.update_time AS update_time,a.create_result AS
+        createResult,a.appname AS appname,b.center_name AS centerName
+        FROM billing_pod_deploy a
+        LEFT JOIN billing_image_deploy b
+        ON a.imagename = b.image_name
+        <where>
+            <if test="envId != null and envId >0">
+                AND a.env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="isDelete != null and isDelete >= 0">
+                AND a.is_delete = #{isDelete,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.create_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="nameCode != null and nameCode != ''">
+                AND (a.podname LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR a.imagename LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR b.center_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%'))
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+</mapper>

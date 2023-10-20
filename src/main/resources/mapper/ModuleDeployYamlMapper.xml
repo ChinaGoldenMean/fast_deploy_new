@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleDeployYamlMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="yaml_name" property="yamlName" jdbcType="VARCHAR"/>
+        <result column="yaml_type" property="yamlType" jdbcType="VARCHAR"/>
+        <result column="yaml_path" property="yamlPath" jdbcType="VARCHAR"/>
+        <result column="is_deployed" property="isDeployed" jdbcType="INTEGER"/>
+        <result column="mirror_name" property="mirrorName" jdbcType="VARCHAR"/>
+        <result column="is_online_yaml" property="isOnlineYaml" jdbcType="INTEGER"/>
+        <result column="yaml_namespace" property="yamlNamespace" jdbcType="VARCHAR"/>
+        <result column="container_name" property="containerName" jdbcType="VARCHAR"/>
+        <result column="deploy_id" property="deployId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.xc.fast_deploy.model.master_model.ModuleDeployYaml"
+               extends="BaseResultMap">
+        <result column="yaml_json" property="yamlJson" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , yaml_name, yaml_type, yaml_path, is_deployed, mirror_name, is_online_yaml, yaml_namespace,
+        container_name, deploy_id, create_time, update_time
+    </sql>
+    <sql id="Blob_Column_List">
+        yaml_json
+    </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployYamlExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from module_deploy_yaml
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployYamlExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_deploy_yaml
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from module_deploy_yaml
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_deploy_yaml
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployYamlExample">
+        delete from module_deploy_yaml
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_yaml") AS id
+        </selectKey>
+        insert into module_deploy_yaml (id,yaml_name, yaml_type, yaml_path,
+        is_deployed, mirror_name, is_online_yaml,
+        yaml_namespace, container_name, deploy_id,
+        create_time, update_time, yaml_json
+        )
+        values (#{id,jdbcType=INTEGER},#{yamlName,jdbcType=VARCHAR},
+        #{yamlType,jdbcType=VARCHAR}, #{yamlPath,jdbcType=VARCHAR},
+        #{isDeployed,jdbcType=INTEGER}, #{mirrorName,jdbcType=VARCHAR}, #{isOnlineYaml,jdbcType=INTEGER},
+        #{yamlNamespace,jdbcType=VARCHAR}, #{containerName,jdbcType=VARCHAR}, #{deployId,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{yamlJson,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_yaml") AS id
+        </selectKey>
+        insert into module_deploy_yaml
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="yamlName != null">
+                yaml_name,
+            </if>
+            <if test="yamlType != null">
+                yaml_type,
+            </if>
+            <if test="yamlPath != null">
+                yaml_path,
+            </if>
+            <if test="isDeployed != null">
+                is_deployed,
+            </if>
+            <if test="mirrorName != null">
+                mirror_name,
+            </if>
+            <if test="isOnlineYaml != null">
+                is_online_yaml,
+            </if>
+            <if test="yamlNamespace != null">
+                yaml_namespace,
+            </if>
+            <if test="containerName != null">
+                container_name,
+            </if>
+            <if test="deployId != null">
+                deploy_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="yamlJson != null">
+                yaml_json,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="yamlName != null">
+                #{yamlName,jdbcType=VARCHAR},
+            </if>
+            <if test="yamlType != null">
+                #{yamlType,jdbcType=VARCHAR},
+            </if>
+            <if test="yamlPath != null">
+                #{yamlPath,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeployed != null">
+                #{isDeployed,jdbcType=INTEGER},
+            </if>
+            <if test="mirrorName != null">
+                #{mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="isOnlineYaml != null">
+                #{isOnlineYaml,jdbcType=INTEGER},
+            </if>
+            <if test="yamlNamespace != null">
+                #{yamlNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="containerName != null">
+                #{containerName,jdbcType=VARCHAR},
+            </if>
+            <if test="deployId != null">
+                #{deployId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="yamlJson != null">
+                #{yamlJson,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployYamlExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_deploy_yaml
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_deploy_yaml
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.yamlName != null">
+                yaml_name = #{record.yamlName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.yamlType != null">
+                yaml_type = #{record.yamlType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.yamlPath != null">
+                yaml_path = #{record.yamlPath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isDeployed != null">
+                is_deployed = #{record.isDeployed,jdbcType=INTEGER},
+            </if>
+            <if test="record.mirrorName != null">
+                mirror_name = #{record.mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isOnlineYaml != null">
+                is_online_yaml = #{record.isOnlineYaml,jdbcType=INTEGER},
+            </if>
+            <if test="record.yamlNamespace != null">
+                yaml_namespace = #{record.yamlNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="record.containerName != null">
+                container_name = #{record.containerName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.deployId != null">
+                deploy_id = #{record.deployId,jdbcType=INTEGER},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.yamlJson != null">
+                yaml_json = #{record.yamlJson,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update module_deploy_yaml
+        set id = #{record.id,jdbcType=INTEGER},
+        yaml_name = #{record.yamlName,jdbcType=VARCHAR},
+        yaml_type = #{record.yamlType,jdbcType=VARCHAR},
+        yaml_path = #{record.yamlPath,jdbcType=VARCHAR},
+        is_deployed = #{record.isDeployed,jdbcType=INTEGER},
+        mirror_name = #{record.mirrorName,jdbcType=VARCHAR},
+        is_online_yaml = #{record.isOnlineYaml,jdbcType=INTEGER},
+        yaml_namespace = #{record.yamlNamespace,jdbcType=VARCHAR},
+        container_name = #{record.containerName,jdbcType=VARCHAR},
+        deploy_id = #{record.deployId,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        yaml_json = #{record.yamlJson,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_deploy_yaml
+        set id = #{record.id,jdbcType=INTEGER},
+        yaml_name = #{record.yamlName,jdbcType=VARCHAR},
+        yaml_type = #{record.yamlType,jdbcType=VARCHAR},
+        yaml_path = #{record.yamlPath,jdbcType=VARCHAR},
+        is_deployed = #{record.isDeployed,jdbcType=INTEGER},
+        mirror_name = #{record.mirrorName,jdbcType=VARCHAR},
+        is_online_yaml = #{record.isOnlineYaml,jdbcType=INTEGER},
+        yaml_namespace = #{record.yamlNamespace,jdbcType=VARCHAR},
+        container_name = #{record.containerName,jdbcType=VARCHAR},
+        deploy_id = #{record.deployId,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        update module_deploy_yaml
+        <set>
+            <if test="yamlName != null">
+                yaml_name = #{yamlName,jdbcType=VARCHAR},
+            </if>
+            <if test="yamlType != null">
+                yaml_type = #{yamlType,jdbcType=VARCHAR},
+            </if>
+            <if test="yamlPath != null">
+                yaml_path = #{yamlPath,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeployed != null">
+                is_deployed = #{isDeployed,jdbcType=INTEGER},
+            </if>
+            <if test="mirrorName != null">
+                mirror_name = #{mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="isOnlineYaml != null">
+                is_online_yaml = #{isOnlineYaml,jdbcType=INTEGER},
+            </if>
+            <if test="yamlNamespace != null">
+                yaml_namespace = #{yamlNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="containerName != null">
+                container_name = #{containerName,jdbcType=VARCHAR},
+            </if>
+            <if test="deployId != null">
+                deploy_id = #{deployId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="yamlJson != null">
+                yaml_json = #{yamlJson,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        update module_deploy_yaml
+        set yaml_name      = #{yamlName,jdbcType=VARCHAR},
+            yaml_type      = #{yamlType,jdbcType=VARCHAR},
+            yaml_path      = #{yamlPath,jdbcType=VARCHAR},
+            is_deployed    = #{isDeployed,jdbcType=INTEGER},
+            mirror_name    = #{mirrorName,jdbcType=VARCHAR},
+            is_online_yaml = #{isOnlineYaml,jdbcType=INTEGER},
+            yaml_namespace = #{yamlNamespace,jdbcType=VARCHAR},
+            container_name = #{containerName,jdbcType=VARCHAR},
+            deploy_id      = #{deployId,jdbcType=INTEGER},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            update_time    = #{updateTime,jdbcType=TIMESTAMP},
+            yaml_json      = #{yamlJson,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml">
+        update module_deploy_yaml
+        set yaml_name      = #{yamlName,jdbcType=VARCHAR},
+            yaml_type      = #{yamlType,jdbcType=VARCHAR},
+            yaml_path      = #{yamlPath,jdbcType=VARCHAR},
+            is_deployed    = #{isDeployed,jdbcType=INTEGER},
+            mirror_name    = #{mirrorName,jdbcType=VARCHAR},
+            is_online_yaml = #{isOnlineYaml,jdbcType=INTEGER},
+            yaml_namespace = #{yamlNamespace,jdbcType=VARCHAR},
+            container_name = #{containerName,jdbcType=VARCHAR},
+            deploy_id      = #{deployId,jdbcType=INTEGER},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            update_time    = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--self add-->
+    <select id="selectDeployYamlVoPageByVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleDeployYamlSelectParamVo"
+            resultType="com.xc.fast_deploy.dto.module.ModuleDeployYamlDTO">
+        SELECT a.deploy_id AS deployId,a.yaml_json as yamlJson,a.is_online_yaml AS isOnlineYaml,
+        a.yaml_name AS yamlName,a.yaml_type AS yamlType,c.module_name AS moduleName,
+        c.module_type AS moduleType,c.mark AS envName,c.env_code AS envCode,
+        b.deploy_name AS deployName,a.id AS deployYamlId,c.id AS moduleId,
+        a.create_time AS createTime,a.is_deployed AS isDeployed,d.child_center_name AS childCenterName
+        FROM module_deploy_yaml a
+        LEFT JOIN module_deploy b
+        ON a.deploy_id = b.id
+        LEFT JOIN module_manage c
+        ON b.module_id = c.id
+        LEFT JOIN module_center d
+        on c.center_id = d.id
+        <where>
+            c.is_delete = 0
+            AND
+            b.is_delete = 0
+            AND
+            a.is_online_yaml = 1
+            <if test="envId != null and envId >= 0">
+                AND c.env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="moduleType != null and moduleType >= 0">
+                AND c.module_type = #{moduleType,jdbcType=INTEGER}
+            </if>
+            <if test="centerId != null and centerId >= 0">
+                AND c.center_id = #{centerId,jdbcType=INTEGER}
+            </if>
+            <if test="yamlType != null and yamlType != ''">
+                AND a.yaml_type = #{yamlType,jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.create_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND c.env_id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+            <if test="keyName!=null and keyName!= ''">
+                AND (c.module_name LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR a.yaml_name LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%'))
+            </if>
+
+        </where>
+        ORDER BY a.update_time DESC
+    </select>
+
+    <select id="selectEnvIdByYamlId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT b.env_id
+        FROM module_deploy_yaml a
+                 LEFT JOIN module_deploy b
+                           ON a.deploy_id = b.id
+        WHERE a.id = #{deployYamlId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectYamlJsonByModuleId"
+            resultType="com.xc.fast_deploy.model.master_model.ModuleDeployYaml"
+            parameterType="java.lang.Integer">
+        SELECT a.id             AS id,
+               a.yaml_name      AS yamlName,
+               a.yaml_type      AS yamlType,
+               a.yaml_json      AS yamlJson,
+               a.is_online_yaml AS isOnlineYaml,
+               a.is_deployed    AS isDeployed,
+               a.yaml_namespace AS yamlNamespace
+        FROM module_deploy_yaml a
+                 LEFT JOIN module_deploy b
+                           ON a.deploy_id = b.id
+        WHERE b.is_delete = 0
+          AND b.module_id = #{moduleId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertYamlDiff" parameterType="java.util.List">
+        insert into module_yaml_diff
+        (env_name,yaml_name,diff_args)
+        values
+        <foreach collection="list" item="yamlDiffList" index="index" separator=",">
+            (#{yamlDiffList.envName,jdbcType=VARCHAR},
+            #{yamlDiffList.yamlName,jdbcType=VARCHAR},
+            #{yamlDiffList.diffArgs,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <select id="getYamlDiff" resultType="com.xc.fast_deploy.model.master_model.ModuleYamlDiff">
+        SELECT id, env_name as envName, yaml_name as yamlName, diff_args as diffArgs, create_time as createTime
+        FROM module_yaml_diff
+        where DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date (create_time)
+    </select>
+</mapper>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleNeedLogMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleNeedLog">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="need_id" jdbcType="INTEGER" property="needId"/>
+        <result column="op_active" jdbcType="VARCHAR" property="opActive"/>
+        <result column="op_result" jdbcType="VARCHAR" property="opResult"/>
+        <result column="op_user" jdbcType="VARCHAR" property="opUser"/>
+        <result column="op_args" jdbcType="VARCHAR" property="opArgs"/>
+        <result column="op_time" jdbcType="TIMESTAMP" property="opTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , need_id, op_active, op_result, op_user, op_args, op_time
+    </sql>
+    <select id="selectByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleNeedLogExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_need_log
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_need_log
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_need_log
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleNeedLogExample">
+        delete from module_need_log
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleNeedLog">
+        insert into module_need_log (id, need_id, op_active,
+                                     op_result, op_user, op_args,
+                                     op_time)
+        values (#{id,jdbcType=INTEGER}, #{needId,jdbcType=INTEGER}, #{opActive,jdbcType=VARCHAR},
+                #{opResult,jdbcType=VARCHAR}, #{opUser,jdbcType=VARCHAR}, #{opArgs,jdbcType=VARCHAR},
+                #{opTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleNeedLog">
+        insert into module_need_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="needId != null">
+                need_id,
+            </if>
+            <if test="opActive != null">
+                op_active,
+            </if>
+            <if test="opResult != null">
+                op_result,
+            </if>
+            <if test="opUser != null">
+                op_user,
+            </if>
+            <if test="opArgs != null">
+                op_args,
+            </if>
+            <if test="opTime != null">
+                op_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="needId != null">
+                #{needId,jdbcType=INTEGER},
+            </if>
+            <if test="opActive != null">
+                #{opActive,jdbcType=VARCHAR},
+            </if>
+            <if test="opResult != null">
+                #{opResult,jdbcType=VARCHAR},
+            </if>
+            <if test="opUser != null">
+                #{opUser,jdbcType=VARCHAR},
+            </if>
+            <if test="opArgs != null">
+                #{opArgs,jdbcType=VARCHAR},
+            </if>
+            <if test="opTime != null">
+                #{opTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleNeedLogExample"
+            resultType="java.lang.Long">
+        select count(*) from module_need_log
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_need_log
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.needId != null">
+                need_id = #{record.needId,jdbcType=INTEGER},
+            </if>
+            <if test="record.opActive != null">
+                op_active = #{record.opActive,jdbcType=VARCHAR},
+            </if>
+            <if test="record.opResult != null">
+                op_result = #{record.opResult,jdbcType=VARCHAR},
+            </if>
+            <if test="record.opUser != null">
+                op_user = #{record.opUser,jdbcType=VARCHAR},
+            </if>
+            <if test="record.opArgs != null">
+                op_args = #{record.opArgs,jdbcType=VARCHAR},
+            </if>
+            <if test="record.opTime != null">
+                op_time = #{record.opTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_need_log
+        set id = #{record.id,jdbcType=INTEGER},
+        need_id = #{record.needId,jdbcType=INTEGER},
+        op_active = #{record.opActive,jdbcType=VARCHAR},
+        op_result = #{record.opResult,jdbcType=VARCHAR},
+        op_user = #{record.opUser,jdbcType=VARCHAR},
+        op_args = #{record.opArgs,jdbcType=VARCHAR},
+        op_time = #{record.opTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleNeedLog">
+        update module_need_log
+        <set>
+            <if test="needId != null">
+                need_id = #{needId,jdbcType=INTEGER},
+            </if>
+            <if test="opActive != null">
+                op_active = #{opActive,jdbcType=VARCHAR},
+            </if>
+            <if test="opResult != null">
+                op_result = #{opResult,jdbcType=VARCHAR},
+            </if>
+            <if test="opUser != null">
+                op_user = #{opUser,jdbcType=VARCHAR},
+            </if>
+            <if test="opArgs != null">
+                op_args = #{opArgs,jdbcType=VARCHAR},
+            </if>
+            <if test="opTime != null">
+                op_time = #{opTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleNeedLog">
+        update module_need_log
+        set need_id   = #{needId,jdbcType=INTEGER},
+            op_active = #{opActive,jdbcType=VARCHAR},
+            op_result = #{opResult,jdbcType=VARCHAR},
+            op_user   = #{opUser,jdbcType=VARCHAR},
+            op_args   = #{opArgs,jdbcType=VARCHAR},
+            op_time   = #{opTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

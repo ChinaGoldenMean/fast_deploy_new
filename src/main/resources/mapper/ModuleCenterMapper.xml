@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleCenterMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="center_name" property="centerName" jdbcType="VARCHAR"/>
+        <result column="center_code" property="centerCode" jdbcType="VARCHAR"/>
+        <result column="child_center_name" property="childCenterName" jdbcType="VARCHAR"/>
+        <result column="child_center_content_name" property="childCenterContentName" jdbcType="VARCHAR"/>
+        <result column="center_path" property="centerPath" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , center_name, center_code, child_center_name, child_center_content_name, center_path,
+        env_id, remark, is_deleted, create_time, update_time
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleCenterExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_center
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_center
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_center
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleCenterExample">
+        delete from module_center
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_center") AS id
+        </selectKey>
+        insert into module_center (id,center_name, center_code, child_center_name,
+        child_center_content_name, center_path, env_id,
+        remark, is_deleted, create_time,
+        update_time)
+        values (#{id,jdbcType=INTEGER},#{centerName,jdbcType=VARCHAR}, #{centerCode,jdbcType=VARCHAR},
+        #{childCenterName,jdbcType=VARCHAR},
+        #{childCenterContentName,jdbcType=VARCHAR}, #{centerPath,jdbcType=VARCHAR}, #{envId,jdbcType=INTEGER},
+        #{remark,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_center") AS id
+        </selectKey>
+        insert into module_center
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="centerName != null">
+                center_name,
+            </if>
+            <if test="centerCode != null">
+                center_code,
+            </if>
+            <if test="childCenterName != null">
+                child_center_name,
+            </if>
+            <if test="childCenterContentName != null">
+                child_center_content_name,
+            </if>
+            <if test="centerPath != null">
+                center_path,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="centerName != null">
+                #{centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="centerCode != null">
+                #{centerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="childCenterName != null">
+                #{childCenterName,jdbcType=VARCHAR},
+            </if>
+            <if test="childCenterContentName != null">
+                #{childCenterContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="centerPath != null">
+                #{centerPath,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="findCenterIdByCenterName" resultType="integer">
+        select id from module_center where
+        <if test="envId != null">
+            env_id = #{envId}
+        </if>
+        <if test="centerNames != null">
+            and child_center_name in
+            <foreach collection="centerNames" item="centerName" open="(" close=")" separator=",">
+                #{centerName}
+            </foreach>
+        </if>
+    </select>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleCenterExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_center
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_center
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.centerName != null">
+                center_name = #{record.centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.centerCode != null">
+                center_code = #{record.centerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.childCenterName != null">
+                child_center_name = #{record.childCenterName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.childCenterContentName != null">
+                child_center_content_name = #{record.childCenterContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.centerPath != null">
+                center_path = #{record.centerPath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.remark != null">
+                remark = #{record.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isDeleted != null">
+                is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_center
+        set id = #{record.id,jdbcType=INTEGER},
+        center_name = #{record.centerName,jdbcType=VARCHAR},
+        center_code = #{record.centerCode,jdbcType=VARCHAR},
+        child_center_name = #{record.childCenterName,jdbcType=VARCHAR},
+        child_center_content_name = #{record.childCenterContentName,jdbcType=VARCHAR},
+        center_path = #{record.centerPath,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        remark = #{record.remark,jdbcType=VARCHAR},
+        is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        update module_center
+        <set>
+            <if test="centerName != null">
+                center_name = #{centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="centerCode != null">
+                center_code = #{centerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="childCenterName != null">
+                child_center_name = #{childCenterName,jdbcType=VARCHAR},
+            </if>
+            <if test="childCenterContentName != null">
+                child_center_content_name = #{childCenterContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="centerPath != null">
+                center_path = #{centerPath,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        update module_center
+        set center_name               = #{centerName,jdbcType=VARCHAR},
+            center_code               = #{centerCode,jdbcType=VARCHAR},
+            child_center_name         = #{childCenterName,jdbcType=VARCHAR},
+            child_center_content_name = #{childCenterContentName,jdbcType=VARCHAR},
+            center_path               = #{centerPath,jdbcType=VARCHAR},
+            env_id                    = #{envId,jdbcType=INTEGER},
+            remark                    = #{remark,jdbcType=VARCHAR},
+            is_deleted                = #{isDeleted,jdbcType=INTEGER},
+            create_time               = #{createTime,jdbcType=TIMESTAMP},
+            update_time               = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--self add-->
+    <select id="selectByCenter" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.ModuleCenter">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_center
+        <where>
+            <if test="catalogName!=null">
+                center_name LIKE concat('%',#{catalogName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="catalogCode!=null">
+                AND center_code = #{center_code,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_center
+        WHERE is_deleted = 0
+    </select>
+
+    <select id="selectCenterModule" resultType="com.xc.fast_deploy.vo.module_vo.ModuleEnvCenterManageVo"
+            parameterType="java.util.Set">
+        SELECT a.env_id AS envId,a.mark AS envName,a.env_code AS envCode,b.id AS centerId,b.center_name AS centerName,
+        a.id AS moduleId,a.module_name AS moduleName,b.child_center_name AS childCenterName
+        FROM module_manage a
+        LEFT JOIN module_center b
+        ON a.center_id = b.id
+        WHERE b.is_deleted = 0
+        AND a.is_delete = 0
+        <if test="collection != null and collection.size >0">
+            AND a.env_id
+            IN
+            <foreach collection="collection" index="index" item="envId" open="(" separator="," close=")">
+                #{envId}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateById" parameterType="java.lang.Integer">
+        update module_center
+        <set>
+            is_deleted = 1,
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByParamVo" resultType="com.xc.fast_deploy.dto.module.ModuleCenterEnvDTO"
+            parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleCenterSelectParamVo">
+        SELECT a.id ,a.center_name AS centerName,a.center_code AS centerCode,a.remark,a.create_time AS createTime,
+        a.update_time AS updateTime,b.id AS envId,b.env_code AS envCode,b.env_name AS envName,a.center_path AS
+        centerPath,
+        a.child_center_name as childCenterName, a.child_center_content_name AS childCenterContentName
+        FROM module_center a
+        LEFT JOIN module_env b
+        ON a.env_id = b.id
+        <where>
+            a.is_deleted = 0
+            <if test="centerId != null and centerId >0">
+                AND a.id = #{centerId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null and envId >0">
+                AND b.id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.update_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.update_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="nameCode != null and nameCode != ''">
+                AND (a.center_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR a.center_code LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR a.child_center_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR a.child_center_content_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND b.id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY a.create_time
+        DESC
+    </select>
+</mapper>

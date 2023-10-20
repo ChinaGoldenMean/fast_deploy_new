@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleDeploySelfConfMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="resource_name" property="resourceName" jdbcType="VARCHAR"/>
+        <result column="resource_kind" property="resourceKind" jdbcType="VARCHAR"/>
+        <result column="resource_file_path" property="resourceFilePath" jdbcType="VARCHAR"/>
+        <result column="resource_namespace" property="resourceNamespace" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="resource_status" property="resourceStatus" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf"
+               extends="BaseResultMap">
+        <result column="resource_json" property="resourceJson" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , resource_name, resource_kind, resource_file_path, resource_namespace, env_id,
+        resource_status, user_id, create_time
+    </sql>
+    <sql id="Blob_Column_List">
+        resource_json
+    </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeploySelfConfExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from module_deploy_self_conf
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeploySelfConfExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_deploy_self_conf
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from module_deploy_self_conf
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_deploy_self_conf
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeploySelfConfExample">
+        delete from module_deploy_self_conf
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_self_conf") AS id
+        </selectKey>
+        insert into module_deploy_self_conf (id,resource_name, resource_kind, resource_file_path,
+        resource_namespace, env_id, resource_status,
+        user_id, create_time, resource_json
+        )
+        values (#{id,jdbcType=INTEGER},#{resourceName,jdbcType=VARCHAR}, #{resourceKind,jdbcType=VARCHAR},
+        #{resourceFilePath,jdbcType=VARCHAR},
+        #{resourceNamespace,jdbcType=VARCHAR}, #{envId,jdbcType=INTEGER}, #{resourceStatus,jdbcType=INTEGER},
+        #{userId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{resourceJson,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_self_conf") AS id
+        </selectKey>
+        insert into module_deploy_self_conf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="resourceName != null">
+                resource_name,
+            </if>
+            <if test="resourceKind != null">
+                resource_kind,
+            </if>
+            <if test="resourceFilePath != null">
+                resource_file_path,
+            </if>
+            <if test="resourceNamespace != null">
+                resource_namespace,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="resourceStatus != null">
+                resource_status,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="resourceJson != null">
+                resource_json,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="resourceName != null">
+                #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceKind != null">
+                #{resourceKind,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceFilePath != null">
+                #{resourceFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceNamespace != null">
+                #{resourceNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="resourceStatus != null">
+                #{resourceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resourceJson != null">
+                #{resourceJson,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeploySelfConfExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_deploy_self_conf
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_deploy_self_conf
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.resourceName != null">
+                resource_name = #{record.resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.resourceKind != null">
+                resource_kind = #{record.resourceKind,jdbcType=VARCHAR},
+            </if>
+            <if test="record.resourceFilePath != null">
+                resource_file_path = #{record.resourceFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.resourceNamespace != null">
+                resource_namespace = #{record.resourceNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.resourceStatus != null">
+                resource_status = #{record.resourceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.resourceJson != null">
+                resource_json = #{record.resourceJson,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update module_deploy_self_conf
+        set id = #{record.id,jdbcType=INTEGER},
+        resource_name = #{record.resourceName,jdbcType=VARCHAR},
+        resource_kind = #{record.resourceKind,jdbcType=VARCHAR},
+        resource_file_path = #{record.resourceFilePath,jdbcType=VARCHAR},
+        resource_namespace = #{record.resourceNamespace,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        resource_status = #{record.resourceStatus,jdbcType=INTEGER},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        resource_json = #{record.resourceJson,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_deploy_self_conf
+        set id = #{record.id,jdbcType=INTEGER},
+        resource_name = #{record.resourceName,jdbcType=VARCHAR},
+        resource_kind = #{record.resourceKind,jdbcType=VARCHAR},
+        resource_file_path = #{record.resourceFilePath,jdbcType=VARCHAR},
+        resource_namespace = #{record.resourceNamespace,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        resource_status = #{record.resourceStatus,jdbcType=INTEGER},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        update module_deploy_self_conf
+        <set>
+            <if test="resourceName != null">
+                resource_name = #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceKind != null">
+                resource_kind = #{resourceKind,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceFilePath != null">
+                resource_file_path = #{resourceFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceNamespace != null">
+                resource_namespace = #{resourceNamespace,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="resourceStatus != null">
+                resource_status = #{resourceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resourceJson != null">
+                resource_json = #{resourceJson,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        update module_deploy_self_conf
+        set resource_name      = #{resourceName,jdbcType=VARCHAR},
+            resource_kind      = #{resourceKind,jdbcType=VARCHAR},
+            resource_file_path = #{resourceFilePath,jdbcType=VARCHAR},
+            resource_namespace = #{resourceNamespace,jdbcType=VARCHAR},
+            env_id             = #{envId,jdbcType=INTEGER},
+            resource_status    = #{resourceStatus,jdbcType=INTEGER},
+            user_id            = #{userId,jdbcType=VARCHAR},
+            create_time        = #{createTime,jdbcType=TIMESTAMP},
+            resource_json      = #{resourceJson,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeploySelfConf">
+        update module_deploy_self_conf
+        set resource_name      = #{resourceName,jdbcType=VARCHAR},
+            resource_kind      = #{resourceKind,jdbcType=VARCHAR},
+            resource_file_path = #{resourceFilePath,jdbcType=VARCHAR},
+            resource_namespace = #{resourceNamespace,jdbcType=VARCHAR},
+            env_id             = #{envId,jdbcType=INTEGER},
+            resource_status    = #{resourceStatus,jdbcType=INTEGER},
+            user_id            = #{userId,jdbcType=VARCHAR},
+            create_time        = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--self add -->
+    <select id="selectIdFirst" resultType="java.lang.Integer">
+        SELECT nextval("module_deploy_self_conf")
+    </select>
+    <select id="updateVal" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT setval("module_deploy_self_conf", #{val,jdbcType=INTEGER})
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into module_deploy_self_conf
+        (id,resource_name, resource_kind, resource_file_path,
+        resource_namespace, env_id, resource_status,
+        user_id, create_time, resource_json
+        )
+        values
+        <foreach collection="list" item="moduleDeploySelfConf" index="index" separator=",">
+            (#{moduleDeploySelfConf.id,jdbcType=INTEGER},#{moduleDeploySelfConf.resourceName,jdbcType=VARCHAR},
+            #{moduleDeploySelfConf.resourceKind,jdbcType=VARCHAR},
+            #{moduleDeploySelfConf.resourceFilePath,jdbcType=VARCHAR},
+            #{moduleDeploySelfConf.resourceNamespace,jdbcType=VARCHAR},
+            #{moduleDeploySelfConf.envId,jdbcType=INTEGER},
+            #{moduleDeploySelfConf.resourceStatus,jdbcType=INTEGER},
+            #{moduleDeploySelfConf.userId,jdbcType=VARCHAR}, #{moduleDeploySelfConf.createTime,jdbcType=TIMESTAMP},
+            #{moduleDeploySelfConf.resourceJson,jdbcType=LONGVARCHAR})
+        </foreach>
+    </insert>
+</mapper>

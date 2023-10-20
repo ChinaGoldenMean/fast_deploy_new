@@ -1,0 +1,81 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bss-order-inbound-dubbo
+  labels:
+    name: bss-order-inbound-dubbo
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1%
+      maxUnavailable: 20%
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        name: bss-order-inbound-dubbo
+    spec:
+      containers:
+      - name: bss-order-inbound-dubbo
+        image: 134.96.180.23:8001/hchc/bss-order-inbound-dubbo:1.0
+        imagePullPolicy: Always
+        env:
+        - name: DUBBO_IP_TO_REGISTRY
+          valueFrom:
+           fieldRef:
+            fieldPath: status.hostIP
+        - name: ESB_UNREGISTER_URI
+          valueFrom:
+            configMapKeyRef:
+              name: esb-url
+              key: ESB_UNREGISTER
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: app-log
+          mountPath: /app/dubbo/logs 
+        ports:
+        - containerPort: 
+        readinessProbe:
+          tcpSocket:
+            port: 
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 5       
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      - name: jmx
+        image: 134.108.5.132:8000/mgt/jmxtrans:v2.0
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "500m"
+          limits:
+            memory: "500Mi"
+            cpu: "1000m"
+      nodeSelector:
+        center: 
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /etc/localtime
+      - name: app-log
+        hostPath:
+          path: /app/app-log
