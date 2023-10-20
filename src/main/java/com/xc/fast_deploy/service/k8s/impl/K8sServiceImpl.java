@@ -27,7 +27,7 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
+
 import io.kubernetes.client.openapi.apis.NetworkingV1Api;
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.proto.V1beta1Extensions;
@@ -46,6 +46,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 import static com.xc.fast_deploy.utils.constant.K8sHttpUrlConstants.*;
+import static com.xc.fast_deploy.utils.k8s.K8sManagement.getNetworkingV1Api;
 
 @Slf4j
 @Service
@@ -98,7 +99,7 @@ public class K8sServiceImpl implements K8sService {
                       pod.getSpec().getContainers().get(0).setImage(mirrorName);
                     }
                     V1Pod v1Pod = coreV1Api.createNamespacedPod(k8sYamlVo.getNamespace(),
-                        pod, null, null, null);
+                        pod, null, null, null, null);
                     if (v1Pod != null) {
                       return true;
                     }
@@ -109,7 +110,7 @@ public class K8sServiceImpl implements K8sService {
                         K8sUtils.getObject(k8sYamlVo.getO(), V1ConfigMap.class);
                     V1ConfigMap v1ConfigMap =
                         coreV1Api.createNamespacedConfigMap(k8sYamlVo.getNamespace(),
-                            configMap, null, null, null);
+                            configMap, null, null, null, null);
                     if (v1ConfigMap != null) {
                       return true;
                     }
@@ -119,7 +120,7 @@ public class K8sServiceImpl implements K8sService {
                     V1Service v1Service = coreV1Api.createNamespacedService(
                         k8sYamlVo.getNamespace(),
                         K8sUtils.getObject(k8sYamlVo.getO(), V1Service.class),
-                        null, null, null);
+                        null, null, null, null);
                     if (v1Service != null) {
                       return true;
                     }
@@ -138,7 +139,7 @@ public class K8sServiceImpl implements K8sService {
                     V1ReplicationController replicationController =
                         coreV1Api.createNamespacedReplicationController(
                             k8sYamlVo.getNamespace(), rc,
-                            null, null, null);
+                            null, null, null, null);
                     if (replicationController != null) {
                       return true;
                     }
@@ -148,7 +149,7 @@ public class K8sServiceImpl implements K8sService {
                     V1Endpoints v1Endpoints = coreV1Api.createNamespacedEndpoints(
                         k8sYamlVo.getNamespace(),
                         K8sUtils.getObject(k8sYamlVo.getO(), V1Endpoints.class),
-                        null, null, null);
+                        null, null, null, null);
                     if (v1Endpoints != null) {
                       return true;
                     }
@@ -211,7 +212,7 @@ public class K8sServiceImpl implements K8sService {
                         appsV1Api.createNamespacedDeployment(
                             k8sYamlVo.getNamespace(), beta1Deployment,
                             null,
-                            null, null);
+                            null, null, null);
                     if (deployment != null) {
                       return true;
                     }
@@ -226,7 +227,7 @@ public class K8sServiceImpl implements K8sService {
                     }
                     V1DaemonSet daemonSet =
                         appsV1Api.createNamespacedDaemonSet(k8sYamlVo.getNamespace(),
-                            daemonSet1, null, null, null);
+                            daemonSet1, null, null, null, null);
                     if (daemonSet != null) {
                       return true;
                     }
@@ -242,7 +243,7 @@ public class K8sServiceImpl implements K8sService {
                     }
                     V1ReplicaSet replicaSet =
                         appsV1Api.createNamespacedReplicaSet(k8sYamlVo.getNamespace(),
-                            replicaSet1, null, null, null);
+                            replicaSet1, null, null, null, null);
                     if (replicaSet != null) {
                       return true;
                     }
@@ -251,7 +252,7 @@ public class K8sServiceImpl implements K8sService {
                     V1StatefulSet statefulSet = appsV1Api
                         .createNamespacedStatefulSet(k8sYamlVo.getNamespace(),
                             K8sUtils.getObject(k8sYamlVo.getO(), V1StatefulSet.class),
-                            null, null, null);
+                            null, null, null, null);
                     if (statefulSet != null) {
                       return true;
                     }
@@ -264,23 +265,25 @@ public class K8sServiceImpl implements K8sService {
             case APPS_V1VETA2:
               break;
             case EXTENSIONAPI:
-              ExtensionsV1beta1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+              AppsV1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+              NetworkingV1Api networkingV1Api = getNetworkingV1Api(env.getK8sConfig());
+              
               switch (kindTypeEnum) {
                 case INGRESS:
                   log.info("发布ingress");
-                  ExtensionsV1beta1Ingress v1beta1Ingress =
-                      v1beta1Api.createNamespacedIngress(k8sYamlVo.getNamespace(),
-                          K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Ingress.class),
-                          null, null, null);
+                  V1Ingress v1beta1Ingress =
+                      networkingV1Api.createNamespacedIngress(k8sYamlVo.getNamespace(),
+                          K8sUtils.getObject(k8sYamlVo.getO(), V1Ingress.class),
+                          null, null, null, null);
                   if (v1beta1Ingress != null) {
                     return true;
                   }
                   break;
                 case DEPLOYMENT:
                   log.info("发布deployment");
-                  ExtensionsV1beta1Deployment beta1Deployment =
+                  V1Deployment beta1Deployment =
                       K8sUtils.getObject(k8sYamlVo.getO(),
-                          ExtensionsV1beta1Deployment.class);
+                          V1Deployment.class);
                   if (StringUtils.isNotBlank(mirrorName)) {
                     beta1Deployment.getSpec().getTemplate()
                         .getSpec().getContainers().get(0).setImage(mirrorName);
@@ -321,42 +324,42 @@ public class K8sServiceImpl implements K8sService {
                       }
                     }
                   }
-                  ExtensionsV1beta1Deployment deployment =
+                  V1Deployment deployment =
                       v1beta1Api.createNamespacedDeployment(
                           k8sYamlVo.getNamespace(), beta1Deployment,
                           null,
-                          null, null);
+                          null, null, null);
                   if (deployment != null) {
                     return true;
                   }
                   break;
                 case DAEMONSET:
                   log.info("发布daemonset");
-                  V1beta1DaemonSet daemonSet1 = K8sUtils.getObject(k8sYamlVo.getO(),
-                      V1beta1DaemonSet.class);
+                  V1DaemonSet daemonSet1 = K8sUtils.getObject(k8sYamlVo.getO(),
+                      V1DaemonSet.class);
                   if (StringUtils.isNotBlank(mirrorName)) {
                     daemonSet1.getSpec().getTemplate()
                         .getSpec().getContainers().get(0).setImage(mirrorName);
                   }
-                  V1beta1DaemonSet daemonSet =
+                  V1DaemonSet daemonSet =
                       v1beta1Api.createNamespacedDaemonSet(k8sYamlVo.getNamespace(),
-                          daemonSet1, null, null, null);
+                          daemonSet1, null, null, null, null);
                   if (daemonSet != null) {
                     return true;
                   }
                   break;
                 case REPLICASET:
                   log.info("发布rs");
-                  V1beta1ReplicaSet replicaSet1 =
-                      K8sUtils.getObject(k8sYamlVo.getO(), V1beta1ReplicaSet.class);
+                  V1ReplicaSet replicaSet1 =
+                      K8sUtils.getObject(k8sYamlVo.getO(), V1ReplicaSet.class);
                   if (StringUtils.isNotBlank(mirrorName)) {
                     replicaSet1.getSpec().getTemplate()
                         .getSpec().getContainers()
                         .get(0).setImage(mirrorName);
                   }
-                  V1beta1ReplicaSet replicaSet =
+                  V1ReplicaSet replicaSet =
                       v1beta1Api.createNamespacedReplicaSet(k8sYamlVo.getNamespace(),
-                          replicaSet1, null, null, null);
+                          replicaSet1, null, null, null, null);
                   if (replicaSet != null) {
                     return true;
                   }
@@ -394,6 +397,7 @@ public class K8sServiceImpl implements K8sService {
                 null, null, null,
                 null, null, null,
                 null, null, null,
+                null,
                 null), new TypeToken<Watch.Response<V1Pod>>() {
             }.getType());
         executorService.execute(new WatchHandler(watch, watchWebsocketServer));
@@ -438,7 +442,7 @@ public class K8sServiceImpl implements K8sService {
       return null;
     }
     if (oldEnvList.contains(env.getId())) {
-      ExtensionsV1beta1Deployment object = K8sUtils.getObject(o, ExtensionsV1beta1Deployment.class);
+      V1Deployment object = K8sUtils.getObject(o, V1Deployment.class);
       replicas = object.getStatus().getUpdatedReplicas();
     } else {
       V1Deployment object = K8sUtils.getObject(o, V1Deployment.class);
@@ -481,7 +485,8 @@ public class K8sServiceImpl implements K8sService {
       List<Integer> oldEnvList = Arrays.asList(oldEnvId);
       CoreV1Api coreV1Api = getCoreV1ApiByConfig(env);
       AppsV1Api appsV1Api = getAppsV1Api(env);
-      ExtensionsV1beta1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+      AppsV1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+      NetworkingV1Api networkingV1Api = getNetworkingV1Api(env.getK8sConfig());
       if (coreV1Api != null && appsV1Api != null && v1beta1Api != null) {
         try {
           //老版本环境用http的方式操作K8S
@@ -530,7 +535,7 @@ public class K8sServiceImpl implements K8sService {
                   null, null, v1DeleteOptions);
               return true;
             case INGRESS:
-              v1beta1Api.deleteNamespacedIngress(sourceName,
+              networkingV1Api.deleteNamespacedIngress(sourceName,
                   namespace, null, null, null,
                   null, null, v1DeleteOptions);
               return true;
@@ -681,7 +686,7 @@ public class K8sServiceImpl implements K8sService {
       CoreV1Api coreV1Api = getCoreV1ApiByConfig(moduleEnv);
       if (coreV1Api != null) {
         try {
-          v1Service = coreV1Api.readNamespacedService(yamlName, namespace, null, null, null);
+          v1Service = coreV1Api.readNamespacedService(yamlName, namespace, null);
         } catch (ApiException e) {
           e.printStackTrace();
         }
@@ -706,7 +711,8 @@ public class K8sServiceImpl implements K8sService {
         List<Integer> oldEnvList = Arrays.asList(oldEnvId);
         CoreV1Api coreV1Api = getCoreV1ApiByConfig(env);
         AppsV1Api appsV1Api = getAppsV1Api(env);
-        ExtensionsV1beta1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+        AppsV1Api v1beta1Api = getExtensionsV1beta1ApiByConfig(env);
+        NetworkingV1Api networkingV1Api = getNetworkingV1Api(env.getK8sConfig());
         if (coreV1Api != null && appsV1Api != null) {
           List<Object> objectList = new ArrayList<>();
           StringBuilder url = new StringBuilder(EXTENSION_V1BETA1_PREFIX + namespace);
@@ -717,8 +723,8 @@ public class K8sServiceImpl implements K8sService {
                 case DEPLOYMENT:
                   url.append(EXTENSION_DEPLOYMENTS);
                   back = K8sUtils.okhttpGetBack(env.getK8sConfig(), url.toString());
-                  ExtensionsV1beta1DeploymentList deploymentList =
-                      K8sUtils.getObject(Yaml.load(back), ExtensionsV1beta1DeploymentList.class);
+                  V1DeploymentList deploymentList =
+                      K8sUtils.getObject(Yaml.load(back), V1DeploymentList.class);
                   if (deploymentList != null && deploymentList.getItems().size() > 0
                       && objectList.addAll(
                       deploymentList.getItems())) {
@@ -728,8 +734,8 @@ public class K8sServiceImpl implements K8sService {
                 case REPLICASET:
                   url.append(EXTENSION_REPLICASETS);
                   back = K8sUtils.okhttpGetBack(env.getK8sConfig(), url.toString());
-                  V1beta1ReplicaSetList replicaSetList =
-                      K8sUtils.getObject(Yaml.load(back), V1beta1ReplicaSetList.class);
+                  V1ReplicaSetList replicaSetList =
+                      K8sUtils.getObject(Yaml.load(back), V1ReplicaSetList.class);
                   if (replicaSetList != null && replicaSetList.getItems().size() > 0
                       && objectList.addAll(replicaSetList.getItems())) {
                     return objectList;
@@ -738,8 +744,8 @@ public class K8sServiceImpl implements K8sService {
                 case DAEMONSET:
                   url.append(EXTENSION_DAEMONSETS);
                   back = K8sUtils.okhttpGetBack(env.getK8sConfig(), url.toString());
-                  V1beta1DaemonSetList daemonSetList =
-                      K8sUtils.getObject(Yaml.load(back), V1beta1DaemonSetList.class);
+                  V1DaemonSetList daemonSetList =
+                      K8sUtils.getObject(Yaml.load(back), V1DaemonSetList.class);
                   if (daemonSetList != null && daemonSetList.getItems().size() > 0
                       && objectList.addAll(daemonSetList.getItems())) {
                     return objectList;
@@ -752,7 +758,7 @@ public class K8sServiceImpl implements K8sService {
                 V1ServiceList serviceList = coreV1Api.listNamespacedService(
                     namespace, null,
                     null, null, null,
-                    null, null, null,
+                    null, null, null, null,
                     500, null);
                 if (serviceList != null && serviceList.getItems().size() > 0
                     && objectList.addAll(serviceList.getItems())) {
@@ -764,7 +770,7 @@ public class K8sServiceImpl implements K8sService {
                     appsV1Api.listNamespacedDeployment(
                         namespace, null,
                         null, null, null,
-                        null, null, null,
+                        null, null, null, null,
                         500, null);
                 if (deploymentList != null && deploymentList.getItems().size() > 0
                     && objectList.addAll(
@@ -776,7 +782,7 @@ public class K8sServiceImpl implements K8sService {
                 V1ReplicaSetList replicaSetList =
                     appsV1Api.listNamespacedReplicaSet(
                         namespace, null,
-                        null, null, null,
+                        null, null, null, null,
                         null, null, null,
                         500, null);
                 if (replicaSetList != null && replicaSetList.getItems().size() > 0
@@ -789,7 +795,7 @@ public class K8sServiceImpl implements K8sService {
                     appsV1Api.listNamespacedDaemonSet(
                         namespace, null,
                         null, null, null,
-                        null, null, null,
+                        null, null, null, null,
                         500, null);
                 if (daemonSetList != null && daemonSetList.getItems().size() > 0
                     && objectList.addAll(daemonSetList.getItems())) {
@@ -797,9 +803,9 @@ public class K8sServiceImpl implements K8sService {
                 }
                 break;
               case INGRESS:
-                ExtensionsV1beta1IngressList ingressList =
-                    v1beta1Api.listNamespacedIngress(
-                        namespace, null,
+                V1IngressList ingressList =
+                    networkingV1Api.listNamespacedIngress(
+                        namespace, null, null,
                         null, null, null,
                         null, null, null,
                         500, null);
@@ -813,7 +819,7 @@ public class K8sServiceImpl implements K8sService {
                     coreV1Api.listNamespacedReplicationController(
                         namespace, null,
                         null, null, null,
-                        null, null, null,
+                        null, null, null, null,
                         500, null);
                 if (replicationControllerList != null
                     && replicationControllerList.getItems().size() > 0
@@ -826,7 +832,7 @@ public class K8sServiceImpl implements K8sService {
                     coreV1Api.listNamespacedPod(
                         namespace, null,
                         null, null, null,
-                        null, null, null,
+                        null, null, null, null,
                         500, null);
                 if (v1PodList != null && v1PodList.getItems().size() > 0
                     && objectList.addAll(v1PodList.getItems())) {
@@ -838,7 +844,7 @@ public class K8sServiceImpl implements K8sService {
                     coreV1Api.listNamespacedConfigMap(
                         namespace, null,
                         null, null, null,
-                        null, null, null,
+                        null, null, null, null,
                         500, null);
                 if (v1ConfigMapList != null && v1ConfigMapList.getItems().size() > 0
                     && objectList.addAll(v1ConfigMapList.getItems())) {
@@ -847,8 +853,7 @@ public class K8sServiceImpl implements K8sService {
                 
                 break;
               case NODE:
-                V1NodeList v1NodeList = coreV1Api.listNode(null, null, null, null,
-                    null, null, null, null, null);
+                V1NodeList v1NodeList = coreV1Api.listNode(null, null, null, null, null, null, null, null, null, null);
                 if (v1NodeList != null && v1NodeList.getItems().size() > 0
                     && objectList.addAll(v1NodeList.getItems())) {
                   return objectList;
@@ -858,7 +863,7 @@ public class K8sServiceImpl implements K8sService {
                 V1EndpointsList v1EndpointsList = coreV1Api.listNamespacedEndpoints(
                     namespace, null,
                     null, null, null,
-                    null, null, null,
+                    null, null, null, null,
                     500, null);
                 if (v1EndpointsList != null && v1EndpointsList.getItems().size() > 0
                     && objectList.addAll(v1EndpointsList.getItems())) {
@@ -1059,9 +1064,9 @@ public class K8sServiceImpl implements K8sService {
     if (resource != null) {
       if (resource.getClass().equals(clazz))
         cast = clazz.cast(resource);
-      if (ExtensionsV1beta1Deployment.class.equals(resource.getClass())) {
-        ExtensionsV1beta1Deployment deployment =
-            K8sUtils.getObject(resource, ExtensionsV1beta1Deployment.class);
+      if (V1Deployment.class.equals(resource.getClass())) {
+        V1Deployment deployment =
+            K8sUtils.getObject(resource, V1Deployment.class);
         V1Deployment v1Deployment = K8sUtils.toV1Deploy(deployment);
         cast = clazz.cast(v1Deployment);
       }
@@ -1111,8 +1116,8 @@ public class K8sServiceImpl implements K8sService {
    * @return
    */
   @Override
-  public ExtensionsV1beta1Api getExtensionsV1beta1ApiByConfig(ModuleEnv env) {
-    ExtensionsV1beta1Api v1beta1Api = null;
+  public AppsV1Api getExtensionsV1beta1ApiByConfig(ModuleEnv env) {
+    AppsV1Api v1beta1Api = null;
     if (env != null && StringUtils.isNotBlank(env.getK8sConfig())) {
       try {
         v1beta1Api = K8sManagement.getExtensionApi(env.getK8sConfig());

@@ -34,7 +34,7 @@ public class K8sSvcServiceImpl implements K8sSvcService {
     CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(env);
     if (coreV1Api != null) {
       try {
-        V1ServiceList serviceList = coreV1Api.listNamespacedService(K8sNameSpace.DEFAULT, null, null, null, null,
+        V1ServiceList serviceList = coreV1Api.listNamespacedService(K8sNameSpace.DEFAULT, null, null, null, null, null,
             null, null, null, 300, null);
         List<V1Service> items = serviceList.getItems();
         if (items != null && items.size() > 0) {
@@ -109,7 +109,7 @@ public class K8sSvcServiceImpl implements K8sSvcService {
     if (StringUtils.isNotBlank(serviceName) && env != null && StringUtils.isNotBlank(env.getK8sConfig())) {
       CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(env);
       try {
-        V1Status status = coreV1Api.deleteNamespacedService(serviceName, K8sNameSpace.DEFAULT, null, "false", null,
+        V1Service status = coreV1Api.deleteNamespacedService(serviceName, K8sNameSpace.DEFAULT, null, "false", null,
             null, null, new V1DeleteOptions());
         return true;
       } catch (ApiException e) {

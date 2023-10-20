@@ -52,7 +52,7 @@ public class K8sPodServiceImpl implements K8sPodService {
     if (coreV1Api != null) {
       try {
         V1PodList podList = coreV1Api.listNamespacedPod("default", null, null, null, null,
-            null, null, null, 300, null);
+            null, null, null, null, 300, null);
         List<V1Pod> items = podList.getItems();
         for (V1Pod v1Pod : items) {
           K8sPodDTO k8sPodDTO = new K8sPodDTO();
@@ -61,7 +61,7 @@ public class K8sPodServiceImpl implements K8sPodService {
           k8sPodDTO.setNodeIP(v1Pod.getStatus().getHostIP());
           k8sPodDTO.setContainerSize(v1Pod.getSpec().getContainers().size());
           if (v1Pod.getStatus().getStartTime() != null) {
-            k8sPodDTO.setStartTime(v1Pod.getStatus().getStartTime().toDate());
+            k8sPodDTO.setStartTime(Date.from(v1Pod.getStatus().getStartTime().toInstant()));
           } else {
             k8sPodDTO.setStartTime(null);
           }
@@ -80,7 +80,7 @@ public class K8sPodServiceImpl implements K8sPodService {
               V1ContainerStateTerminated terminated = containerStatus.getState().getTerminated();
               V1ContainerStateWaiting waiting = containerStatus.getState().getWaiting();
               if (running != null) {
-                Date date = running.getStartedAt().toDate();
+                Date date = Date.from(running.getStartedAt().toInstant());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String s = dateFormat.format(date);
                 containerDTO.setDescribeMsg("start time: " + s);
@@ -125,7 +125,7 @@ public class K8sPodServiceImpl implements K8sPodService {
       CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(env);
       if (coreV1Api != null) {
         try {
-          v1Pod = coreV1Api.readNamespacedPod(podName, namespace, null, null, null);
+          v1Pod = coreV1Api.readNamespacedPod(podName, namespace, null);
 //                    V1PodList podList = coreV1Api.listNamespacedPod("default", null, null, null,
 //                            null, null, null, null, 300, null);
 //                    List<V1Pod> v1Pods = podList.getItems();
@@ -158,9 +158,8 @@ public class K8sPodServiceImpl implements K8sPodService {
       if (coreV1Api != null) {
         try {
           V1DeleteOptions deleteOptions = new V1DeleteOptions();
-          V1Status v1Status = coreV1Api.deleteNamespacedPod(podName, namespace, null, null, null,
-              null, null, deleteOptions);
-          log.info("状态message : " + v1Status);
+          V1Pod v1Pod = coreV1Api.deleteNamespacedPod(podName, namespace, null, null, null, null, null, deleteOptions);
+          log.info("状态message : " + v1Pod);
           log.info("delete pod " + podName + " ok");
           return true;
         } catch (ApiException e) {
@@ -322,7 +321,7 @@ public class K8sPodServiceImpl implements K8sPodService {
       CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(moduleEnv);
       try {
         v1PodList = coreV1Api.listNamespacedPod(namespace, null, null, null,
-            null, null, null, null, 60, null);
+            null, null, null, null, null, 60, null);
       } catch (ApiException e) {
         log.error("连接k8s API 出现错误");
         e.printStackTrace();
@@ -340,7 +339,7 @@ public class K8sPodServiceImpl implements K8sPodService {
           StringUtils.isNotBlank(moduleEnv.getK8sConfig())) {
         CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(moduleEnv);
         log.info("开始创建pod操作");
-        podResult = coreV1Api.createNamespacedPod(namespace, v1Pod, null, null, null);
+        podResult = coreV1Api.createNamespacedPod(namespace, v1Pod, null, null, null, null);
       }
     }
     return podResult;
@@ -364,7 +363,7 @@ public class K8sPodServiceImpl implements K8sPodService {
         V1DeleteOptions deleteOptions = new V1DeleteOptions();
         deleteOptions.setOrphanDependents(false);
         try {
-          V1Status v1Status = coreV1Api.deleteNamespacedPod(podName, namespace, null, null,
+          V1Pod v1Status = coreV1Api.deleteNamespacedPod(podName, namespace, null, null,
               gracePeriodSeconds, null, null, deleteOptions);
           log.info("删除pod: {} status: {}", podName, v1Status.getStatus());
           return true;
@@ -425,7 +424,7 @@ public class K8sPodServiceImpl implements K8sPodService {
       try {
         //首先根据label 取pod数据 如果没有取到 在去掉label去匹配数据
         V1PodList v1PodList = coreV1Api.listNamespacedPod(namespace, null, null,
-            null, null, label, null,
+            null, null, label, null, null,
             null, 300, null);
         if (v1PodList != null && v1PodList.getItems().size() > 0) {
           List<V1Pod> items = v1PodList.getItems();
@@ -439,7 +438,7 @@ public class K8sPodServiceImpl implements K8sPodService {
           //针对ingress的pod查看信息添加
           if (yamlName.toLowerCase().contains("ingress")) {
             V1PodList v1PodList2 = coreV1Api.listNamespacedPod(namespace,
-                null, null,
+                null, null, null,
                 null, null, null, null,
                 null, 300, null);
             if (v1PodList2 != null && v1PodList2.getItems().size() > 0) {

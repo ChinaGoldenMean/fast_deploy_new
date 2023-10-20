@@ -16,6 +16,7 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.SSLUtils;
 import io.kubernetes.client.util.Yaml;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.codec.binary.Base64;
@@ -120,6 +121,14 @@ public class K8sUtils {
       k8sYamlVo = transObject2Vo(o);
     }
     return k8sYamlVo;
+  }
+  
+  @SneakyThrows
+  public static void main(String[] args) {
+    File yamlPathFile = new File("E:\\Users\\litiewang\\Downloads\\bss-order-front-deploy.yaml");
+    K8sYamlVo k8sYamlVoPath = null;
+    k8sYamlVoPath = K8sUtils.transYaml2Vo(yamlPathFile);
+    System.out.println(k8sYamlVoPath);
   }
   
   public static List<K8sYamlVo> transYaml2VoList(File yamlFile) throws IOException {
@@ -452,7 +461,7 @@ public class K8sUtils {
     return mountPath;
   }
   
-  public static V1Deployment toV1Deploy(ExtensionsV1beta1Deployment deployment) {
+  public static V1Deployment toV1Deploy(V1Deployment deployment) {
     V1Deployment v1Deployment = new V1Deployment();
     if (deployment != null) {
       v1Deployment.setApiVersion(deployment.getApiVersion());
@@ -463,7 +472,7 @@ public class K8sUtils {
     return v1Deployment;
   }
   
-  public static V1DeploymentSpec toV1Spec(ExtensionsV1beta1DeploymentSpec spec) {
+  public static V1DeploymentSpec toV1Spec(V1DeploymentSpec spec) {
     V1DeploymentSpec v1Spec = new V1DeploymentSpec();
     if (spec != null) {
       v1Spec.setReplicas(spec.getReplicas());
@@ -478,7 +487,7 @@ public class K8sUtils {
     return v1Spec;
   }
   
-  public static V1DeploymentStrategy toV1Strategy(ExtensionsV1beta1DeploymentStrategy strategy) {
+  public static V1DeploymentStrategy toV1Strategy(V1DeploymentStrategy strategy) {
     V1DeploymentStrategy v1strategy = new V1DeploymentStrategy();
     if (strategy != null) {
       v1strategy.setType(strategy.getType());
@@ -487,7 +496,7 @@ public class K8sUtils {
     return v1strategy;
   }
   
-  public static V1RollingUpdateDeployment toV1RollingUpdate(ExtensionsV1beta1RollingUpdateDeployment rollingUpdateDeployment) {
+  public static V1RollingUpdateDeployment toV1RollingUpdate(V1RollingUpdateDeployment rollingUpdateDeployment) {
     V1RollingUpdateDeployment v1RollingUpdateDeployment = new V1RollingUpdateDeployment();
     if (rollingUpdateDeployment != null) {
       v1RollingUpdateDeployment.setMaxSurge(rollingUpdateDeployment.getMaxSurge());

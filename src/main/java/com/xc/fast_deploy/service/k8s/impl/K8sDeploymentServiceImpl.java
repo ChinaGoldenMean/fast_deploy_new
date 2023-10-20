@@ -40,7 +40,7 @@ public class K8sDeploymentServiceImpl implements K8sDeploymentService {
     if (appsV1Api != null) {
       try {
         V1DeploymentList deploymentList = appsV1Api.listNamespacedDeployment(K8sNameSpace.DEFAULT,
-            null, null, null, null,
+            null, null, null, null, null,
             null, null, null, 300, null);
         List<V1Deployment> listItems = deploymentList.getItems();
         for (V1Deployment deployment : listItems) {
@@ -109,7 +109,7 @@ public class K8sDeploymentServiceImpl implements K8sDeploymentService {
       AppsV1Api appsV1Api = k8sService.getAppsV1Api(env);
       if (appsV1Api != null) {
         try {
-          V1DeploymentList deploymentList = appsV1Api.listNamespacedDeployment(K8sNameSpace.DEFAULT, null, null, null, null,
+          V1DeploymentList deploymentList = appsV1Api.listNamespacedDeployment(K8sNameSpace.DEFAULT, null, null, null, null, null,
               null, null, null, 300, null);
           List<V1Deployment> items = deploymentList.getItems();
           if (items != null && items.size() > 0) {

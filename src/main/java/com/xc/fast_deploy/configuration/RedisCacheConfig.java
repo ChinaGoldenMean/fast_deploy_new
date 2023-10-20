@@ -49,7 +49,8 @@ public class RedisCacheConfig {
     config.setDatabase(redisDataBase)
         .setPoolConfig(poolConfig)
         .setPassword(redisPassword)
-        .setMonitorTimeout(200);
+        .setMonitorTimeout(20000).setConnectionTimeout(200000).setSoTimeout(200000);
+  
     return new CtgJedisPool(config);
   }
 }

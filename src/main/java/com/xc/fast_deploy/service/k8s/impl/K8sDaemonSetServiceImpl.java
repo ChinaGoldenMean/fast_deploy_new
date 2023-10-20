@@ -37,7 +37,7 @@ public class K8sDaemonSetServiceImpl implements K8sDaemonSetService {
     if (appsV1Api != null) {
       try {
         V1DaemonSetList beta1DaemonSetList = appsV1Api.listNamespacedDaemonSet(K8sNameSpace.DEFAULT,
-            null, null, null, null, null,
+            null, null, null, null, null, null,
             null, null, 300, null);
         List<V1DaemonSet> items = beta1DaemonSetList.getItems();
         if (items != null && items.size() > 0) {
@@ -108,7 +108,7 @@ public class K8sDaemonSetServiceImpl implements K8sDaemonSetService {
         V1DaemonSetList beta1DaemonSetList = null;
         try {
           beta1DaemonSetList = appsV1Api.listNamespacedDaemonSet(K8sNameSpace.DEFAULT,
-              null, null, null, null,
+              null, null, null, null, null,
               null, null, null, 300, null);
           List<V1DaemonSet> items = beta1DaemonSetList.getItems();
           if (items != null && items.size() > 0) {

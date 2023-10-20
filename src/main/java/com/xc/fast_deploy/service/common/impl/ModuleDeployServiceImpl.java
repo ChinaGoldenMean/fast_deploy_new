@@ -57,9 +57,10 @@ import io.kubernetes.client.Exec;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.AutoscalingV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
+
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Yaml;
 import io.kubernetes.client.util.exception.CopyNotSupportedException;
@@ -193,7 +194,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
             k8sPodDTO.setYamlNamespace(deployYamls.get(0).getYamlNamespace());
             k8sPodDTO.setStatus(pod.getStatus().getPhase());
             if (pod.getStatus().getStartTime() != null) {
-              k8sPodDTO.setStartTime(pod.getStatus().getStartTime().toDate());
+              k8sPodDTO.setStartTime(Date.from(pod.getStatus().getStartTime().toInstant()));
             }
             int containerRunningSize = 0;
             List<V1ContainerStatus> containerStatuses = pod.getStatus().getContainerStatuses();
@@ -222,7 +223,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
                 
                 if (v1ContainerStatus.getReady() && running != null) {
                   containerRunningSize++;
-                  Date date = running.getStartedAt().toDate();
+                  Date date = Date.from(running.getStartedAt().toInstant());
                   SimpleDateFormat dateFormat =
                       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                   String s = dateFormat.format(date);
@@ -335,7 +336,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       argsMap.put("deploymentName", deployYamls.get(0).getYamlName());
       try {
         autoscalingV1Api.createNamespacedHorizontalPodAutoscaler(deployYamls.get(0).getYamlNamespace(),
-            body, null, null, null);
+            body, null, null, null, null);
         success = true;
       } catch (ApiException e) {
         log.error("创建HPA出错：{}", e.getMessage());
@@ -418,7 +419,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       try {
         V1ConfigMapList v1ConfigMapList = coreV1Api.listNamespacedConfigMap(K8sNameSpace.DEFAULT,
             null, null, null, null
-            , null, null, null, null, null);
+            , null, null, null, null, null, null);
         if (v1ConfigMapList != null && v1ConfigMapList.getItems() != null
             && v1ConfigMapList.getItems().size() > 0) {
           for (V1ConfigMap v1ConfigMap : v1ConfigMapList.getItems()) {
@@ -840,7 +841,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
     List<ModuleDeployYaml> moduleDeployYamls =
         deployYamlMapper.selectYamlJsonByModuleId(moduleId);
     ModuleEnv moduleEnv = envMapper.selectOne(envId);
-    ExtensionsV1beta1Api v1beta1Api =
+    AppsV1Api v1beta1Api =
         k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
     CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(moduleEnv);
     if (typeEnum != null && deployMapper.countByExample(deployExample) > 0
@@ -861,8 +862,8 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
             try {
               switch (typeEnum) {
                 case DEPLOYMENT:
-                  ExtensionsV1beta1Deployment newDeployment =
-                      K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+                  V1Deployment newDeployment =
+                      K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
                   if (newDeployment != null) {
                     V1Deployment deployment =
                         k8sService.readNameSpacedResource(moduleDeployYaml.getYamlName(),
@@ -873,7 +874,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
                     newDeployment.getSpec().getTemplate().getSpec().getContainers().get(0)
                         .setImage(deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getImage());
                     v1beta1Api.replaceNamespacedDeployment(moduleDeployYaml.getYamlName(),
-                        moduleDeployYaml.getYamlNamespace(), newDeployment, null, null, null);
+                        moduleDeployYaml.getYamlNamespace(), newDeployment, null, null, null, null);
                     success = true;
                   }
                   break;
@@ -888,7 +889,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
                     newV1Service.setSpec(v1Service.getSpec());
                     log.info(newV1Service.toString());
                     coreV1Api.replaceNamespacedService(moduleDeployYaml.getYamlName(),
-                        moduleDeployYaml.getYamlNamespace(), newV1Service, null, null, null);
+                        moduleDeployYaml.getYamlNamespace(), newV1Service, null, null, null, null);
                     success = true;
                   }
                   break;
@@ -985,8 +986,8 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
           if (K8sKindTypeEnum.DEPLOYMENT.getKindType().equals(k8sYamlVo.getKind())) {
             V1Deployment deployment;
             if (K8sApiversionTypeEnum.EXTENSIONAPI.getApiVersionType().equals(k8sYamlVo.getApiVersion())) {
-              ExtensionsV1beta1Deployment beta1Deployment =
-                  K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+              V1Deployment beta1Deployment =
+                  K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
               deployment = K8sUtils.toV1Deploy(beta1Deployment);
             } else {
               deployment = K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
@@ -1499,8 +1500,8 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       V1Deployment deployment;
       K8sYamlVo k8sYamlVo = getK8sYamlVoFromDeployYaml(moduleDeployYamls.get(0), null);
       if (oldEnvList.contains(envId)) {
-        ExtensionsV1beta1Deployment object =
-            K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+        V1Deployment object =
+            K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
         deployment = K8sUtils.toV1Deploy(object);
       } else {
         deployment =
@@ -1605,12 +1606,12 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       stratgyMap.put("rollingUpdate", rollingMap);
       String op = null;
       if (deployment.getSpec().getStrategy() == null) op = "add";
-      ExtensionsV1beta1Api extensionsV1beta1Api = k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
+      AppsV1Api extensionsV1beta1Api = k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
       try {
         ArrayList<JsonObject> jsonObjects = K8sUtils.generatePatchPath(K8sPatchMirror.SPEC_STRATEGY, stratgyMap, op);
         extensionsV1beta1Api.patchNamespacedDeployment(yamlList.get(0).getYamlName(),
             yamlList.get(0).getYamlNamespace(), new V1Patch(jsonObjects.toString()),
-            null, null, null, null);
+            null, null, null, null, null);
       } catch (ApiException e) {
         log.info("设置滚动升级参数失败");
         return responseDTO.fail("设置失败");
@@ -1673,12 +1674,14 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
       stratgyMap.put("rollingUpdate", rollingMap);
       String op = null;
       if (deployment.getSpec().getStrategy() == null) op = "add";
-      ExtensionsV1beta1Api extensionsV1beta1Api = k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
+      AppsV1Api extensionsV1beta1Api = k8sService.getExtensionsV1beta1ApiByConfig(moduleEnv);
       try {
         ArrayList<JsonObject> jsonObjects = K8sUtils.generatePatchPath(K8sPatchMirror.SPEC_STRATEGY, stratgyMap, op);
-        extensionsV1beta1Api.patchNamespacedDeployment(yamlList.get(0).getYamlName(),
-            yamlList.get(0).getYamlNamespace(), new V1Patch(jsonObjects.toString()),
-            null, null, null, null);
+        extensionsV1beta1Api.patchNamespacedDeployment(
+            yamlList.get(0).getYamlName(),
+            yamlList.get(0).getYamlNamespace(),
+            new V1Patch(jsonObjects.toString()),
+            null, null, null, null, null);
       } catch (ApiException e) {
         log.info("设置滚动升级参数失败");
         return responseDTO.fail("设置失败");

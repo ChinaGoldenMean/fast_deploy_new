@@ -298,11 +298,11 @@ public class ModuleCenterTest {
 //
 //
 //        try {
-//            ExtensionsV1beta1DeploymentList deploymentList =
+//            V1DeploymentList deploymentList =
 //                    extensionApi.listNamespacedDeployment(K8sNameSpace.DEFAULT, null, null,
 //                            null, null, null, null, null,
 //                            null, null);
-//            List<ExtensionsV1beta1Deployment> listItems = deploymentList.getItems();
+//            List<V1Deployment> listItems = deploymentList.getItems();
 //            System.out.println(listItems.size());
 //            int count = 1;
 //            for (int i = 0; i < listItems.size(); i++) {

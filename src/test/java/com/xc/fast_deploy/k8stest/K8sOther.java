@@ -10,8 +10,9 @@ import com.xc.fast_deploy.utils.constant.K8sPatchMirror;
 import com.xc.fast_deploy.utils.k8s.K8sManagement;
 import com.xc.fast_deploy.utils.k8s.K8sUtils;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
+
 import io.kubernetes.client.openapi.models.V1Pod;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -42,12 +43,12 @@ public class K8sOther {
     V1Pod v1Pod = null;
     try {
       v1Pod = coreV1Api.readNamespacedPod("xfer-oldde-pstn-ismp-paas-billing-docker-093-billing-1035223-1-1th",
-          "b4center", null, null, null);
+          "b4center", null);
     } catch (ApiException e) {
       System.out.println(e.getResponseBody());
     }
 
-//        ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+//        AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
 //        V1beta1IngressList ingressList = extensionApi.listIngressForAllNamespaces(null, null, null, null,
 //                null, null, null, null, null);
 //        if (ingressList != null && ingressList.getItems().size() > 0) {
@@ -69,7 +70,7 @@ public class K8sOther {
   
   @Test
   public void testPatch() {
-    ExtensionsV1beta1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
+    AppsV1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
     Map<String, String> result = Maps.newHashMap();
     result.put("memory", "1200Mi");
     result.put("cpu", "3000m");
@@ -82,7 +83,7 @@ public class K8sOther {
 //        } catch (ApiException e) {
 //            e.printStackTrace();
 //        }
-//        ExtensionsV1beta1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
+//        AppsV1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
 //        Map<String, String> result = Maps.newHashMap();
 //        result.put("memory", "1200Mi");
 //        result.put("cpu", "3000m");
@@ -96,7 +97,7 @@ public class K8sOther {
 //            e.printStackTrace();
 //        }
 
-//        ExtensionsV1beta1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
+//        AppsV1Api v1beta1Api = K8sManagement.getExtensionApi(K8sUtils.MY_OWN);
 //        Map<String, String> result = Maps.newHashMap();
 //        result.put("memory", "1200Mi");
 //        result.put("cpu", "3000m");

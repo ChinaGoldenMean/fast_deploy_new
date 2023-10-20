@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.xc.fast_deploy.utils.FoldUtils.*;
+import static com.xc.fast_deploy.utils.FoldUtils.SEP;
 
 @Service
 @Slf4j
@@ -173,8 +174,6 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
    * 添加一条package信息
    *
    * @param modulePackage
-   * @param moduleId
-   * @param moduleType
    * @return
    */
   @Override
@@ -715,8 +714,8 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
   
   @SneakyThrows
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean gitAutoType(ModuleCertificate certificate, ModuleManage moduleManage, StatusDTO statusDTO, Session session, StringBuilder filePrefixBase) {
-    
     StringBuilder filePrefix = new StringBuilder();
     if (filePrefixBase == null) {
       ModuleManageDTO manageDTO = manageMapper.selectInfoById(moduleManage.getId());
@@ -745,6 +744,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
     String sshPath = filePrefix.toString() + GIT + SEP;
     //  FoldUtils.deleteFolders(filePrefix.toString()  );
     GitUtils.cloneOrPull(moduleManage.getSvnAutoUrl(), sshPath, username, password, null);
+  
     Integer certificatiId = Integer.valueOf(certificate.getId());
     certificate = certificateService.selectById(certificatiId);
     if (certificate != null) {
@@ -755,6 +755,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
         List<ModulePackageParamVo> paramVos =
             ExcelPhraseUtils.getAllGitShData(new FileInputStream(shFile));
         //GitUtils.generateXML(filePrefix.toString(), shFile.getName());
+  
         return saveGitModulePackage(certificate, moduleManage, paramVos, filePrefix, statusDTO, session);
       } else {
         System.out.println("文件夹中不存在.sh文件");

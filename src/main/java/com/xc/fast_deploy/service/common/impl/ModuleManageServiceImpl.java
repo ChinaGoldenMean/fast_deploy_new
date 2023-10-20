@@ -1490,7 +1490,7 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
           V1Deployment deployment = appsV1Api
               .readNamespacedDeployment(deployVOS.get(i)
                       .getYamlName(), K8sNameSpace.DEFAULT,
-                  null, null, null);
+                  null);
           if (deployment != null && deployment.getStatus() != null) {
             podNum = deployment.getStatus().getReplicas();
           }

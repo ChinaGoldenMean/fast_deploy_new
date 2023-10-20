@@ -43,7 +43,7 @@ public class MyYamlCompareThread implements Runnable {
       V1DeploymentList deploymentList =
           appsV1Api.listNamespacedDeployment("default", null, null
               , null, null, null, null, null
-              , null, null);
+              , null, null, null);
       List<ModuleYamlDiff> yamlDiffList = new ArrayList<>();
       for (V1Deployment deployment : deploymentList.getItems()) {
         ModuleDeployYamlExample yamlExample = new ModuleDeployYamlExample();

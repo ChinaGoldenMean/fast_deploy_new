@@ -35,8 +35,9 @@ import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.ApiResponse;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
+
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Yaml;
 import javafx.scene.transform.Scale;
@@ -86,7 +87,7 @@ public class K8sTest {
     
     ModuleEnv moduleEnv = envMapper.selectOne(10);
     CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(moduleEnv.getK8sConfig());
-    ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+    AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
     try {
 //            V1Pod v1Pod = coreV1Api.readNamespacedPod("myboot-854d66c7c8-gkvmw", "default", null, null, null);
 //            System.out.println(JSONObject.toJSONString(v1Pod));
@@ -100,13 +101,13 @@ public class K8sTest {
 //            System.out.println(JSONObject.toJSONString(deployment));
 //            File file = new File("F:\\storge\\code1\\gogo.yaml");
 //            K8sYamlVo k8sYamlVo = K8sUtils.transYaml2Vo(file);
-//            ExtensionsV1beta1Deployment beta1Deployment = K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+//            V1Deployment beta1Deployment = K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
 //            List<V1Container> containers = beta1Deployment.getSpec().getTemplate().getSpec().getContainers();
 //            for (V1Container container : containers) {
 //                container.setImage("124.35.23.24:4000/test/test");
 //            }
 //
-//            ExtensionsV1beta1Deployment deployment = extensionApi.replaceNamespacedDeployment("myboot", "default", beta1Deployment, null, null);
+//            V1Deployment deployment = extensionApi.replaceNamespacedDeployment("myboot", "default", beta1Deployment, null, null);
 //            System.out.println(JSONObject.toJSONString(deployment));
 //            V1DeleteOptions v1DeleteOptions = new V1DeleteOptions();
 //            v1DeleteOptions.setOrphanDependents(false);
@@ -136,8 +137,8 @@ public class K8sTest {
       ArrayList<JsonObject> arr = new ArrayList<>();
       arr.add(jsonObject);
       
-      ExtensionsV1beta1Deployment deployment = extensionApi.patchNamespacedDeployment("boot-demo", "default", new V1Patch(arr.toString()),
-          null, null, null, null);
+      V1Deployment deployment = extensionApi.patchNamespacedDeployment("boot-demo", "default", new V1Patch(arr.toString()),
+          null, null, null, null, null);
     } catch (ApiException e) {
       log.error("k8s 操作出现错误");
       e.printStackTrace();
@@ -155,11 +156,11 @@ public class K8sTest {
   @Test
   public void patchresources() {
     ModuleEnv moduleEnv = envMapper.selectOne(10);
-    ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+    AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
     try {
-      ExtensionsV1beta1Deployment deployment =
+      V1Deployment deployment =
           extensionApi.readNamespacedDeployment("crm-platform-pressure-center-machine-pressure-sample",
-              "default", null, null, false);
+              "default", null);
       V1ResourceRequirements v1ResourceRequirements = new V1ResourceRequirements();
       Map<String, Quantity> requests = new HashMap<>();
       requests.put("memory", Quantity.fromString("2Gi"));
@@ -171,8 +172,8 @@ public class K8sTest {
       v1ResourceRequirements.setLimits(limits);
       v1ResourceRequirements.setRequests(requests);
       deployment.getSpec().getTemplate().getSpec().getContainers().get(0).setResources(v1ResourceRequirements);
-      ExtensionsV1beta1Deployment deployment1 =
-          extensionApi.replaceNamespacedDeployment("crm-platform-pressure-center-machine-pressure-sample", "default", deployment, null, null, null);
+      V1Deployment deployment1 =
+          extensionApi.replaceNamespacedDeployment("crm-platform-pressure-center-machine-pressure-sample", "default", deployment, null, null, null, null);
 //            Map<String,String> limitMap = new LinkedHashMap<>();
 //            Map<String,String> requestMap = Maps.newHashMap();
 //            limitMap.put("cpu","0");
@@ -226,7 +227,7 @@ public class K8sTest {
         k8sPodDTO.setStatus(pod.getStatus().getPhase());
         
         if (pod.getStatus().getStartTime() != null) {
-          k8sPodDTO.setStartTime(pod.getStatus().getStartTime().toDate());
+          k8sPodDTO.setStartTime(Date.from(pod.getStatus().getStartTime().toInstant()));
         }
         
         int containerRunningSize = 0;
@@ -251,7 +252,7 @@ public class K8sTest {
             V1ContainerStateWaiting waiting = v1ContainerStatus.getState().getWaiting();
             if (running != null) {
               containerRunningSize++;
-              Date date = running.getStartedAt().toDate();
+              Date date = Date.from(running.getStartedAt().toInstant());
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
               String s = dateFormat.format(date);
               containerDTO.setDescribeMsg("start time: " + s);
@@ -383,7 +384,7 @@ public class K8sTest {
   public void testNode() throws ApiException {
     CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(K8sUtils.MY_OWN);
     V1NodeList v1NodeList = coreV1Api.listNode(null, null, null, null,
-        null, null, null, null, null);
+        null, null, null, null, null, null);
 //        System.out.println(v1NodeList.getItems().get(0).getMetadata().getName());
 //        List<V1Node> items = v1NodeList.getItems();
 //        for (V1Node v1Node : items) {
@@ -410,7 +411,7 @@ public class K8sTest {
     List<JsonObject> pathList = new ArrayList<>();
     pathList.add(jsonObject);
     ApiResponse<V1Node> apiResponse = coreV1Api.patchNodeWithHttpInfo(node1Name, new V1Patch(jsonObject.toString()),
-        null, null, null, null);
+        null, null, null, null, null);
     System.out.println(apiResponse);
   }
   
@@ -421,7 +422,7 @@ public class K8sTest {
   public void getTestNodeInfo() throws ApiException {
     CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(K8sUtils.MY_OWN);
     V1NodeList nodeList = coreV1Api.listNode(null, null, null, null,
-        "center=deploy", null, null, null, null);
+        "center=deploy", null, null, null, null, null);
     for (V1Node v1Node : nodeList.getItems()) {
       System.out.println(v1Node);
     }
@@ -504,11 +505,11 @@ public class K8sTest {
   @Test
   public void getstratgyargs() {
     ModuleEnv moduleEnv = envMapper.selectOne(10);
-    ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+    AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
     try {
-      ExtensionsV1beta1Deployment deployment =
-          extensionApi.readNamespacedDeployment("boot-demo", "default", null, null, null);
-      ExtensionsV1beta1DeploymentStrategy strategy = deployment.getSpec().getStrategy();
+      V1Deployment deployment =
+          extensionApi.readNamespacedDeployment("boot-demo", "default", null);
+      V1DeploymentStrategy strategy = deployment.getSpec().getStrategy();
       Integer replicas = deployment.getSpec().getReplicas();
       if (strategy.getType().equals("RollingUpdate")) {
         String maxSurge = strategy.getRollingUpdate().getMaxSurge().toString();
@@ -532,12 +533,12 @@ public class K8sTest {
   @Test
   public void compareYaml() {
     ModuleEnv moduleEnv = envMapper.selectOne(10);
-    ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+    AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
     try {
-      ExtensionsV1beta1DeploymentList deployList =
+      V1DeploymentList deployList =
           extensionApi.listNamespacedDeployment("default", null, null, null, null
-              , null, null, null, null, null);
-      for (ExtensionsV1beta1Deployment deployment : deployList.getItems()) {
+              , null, null, null, null, null, null);
+      for (V1Deployment deployment : deployList.getItems()) {
         ModuleDeployYamlExample yamlExample = new ModuleDeployYamlExample();
         yamlExample.createCriteria().andYamlNameEqualTo(deployment.getMetadata().getName())
             .andIsOnlineYamlEqualTo(1).andIsDeployedEqualTo(1);
@@ -550,7 +551,7 @@ public class K8sTest {
             k8sYamlVo = K8sUtils.transYaml2Vo(new File(storgePrefix + moduleDeployYamls.get(0).getYamlPath()));
           }
         }
-        ExtensionsV1beta1Deployment yamlDeployment = K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+        V1Deployment yamlDeployment = K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
         if (deployment.getSpec().getStrategy().equals(yamlDeployment.getSpec().getStrategy()))
           System.out.println("strategy----------ok");
         if (deployment.getSpec().getReplicas().equals(yamlDeployment.getSpec().getReplicas()))
@@ -603,7 +604,7 @@ public class K8sTest {
   @Test
   public void deleteResource() {
     ModuleEnv moduleEnv = envMapper.selectOne(10);
-    ExtensionsV1beta1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
+    AppsV1Api extensionApi = K8sManagement.getExtensionApi(moduleEnv.getK8sConfig());
     V1DeleteOptions v1DeleteOptions = new V1DeleteOptions();
     v1DeleteOptions.setPropagationPolicy("Foreground");
     try {
@@ -622,8 +623,8 @@ public class K8sTest {
     ArrayList<JsonObject> jsonObjects = K8sUtils.generatePatchPath("/spec/replicas", 1, null);
     String back = okhttpGetBack(moduleEnv.getK8sConfig(), url);
     Object load = Yaml.load(back);
-    ExtensionsV1beta1Deployment object = K8sUtils.getObject(load, ExtensionsV1beta1Deployment.class);
-    ExtensionsV1beta1Deployment cast = object.getClass().cast(object);
+    V1Deployment object = K8sUtils.getObject(load, V1Deployment.class);
+    V1Deployment cast = object.getClass().cast(object);
     System.out.println(cast);
   }
   
@@ -635,8 +636,8 @@ public class K8sTest {
     K8sYamlVo k8sYamlVo = K8sUtils.transObject2Vo(Yaml.load(yaml.getYamlJson()));
     V1Deployment deployment;
     if (K8sApiversionTypeEnum.EXTENSIONAPI.getApiVersionType().equals(k8sYamlVo.getApiVersion())) {
-      ExtensionsV1beta1Deployment beta1Deployment =
-          K8sUtils.getObject(k8sYamlVo.getO(), ExtensionsV1beta1Deployment.class);
+      V1Deployment beta1Deployment =
+          K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);
       deployment = K8sUtils.toV1Deploy(beta1Deployment);
     } else {
       deployment = K8sUtils.getObject(k8sYamlVo.getO(), V1Deployment.class);

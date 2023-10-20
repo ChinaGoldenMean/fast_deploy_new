@@ -138,8 +138,8 @@ public class ModuleResourceServiceImpl implements ModuleResourceService {
             }
             if (objectMeta != null) {
               deploySelfConfDTO.setResourceName(objectMeta.getName());
-              deploySelfConfDTO.setCreateTime(objectMeta.
-                  getCreationTimestamp().toDate());
+              deploySelfConfDTO.setCreateTime(Date.from(objectMeta.
+                  getCreationTimestamp().toInstant()));
             }
             deploySelfConfDTO.setEnvId(moduleEnv.getId());
             deploySelfConfDTO.setEnvName(moduleEnv.getEnvName());

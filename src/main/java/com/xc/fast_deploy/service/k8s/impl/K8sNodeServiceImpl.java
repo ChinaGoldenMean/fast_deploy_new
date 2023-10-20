@@ -48,7 +48,7 @@ public class K8sNodeServiceImpl implements K8sNodeService {
       CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(moduleEnv.getK8sConfig());
       try {
         V1NodeList v1NodeList = coreV1Api.listNode(null, true, null,
-            null, null, null,
+            null, null, null, null,
             null, null, null);
         List<V1Node> items = v1NodeList.getItems();
         if (items != null && items.size() > 0) {
@@ -68,7 +68,7 @@ public class K8sNodeServiceImpl implements K8sNodeService {
               continue;
             }
             k8sNodeDTO.setNodeIP(nodeIP);
-            k8sNodeDTO.setCreateTime(v1Node.getMetadata().getCreationTimestamp().toDate());
+            k8sNodeDTO.setCreateTime(Date.from(v1Node.getMetadata().getCreationTimestamp().toInstant()));
             k8sNodeDTO.setPodCIDR(v1Node.getSpec().getPodCIDR());
             List<V1NodeCondition> conditions = v1Node.getStatus().getConditions();
             if (conditions != null && conditions.size() > 0) {
@@ -146,7 +146,7 @@ public class K8sNodeServiceImpl implements K8sNodeService {
       CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(moduleEnv.getK8sConfig());
       
       try {
-        V1Node v1Node = coreV1Api.patchNode(nodeName, new V1Patch(pathList.toString()), null, null, null, null);
+        V1Node v1Node = coreV1Api.patchNode(nodeName, new V1Patch(pathList.toString()), null, null, null, null, null);
         if (v1Node != null) {
           return true;
         }
@@ -170,7 +170,7 @@ public class K8sNodeServiceImpl implements K8sNodeService {
       CoreV1Api coreV1Api = K8sManagement.getCoreV1Api(moduleEnv.getK8sConfig());
       try {
         V1Node v1Node = coreV1Api.readNode(k8sNodeVo.getNodeName(),
-            null, null, null);
+            null);
         if (v1Node != null) {
           Map<String, String> labels = v1Node.getMetadata().getLabels();
           Map<String, String> kubenerateIoMap = new HashMap<>();
@@ -198,7 +198,7 @@ public class K8sNodeServiceImpl implements K8sNodeService {
           List<JsonObject> pathList =
               K8sUtils.generatePatchPath(K8sPatchMirror.NODE_LABEL, result, null);
           V1Node pathV1Node = coreV1Api.patchNode(k8sNodeVo.getNodeName(), new V1Patch(pathList.toString()),
-              null, null, null, null);
+              null, null, null, null, null);
           if (pathV1Node != null) {
             return true;
           }
