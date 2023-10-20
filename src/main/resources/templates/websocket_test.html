@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gogogogogo</title>
+</head>
+<body>
+<h2>this is a index html</h2>
+
+<form action="/module/file" method="post" enctype="multipart/form-data">
+    excel文件上传: <input type="file" name="excelFile"/><br/>
+    文件包上传: <input type="file" name="packageFiles"/><br/>
+    文件包上传: <input type="file" name="packageFiles"/><br/>
+    文件包上传: <input type="file" name="packageFiles"/><br/>
+    <input type="submit" value="提交上传">
+</form>
+<h2>k8s websocket相关的请求测试</h2>
+podName: <input type="text" id="podName"/> &nbsp;
+containerName: <input type="text" id="containerName"/> <br/><br/>
+<button onclick="k8sconnect()">开始连接connect</button>
+<button onclick="k8sdisconnect()">断开连接disconnect</button>
+<button onclick="k8ssendMessage()">发送一条消息</button>
+<div id="myDiv">
+
+</div>
+<h2>jenkins job websocket相关的请求测试</h2>
+jobName: <input type="text" id="jobName"/> &nbsp;<br/><br/>
+<button onclick="jenkinsconnect()">开始连接connect</button>
+<button onclick="jenkinsdisconnect()">断开连接disconnect</button>
+<button onclick="jenkinssendMessage()">发送一条消息</button>
+<div id="myDiv2">
+
+</div>
+
+<h2>jenkins run job websocket相关的请求测试</h2>
+jobId: <input type="text" id="jobId"/> &nbsp;<br/><br/>
+<button onclick="runjob()">开始连接connect</button>
+<button onclick="jobdisconnect()">断开连接disconnect</button>
+<button onclick="jobSendMessage()">发送一条消息</button>
+<div id="myDiv3">
+
+</div>
+
+
+<h2>websocket 文件上传相关的请求测试</h2>
+<button onclick="fileconnect()">开始连接connect</button>
+<button onclick="filedisconnect()">断开连接disconnect</button>
+<button onclick="fileTest()">发送一条消息</button>
+<div id="myDiv4">
+
+</div>
+<div>
+    <form>
+        <input id="file1" type="file" multiple/>
+        <input id="file2" type="file" multiple/>
+        <input id="file3" type="file" multiple/>
+    </form>
+</div>
+
+</body>
+<script>
+    var socket;
+    var parent = document.getElementById("myDiv");
+    var parent2 = document.getElementById("myDiv2");
+    var parent3 = document.getElementById("myDiv3");
+
+    function fileconnect() {
+        socket = new WebSocket("ws://localhost:6001/websocket/upload/moduleManage?envId=10&certificateId=4&projectCode=project_code&X-token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjM3NzMxNjksInVzZXJJZCI6IlpKWENBMDAyNyIsInVzZXJuYW1lIjoid3Vqai54YyJ9.zJppX1YClZqlpdHb8HsIUaRydgP9pufoYMi-eezfPBQ")
+        //打开事件
+        socket.onopen = function () {
+            console.log("Socket 已打开");
+            //socket.send("这是来自客户端的消息" + location.href + new Date());
+        };
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("Socket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            alert("Socket发生了错误");
+            //此时可以尝试刷新页面
+        }
+    }
+
+    function fileTest() {
+        var fileList = document.getElementById("file1").files;
+        var file = fileList[0];
+        socket.send(file.name);
+        socket.send(file);
+        var fileList2 = document.getElementById("file2").files;
+        var file2 = fileList2[0];
+        socket.send(file2.name);
+        socket.send(file2)
+        var fileList3 = document.getElementById("file3").files;
+        var file3 = fileList3[0];
+        socket.send(file3.name);
+        socket.send(file3)
+    }
+
+    function filedisconnect() {
+        socket.close();
+    }
+
+
+    function k8sconnect() {
+        // var podName = document.getElementById("podName").value;
+        // var containerName = document.getElementById("containerName").value;
+
+        // socket = new WebSocket("ws://134.108.3.222:30893/websocket/k8s/10/" + podName + "/" + containerName);
+        // socket = new WebSocket("ws://192.168.132.135:8091/websocket/k8s/watch/pods");
+
+        // socket = new WebSocket("ws://134.108.3.222:6001/websocket/k8s/pod/logs?moduleEnvId=10&" +
+        //     "podName=boot-demo1-567fd5fb86-c4j65&containerName=boot-demo1");
+
+        // socket = new WebSocket("ws://localhost:6001z?moduleEnvId=10&podNames=boot-demo2-d5bf46d8f-zdz45,boot-demo2-d5bf46d8f-8b6rt&moduleId=31&X-token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjA4NDE4MTUsInVzZXJJZCI6IlpKWENBMDAyNyIsInVzZXJuYW1lIjoid3Vqai54YyJ9.wqsYUZYt7S5omGH-YuUVdB8yf-Qffn44eNck7dI8pSk");
+
+        // socket = new WebSocket("ws://134.108.3.220:30601/websocket/jenkins/runJob/");
+        // socket = new WebSocket("ws://127.0.0.1:6001/websocket/jenkins/runJob");
+
+        socket = new WebSocket("ws://localhost:6001/websocket/k8s/dump/java/logs?moduleEnvId=10&podNames=boot-demo2-77cfcd6bbf-cbclf&moduleId=12&X-token=323456");
+
+        // socket = new WebSocket("ws://134.108.3.223:6001/test/test");
+        // socket = new WebSocket("ws://134.108.3.222:8093/websocket/k8s/10/boot-demo1-754956f884-g4wzc/boot-demo1");
+        // socket = new WebSocket("ws://127.0.0.1:6001/websocket/jenkins?moduleId=3&envId=2545das");
+        //打开事件
+        socket.onopen = function () {
+            console.log("Socket 已打开");
+            //socket.send("这是来自客户端的消息" + location.href + new Date());
+        };
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            var div = document.createElement("div");
+            div.innerHTML = msg.data;
+            //发现消息进入开始处理前端触发逻辑
+            parent.appendChild(div)
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("Socket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            alert("Socket发生了错误");
+            //此时可以尝试刷新页面
+        }
+    }
+
+    function k8ssendMessage() {
+        socket.send("[27,28,30]")
+    }
+
+    function k8sdisconnect() {
+        console.log("关闭websocket连接")
+        socket.close()
+    }
+
+    function jenkinsconnect() {
+        var jobName = document.getElementById("jobName").value;
+
+        socket = new WebSocket("ws://192.168.132.138:8091/websocket/" + jobName);
+        //打开事件
+        socket.onopen = function () {
+            console.log("Socket 已打开");
+            //socket.send("这是来自客户端的消息" + location.href + new Date());
+        };
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            var div = document.createElement("div");
+            div.innerHTML = msg.data;
+            //发现消息进入开始处理前端触发逻辑
+            parent2.appendChild(div)
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("Socket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            alert("Socket发生了错误");
+            //此时可以尝试刷新页面
+        }
+    }
+
+    function jenkinssendMessage() {
+        socket.send("testtest 你看看看看啊")
+    }
+
+    function jenkinsdisconnect() {
+        console.log("关闭websocket连接")
+        socket.close()
+    }
+
+    function runjob() {
+        var jobId = document.getElementById("jobId").value;
+        socket = new WebSocket("ws://localhost:8091/websocket/jenkins/37/1");
+        // socket = new WebSocket("ws://134.96.231.129:30893/websocket/runJob/");
+        //打开事件
+        socket.onopen = function () {
+            console.log("Socket 已打开");
+            //socket.send("这是来自客户端的消息" + location.href + new Date());
+        };
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            var div = document.createElement("div");
+            div.innerHTML = msg.data;
+            //发现消息进入开始处理前端触发逻辑
+            parent3.appendChild(div)
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("Socket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            alert("Socket发生了错误");
+            //此时可以尝试刷新页面
+        }
+    }
+
+    function jobSendMessage() {
+        socket.send("[3,4,6,8]")
+    }
+
+</script>
+</html>

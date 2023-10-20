@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.PModuleUserMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.PModuleUser">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="is_superuser" property="isSuperuser" jdbcType="BIT"/>
+        <result column="first_name" property="firstName" jdbcType="VARCHAR"/>
+        <result column="last_name" property="lastName" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="is_active" property="isActive" jdbcType="VARCHAR"/>
+        <result column="QQ" property="qq" jdbcType="VARCHAR"/>
+        <result column="wxcode" property="wxcode" jdbcType="VARCHAR"/>
+        <result column="cname" property="cname" jdbcType="VARCHAR"/>
+        <result column="is_staff" property="isStaff" jdbcType="BIT"/>
+        <result column="date_joined" property="dateJoined" jdbcType="TIMESTAMP"/>
+        <result column="llevel" property="llevel" jdbcType="INTEGER"/>
+        <result column="last_login" property="lastLogin" jdbcType="TIMESTAMP"/>
+        <result column="depid_id" property="depidId" jdbcType="VARCHAR"/>
+        <result column="puser_id" property="puserId" jdbcType="VARCHAR"/>
+        <result column="orgdtype" property="orgdtype" jdbcType="INTEGER"/>
+        <result column="trx" property="trx" jdbcType="INTEGER"/>
+        <result column="clocktime" property="clocktime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="user_permission_info" property="userPermissionInfo" jdbcType="LONGVARCHAR"/>
+        <result column="remark" property="remark" jdbcType="LONGVARCHAR"/>
+        <result column="login_err_count" property="loginErrCount" jdbcType="INTEGER"/>
+        <result column="is_locked" property="isLocked" jdbcType="INTEGER"/>
+        <result column="last_login_err_time" property="lastLoginErrTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , user_id, username, password, nickname, is_superuser, first_name, last_name, email,
+    mobile, is_active, QQ, wxcode, cname, is_staff, date_joined, llevel, last_login,
+    depid_id, puser_id, orgdtype, trx, clocktime, create_time, update_time, is_locked, login_err_count,
+    last_login_err_time
+    </sql>
+    <sql id="Blob_Column_List">
+        user_permission_info
+        , remark
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from module_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.PModuleUser">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into module_user (id,user_id, username, password,
+        nickname, is_superuser, first_name,
+        last_name, email, mobile,
+        is_active, QQ, wxcode,
+        cname, is_staff, date_joined,
+        llevel, last_login, depid_id,
+        puser_id, orgdtype, trx,
+        clocktime, create_time, update_time,
+        user_permission_info, remark)
+        values (#{id,jdbcType=INTEGER},#{userId,jdbcType=VARCHAR},
+        #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        #{nickname,jdbcType=VARCHAR}, #{isSuperuser,jdbcType=BIT}, #{firstName,jdbcType=VARCHAR},
+        #{lastName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+        #{isActive,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{wxcode,jdbcType=VARCHAR},
+        #{cname,jdbcType=VARCHAR}, #{isStaff,jdbcType=BIT}, #{dateJoined,jdbcType=TIMESTAMP},
+        #{llevel,jdbcType=INTEGER}, #{lastLogin,jdbcType=TIMESTAMP}, #{depidId,jdbcType=VARCHAR},
+        #{puserId,jdbcType=VARCHAR}, #{orgdtype,jdbcType=INTEGER}, #{trx,jdbcType=INTEGER},
+        #{clocktime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+        #{userPermissionInfo,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.PModuleUser">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into module_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="nickname != null">
+                nickname,
+            </if>
+            <if test="isSuperuser != null">
+                is_superuser,
+            </if>
+            <if test="firstName != null">
+                first_name,
+            </if>
+            <if test="lastName != null">
+                last_name,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="isActive != null">
+                is_active,
+            </if>
+            <if test="qq != null">
+                QQ,
+            </if>
+            <if test="wxcode != null">
+                wxcode,
+            </if>
+            <if test="cname != null">
+                cname,
+            </if>
+            <if test="isStaff != null">
+                is_staff,
+            </if>
+            <if test="dateJoined != null">
+                date_joined,
+            </if>
+            <if test="llevel != null">
+                llevel,
+            </if>
+            <if test="lastLogin != null">
+                last_login,
+            </if>
+            <if test="depidId != null">
+                depid_id,
+            </if>
+            <if test="puserId != null">
+                puser_id,
+            </if>
+            <if test="orgdtype != null">
+                orgdtype,
+            </if>
+            <if test="trx != null">
+                trx,
+            </if>
+            <if test="clocktime != null">
+                clocktime,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="userPermissionInfo != null">
+                user_permission_info,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="isSuperuser != null">
+                #{isSuperuser,jdbcType=BIT},
+            </if>
+            <if test="firstName != null">
+                #{firstName,jdbcType=VARCHAR},
+            </if>
+            <if test="lastName != null">
+                #{lastName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="isActive != null">
+                #{isActive,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="wxcode != null">
+                #{wxcode,jdbcType=VARCHAR},
+            </if>
+            <if test="cname != null">
+                #{cname,jdbcType=VARCHAR},
+            </if>
+            <if test="isStaff != null">
+                #{isStaff,jdbcType=BIT},
+            </if>
+            <if test="dateJoined != null">
+                #{dateJoined,jdbcType=TIMESTAMP},
+            </if>
+            <if test="llevel != null">
+                #{llevel,jdbcType=INTEGER},
+            </if>
+            <if test="lastLogin != null">
+                #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="depidId != null">
+                #{depidId,jdbcType=VARCHAR},
+            </if>
+            <if test="puserId != null">
+                #{puserId,jdbcType=VARCHAR},
+            </if>
+            <if test="orgdtype != null">
+                #{orgdtype,jdbcType=INTEGER},
+            </if>
+            <if test="trx != null">
+                #{trx,jdbcType=INTEGER},
+            </if>
+            <if test="clocktime != null">
+                #{clocktime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userPermissionInfo != null">
+                #{userPermissionInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.PModuleUser">
+        update module_user
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="isSuperuser != null">
+                is_superuser = #{isSuperuser,jdbcType=BIT},
+            </if>
+            <if test="firstName != null">
+                first_name = #{firstName,jdbcType=VARCHAR},
+            </if>
+            <if test="lastName != null">
+                last_name = #{lastName,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="isActive != null">
+                is_active = #{isActive,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                QQ = #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="wxcode != null">
+                wxcode = #{wxcode,jdbcType=VARCHAR},
+            </if>
+            <if test="cname != null">
+                cname = #{cname,jdbcType=VARCHAR},
+            </if>
+            <if test="isStaff != null">
+                is_staff = #{isStaff,jdbcType=BIT},
+            </if>
+            <if test="dateJoined != null">
+                date_joined = #{dateJoined,jdbcType=TIMESTAMP},
+            </if>
+            <if test="llevel != null">
+                llevel = #{llevel,jdbcType=INTEGER},
+            </if>
+            <if test="lastLogin != null">
+                last_login = #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="depidId != null">
+                depid_id = #{depidId,jdbcType=VARCHAR},
+            </if>
+            <if test="puserId != null">
+                puser_id = #{puserId,jdbcType=VARCHAR},
+            </if>
+            <if test="orgdtype != null">
+                orgdtype = #{orgdtype,jdbcType=INTEGER},
+            </if>
+            <if test="trx != null">
+                trx = #{trx,jdbcType=INTEGER},
+            </if>
+            <if test="clocktime != null">
+                clocktime = #{clocktime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userPermissionInfo != null">
+                user_permission_info = #{userPermissionInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isLocked != null">
+                is_locked = #{isLocked,jdbcType=INTEGER},
+            </if>
+            <if test="loginErrCount != null">
+                login_err_count = #{loginErrCount,jdbcType=INTEGER},
+            </if>
+            <if test="lastLoginErrTime != null">
+                last_login_err_time = #{lastLoginErrTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xc.fast_deploy.model.master_model.PModuleUser">
+        update module_user
+        set user_id              = #{userId,jdbcType=VARCHAR},
+            username             = #{username,jdbcType=VARCHAR},
+            password             = #{password,jdbcType=VARCHAR},
+            nickname             = #{nickname,jdbcType=VARCHAR},
+            is_superuser         = #{isSuperuser,jdbcType=BIT},
+            first_name           = #{firstName,jdbcType=VARCHAR},
+            last_name            = #{lastName,jdbcType=VARCHAR},
+            email                = #{email,jdbcType=VARCHAR},
+            mobile               = #{mobile,jdbcType=VARCHAR},
+            is_active            = #{isActive,jdbcType=VARCHAR},
+            QQ                   = #{qq,jdbcType=VARCHAR},
+            wxcode               = #{wxcode,jdbcType=VARCHAR},
+            cname                = #{cname,jdbcType=VARCHAR},
+            is_staff             = #{isStaff,jdbcType=BIT},
+            date_joined          = #{dateJoined,jdbcType=TIMESTAMP},
+            llevel               = #{llevel,jdbcType=INTEGER},
+            last_login           = #{lastLogin,jdbcType=TIMESTAMP},
+            depid_id             = #{depidId,jdbcType=VARCHAR},
+            puser_id             = #{puserId,jdbcType=VARCHAR},
+            orgdtype             = #{orgdtype,jdbcType=INTEGER},
+            trx                  = #{trx,jdbcType=INTEGER},
+            clocktime            = #{clocktime,jdbcType=TIMESTAMP},
+            create_time          = #{createTime,jdbcType=TIMESTAMP},
+            update_time          = #{updateTime,jdbcType=TIMESTAMP},
+            user_permission_info = #{userPermissionInfo,jdbcType=LONGVARCHAR},
+            remark               = #{remark,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.PModuleUser">
+        update module_user
+        set user_id      = #{userId,jdbcType=VARCHAR},
+            username     = #{username,jdbcType=VARCHAR},
+            password     = #{password,jdbcType=VARCHAR},
+            nickname     = #{nickname,jdbcType=VARCHAR},
+            is_superuser = #{isSuperuser,jdbcType=BIT},
+            first_name   = #{firstName,jdbcType=VARCHAR},
+            last_name    = #{lastName,jdbcType=VARCHAR},
+            email        = #{email,jdbcType=VARCHAR},
+            mobile       = #{mobile,jdbcType=VARCHAR},
+            is_active    = #{isActive,jdbcType=VARCHAR},
+            QQ           = #{qq,jdbcType=VARCHAR},
+            wxcode       = #{wxcode,jdbcType=VARCHAR},
+            cname        = #{cname,jdbcType=VARCHAR},
+            is_staff     = #{isStaff,jdbcType=BIT},
+            date_joined  = #{dateJoined,jdbcType=TIMESTAMP},
+            llevel       = #{llevel,jdbcType=INTEGER},
+            last_login   = #{lastLogin,jdbcType=TIMESTAMP},
+            depid_id     = #{depidId,jdbcType=VARCHAR},
+            puser_id     = #{puserId,jdbcType=VARCHAR},
+            orgdtype     = #{orgdtype,jdbcType=INTEGER},
+            trx          = #{trx,jdbcType=INTEGER},
+            clocktime    = #{clocktime,jdbcType=TIMESTAMP},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            update_time  = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByUserNameAndCname" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_user
+        WHERE username = #{username,jdbcType=VARCHAR}
+
+
+        <if test="cname != null and cname != ''">
+            or cname = #{cname,jdbcType=INTEGER}
+        </if>
+
+    </select>
+    <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_user
+        WHERE username = #{username,jdbcType=VARCHAR}
+        or cname = #{username,jdbcType=VARCHAR}
+
+
+    </select>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_user
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPermissionByUserName"
+            resultType="com.xc.fast_deploy.dto.module.permission.ModulePermissionDTO">
+        SELECT a.user_id  AS userId,
+               b.env_name AS envName,
+               b.id       AS envId,
+               a.username AS username,
+               b.is_prod  AS isProd,
+               c.action AS action,c.role_name AS roleName,
+        c.action_name AS actionName
+        FROM
+            (
+            SELECT a.id, a.user_id, b.role_id, b.env_id, a.username
+            FROM module_user a, module_user_role b, module_role c
+            WHERE a.id = b.user_id
+            AND b.role_id = c.id
+            ) a, module_env b, (
+            SELECT a.id, a.role_name, e.action_name, e.action
+            FROM module_role a, module_role_base_perm b, module_base_permission c, module_base_perm_list d, module_permission e
+            WHERE a.id = b.role_id
+            AND c.id = b.base_per_id
+            AND c.id = d.base_per_id
+            AND e.id = d.permission_id
+            ) c
+        WHERE a.role_id = c.id
+          AND a.env_id = b.id
+          AND a.username = #{username,jdbcType=VARCHAR}
+          AND b.is_prod = #{isProd,jdbcType=INTEGER};
+    </select>
+
+    <select id="selectRoleBindUser"
+            resultType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleVo">
+        SELECT user_id AS userId,role_id AS roleId,env_id AS envId
+        FROM module_user_role
+        WHERE user_id = #{userId,jdbcType=INTEGER}
+        AND role_id = #{roleId,jdbcType=INTEGER}
+        <if test="envId != null">
+            and env_id = #{envId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="selectUserRoleBind"
+            parameterType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleVo"
+            resultType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleVo">
+        SELECT user_id AS userId,role_id AS roleId,env_id AS envId
+        FROM module_user_role
+        <where>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null">
+                and env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="centerId != null">
+                and center_id = #{centerId,jdbcType=INTEGER}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insertUserRoleEnvBatch" parameterType="java.util.List">
+        insert into module_user_role
+        (user_id,env_id,center_id,role_id)
+        values
+        <foreach collection="list" item="userRoleEnv" index="index" separator=",">
+            (#{userRoleEnv.userId,jdbcType=INTEGER},
+            #{userRoleEnv.envId,jdbcType=INTEGER},
+            #{userRoleEnv.centerId,jdbcType=INTEGER},
+            #{userRoleEnv.roleId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <select id="selectUserEnvRoleVoPageByVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleParamVo"
+            resultType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleDto">
+        select f.username AS username,f.cname AS cname,f.role_name AS roleName,b.env_name AS envName,
+        (CASE WHEN ISNULL(a.center_id) then '全中心' else GROUP_CONCAT(c.child_center_name) end) AS centerNames,
+        a.user_id AS userId,a.role_id AS roleId,b.id AS envId,a.id AS userRoleBindId
+        from module_user_role a,module_env b,module_center c,
+        (select a.user_id,a.role_id,b.username,c.role_name,b.cname
+        from module_user_role a,module_user b,module_role c
+        where a.user_id = b.id
+        and c.id = a.role_id
+        group by a.user_id,a.role_id) f
+        <where>
+            a.env_id = b.id
+            and a.user_id = f.user_id
+            and a.role_id = f.role_id
+            and (a.center_id = c.id or ISNULL(a.center_id))
+            <if test="keyName != null and keyName != ''">
+                AND (f.username LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR f.role_name LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR f.cname LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="userId != null">
+                AND a.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="roleId != null">
+                AND a.role_id = #{roleId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null">
+                AND b.id = #{envId,jdbcType=INTEGER}
+            </if>
+        </where>
+        group by a.user_id,a.role_id,a.env_id
+    </select>
+
+    <select id="selectUserEnvRolePageByVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleParamVo"
+            resultType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleDto">
+        select f.username AS username,f.cname AS cname,e.role_name AS roleName,
+        b.env_name AS envNames,
+        a.user_id AS userId,a.role_id AS roleId,b.id AS envIds,a.id AS userRoleBindId,
+        a.center_id AS centerId
+        from module_user_role a,module_env b,module_role e,module_user f
+        <where>
+            a.env_id = b.id
+            and a.user_id = f.id
+            and a.role_id = e.id
+            <if test="keyName != null and keyName != ''">
+                AND (f.username LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR e.role_name LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR f.cname LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="userId != null">
+                AND a.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="roleId != null">
+                AND a.role_id = #{roleId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null">
+                AND b.id = #{envId,jdbcType=INTEGER}
+            </if>
+        </where>
+        group by userRoleBindId
+    </select>
+
+    <select id="selectUserRoleBindInfoById"
+            parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleVo">
+        SELECT user_id AS userId, role_id AS roleId, env_id AS envId, center_id AS centerId
+        FROM module_user_role
+        WHERE id = #{userRoleBindId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteUserRoleDataByEnvRoleVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.permission.ModuleUserEnvRoleVo">
+        DELETE FROM module_user_role
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="roleId != null">
+                AND role_id = #{roleId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null">
+                AND env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="centerId != null">
+                AND center_id = #{centerId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </delete>
+
+    <select id="selectUserPageByVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.param.PModuleUserSelectParamVo"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        FROM module_user a
+        <where>
+            <if test="keyName != null and keyName != ''">
+                AND (username LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR cname LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%')
+                OR nickname LIKE concat('%',#{keyName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="isActive != null">
+                and is_active = #{isActive,jdbcType=INTEGER}
+            </if>
+            <if test="depId != null">
+                and depid_id = #{depId,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND update_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND update_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAllUserInfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        FROM module_user a
+    </select>
+
+    <select id="selectPermissionByUserId"
+            resultType="com.xc.fast_deploy.dto.module.permission.ModulePermissionDTO">
+        SELECT DISTINCT a.user_id  AS userId,
+                        b.env_name AS envName,
+                        b.id       AS envId,
+                        a.username AS username,
+                        b.is_prod  AS isProd,
+                        c.action AS action,c.role_name AS roleName,
+        c.action_name AS actionName
+        FROM
+            (
+            SELECT a.id, a.user_id, b.role_id, b.env_id, a.username
+            FROM module_user a, module_user_role b, module_role c
+            WHERE a.id = b.user_id
+            AND b.role_id = c.id
+            ) a, module_env b, (
+            SELECT a.id, a.role_name, e.action_name, e.action
+            FROM module_role a, module_role_base_perm b, module_base_permission c, module_base_perm_list d, module_permission e
+            WHERE a.id = b.role_id
+            AND c.id = b.base_per_id
+            AND c.id = d.base_per_id
+            AND e.id = d.permission_id
+            ) c
+        WHERE a.role_id = c.id
+          AND a.env_id = b.id
+          AND a.user_id = #{userId,jdbcType=VARCHAR}
+          AND b.is_prod = #{isProd,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectLastOne" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_user a order by id desc limit 1
+    </select>
+
+    <select id="selectUserIdAllCenters" resultType="java.lang.Integer">
+        SELECT center_id as centerIds
+        from module_user_role a,module_user b
+        WHERE a.user_id = b.id
+        AND b.user_id = #{userId,jdbcType=VARCHAR}
+        <if test="envId != null">
+            AND a.env_id = #{envId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="selectUserAllCentersById" resultType="java.lang.Integer">
+        SELECT center_id as centerIds
+        from module_user_role
+        WHERE user_id = #{userId,jdbcType=INTEGER}
+          AND env_id = #{envId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteUserRoleBind" parameterType="java.util.Set">
+        delete from module_user_role
+        where id in
+        <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+
+    <select id="selectApproverEnvByUsername" resultType="java.lang.Integer">
+        SELECT env_id as centerIds
+        from module_user_role a,
+             module_user b
+        WHERE a.user_id = b.id
+          and b.username = #{username,jdbcType=VARCHAR}
+          AND a.role_id = 7
+    </select>
+</mapper>

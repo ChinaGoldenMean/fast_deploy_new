@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.PModuleBasePermissionMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.PModuleBasePermission">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="base_per_name" property="basePerName" jdbcType="VARCHAR"/>
+        <result column="base_per_code" property="basePerCode" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+
+        id
+        , base_per_name, base_per_code, remark, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_base_permission
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_base_permission
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.PModuleBasePermission">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into module_base_permission (id,base_per_name, base_per_code, remark,
+        create_time, update_time)
+        values (#{id,jdbcType=INTEGER},#{basePerName,jdbcType=VARCHAR},
+        #{basePerCode,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.PModuleBasePermission">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into module_base_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="basePerName != null">
+                base_per_name,
+            </if>
+            <if test="basePerCode != null">
+                base_per_code,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="basePerName != null">
+                #{basePerName,jdbcType=VARCHAR},
+            </if>
+            <if test="basePerCode != null">
+                #{basePerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.xc.fast_deploy.model.master_model.PModuleBasePermission">
+        update module_base_permission
+        <set>
+            <if test="basePerName != null">
+                base_per_name = #{basePerName,jdbcType=VARCHAR},
+            </if>
+            <if test="basePerCode != null">
+                base_per_code = #{basePerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.PModuleBasePermission">
+        update module_base_permission
+        set base_per_name = #{basePerName,jdbcType=VARCHAR},
+            base_per_code = #{basePerCode,jdbcType=VARCHAR},
+            remark        = #{remark,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            update_time   = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_base_permission
+        <if test="keyName != null and keyName != ''">
+            where
+            base_per_name like concat('%',#{keyName,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
+
+    <select id="selectPerListById"
+            parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.model.master_model.PModulePermission">
+        SELECT c.id AS id,
+               c.action AS action,c.action_name AS actionName,c.url AS url,
+        c.create_time AS createTime,c.update_time AS updateTime
+        FROM module_base_permission a, module_base_perm_list b, module_permission c
+        WHERE a.id = b.base_per_id
+          AND b.permission_id = c.id
+          AND a.id = #{basePermissionId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteBindPermById" parameterType="java.lang.Integer">
+        DELETE
+        FROM module_base_perm_list
+        WHERE base_per_id = #{basePermissionId,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertBatchBindBasePerm" parameterType="java.util.List">
+        insert into module_base_perm_list
+        (permission_id,base_per_id)
+        values
+        <foreach collection="list" item="bindBasePerm" index="index" separator=",">
+            (#{bindBasePerm.permissionId,jdbcType=INTEGER},
+            #{bindBasePerm.basePermId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBindPermByPermId" parameterType="java.lang.Integer">
+        DELETE
+        FROM module_base_perm_list
+        WHERE permission_id = #{permissionId,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteBindPermByPermIds" parameterType="java.lang.Integer">
+        DELETE FROM module_base_perm_list
+        WHERE permission_id
+        IN
+        <foreach collection="collection" index="index" item="permId" open="(" separator="," close=")">
+            #{permId,jdbcType=INTEGER}
+        </foreach>
+    </delete>
+
+    <select id="selectIds" resultType="java.lang.Integer"
+            parameterType="java.util.Set">
+        select id
+        from module_base_permission p
+        <if test="collection != null and collection.size > 0">
+            WHERE p.id
+            IN
+            <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+</mapper>

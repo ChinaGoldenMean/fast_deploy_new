@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+    <meta charset="utf-8">
+    <title>一键发布平台登录</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
+    <script type="text/javascript" src="../static/js/jquery1.9.js"></script>
+</head>
+<body>
+<div class="main">
+    <div class="mainin">
+        <h1 style="font-size: 20px">一键发布平台登录</h1>
+        <div class="mainin1">
+            <ul>
+                <li><span>用户名：</span><input name="username" type="text"
+                                               id="loginName" placeholder="登录名" class="SearchKeyword"></li>
+                <li><span>密码：</span><input type="password" name="Possword"
+                                             id="pwd" placeholder="密码" class="SearchKeyword2"></li>
+                <li>
+                    <button class="tijiao" onclick="puc()">登录</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <img src="../static/img/loading.gif" id="loading" style=" display:none;position:absolute;"/>
+    <div id="POPLoading" class="cssPOPLoading">
+        <div style=" height:110px; border-bottom:1px solid #9a9a9a">
+            <div class="showMessge"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function puc() {
+        var username = document.getElementById("loginName").value;
+        var password = document.getElementById("pwd").value;
+        $.ajax({
+            url: '/pUser/pLogin',//地址
+            dataType: 'json',//数据类型
+            type: 'POST',//类型
+            data: {"username": username, "password": password},
+            timeout: 2000,//超时
+            //请求成功
+            success: function (data, status) {
+                if (data.code == 200) {
+                    document.location.href = '/index';
+                } else {
+                    alert(data.msg);
+                }
+                //document.location.href = '/index';
+            },
+            //失败/超时
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == 'timeout') {
+                    alert('請求超時');
+                    setTimeout(function () {
+                        alert('重新请求');
+                    }, 2000);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>xtermjs</title>
+    <link rel="stylesheet" href="../static/xterm.css"/>
+    <script type="application/javascript" src="../static/xterm.js"></script>
+    <script type="application/javascript" src="../static/attach.js"></script>
+</head>
+<body>
+<div style="width:800px;" id="xterm"></div>
+<script type="application/javascript">
+    var term = new Terminal({
+        cursorBlink: false,
+        cols: 100,
+        rows: 30
+    });
+    term.open(document.getElementById('xterm'));
+    // var socket = new WebSocket('ws://localhost:6001/websocket/k8s/exec/pod/container?podName=boot-demo1-58f5d88db7-nnkb4&contanerName=boot-demo1');
+    var socket = new WebSocket('ws://localhost:6001/websocket/k8s/exec/pod/container?moduleEnvId=10&podName=boot-demo1-58f5d88db7-nnkb4&containerName=boot-demo1&X-token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjUwMDU5NjQsInVzZXJJZCI6IlpKWENBMDAyNiIsInVzZXJuYW1lIjoibGl1emhpIn0.poIxfBH9ZJ5K35AQFGfX6FKKe-xcDWZ40hdJv6sdBJ4\n');
+    term.attach(socket);
+    term.focus();
+</script>
+</body>
+</html>

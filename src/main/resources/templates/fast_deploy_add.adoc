@@ -1,0 +1,5937 @@
+= 一键发布 接口文档
+浙江省公众信息产业有限公司
+v0.5.6,2019-03-11
+:doctype: book
+:encoding: utf-8
+:lang: zh-CN
+:toc: left
+:toclevels: 4
+
+==== /module/insert 模块添加
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleName | String | 模块名称 | true
+| moduleContentName | String |模块目录名称| true
+| moduleType | String |模块类型 0: svn源码类型 1: 程序包类型 2: git源码类型| true
+| centerId | String | 模块中心的id 必须是数字 | true
+| chargePerson | String | 应用负责人 | true
+| chargeTelephone | String | 应用负责联系电话 | true
+| officalChargePerson | String | 局方负责人 | true
+| officalChargeTelephone | String | 局方负责联系电话 | true   
+| moduleProjectCode | String | projectCode | true
+| envId | String | 环境的id 必须是数字 | true
+| certificateId | String | svn凭证id 必须是数字 | false
+| codeUpType | String | 源码载入类型 0: 模板文件上传 1: 文本框填入| false
+| svnExcelFile | File | svn excel模板上传名称 | false
+| programPackages | File数组 | 程序包数组 | false
+| packageList | ModulePackageParamVo | 模块svn页面填入时的一个packageVo集合 | false
+| contentName | String | 源码Url对应的存储目录名| false
+| codeUrl | String |源码的url路径| false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "添加成功",
+  "msg": "请求成功"
+}
+----
+==== /module/pageAll 模块查询
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleName | String | 模块名称模糊查询 | fasle
+| centerId | int | 中心id | false
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型 | false
+| userId | int | 用户Id | false
+| envId | int | 环境id | false
+|beginTime| String| 开始时间 格式: 2019-03-14 12:00:00|false
+|endTime |String | 截止时间 格式: 2019-03-14 12:00:00 | false
+| pageNum | int | 当前页数 默认 1 | false
+| pageSize | int | 每页数据量 默认10 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但查询失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| pageNum | int | 当前页数  
+| pageSize | int | 每页数据量  
+| pages | int | 总页数 
+| total | int | 总数据量  
+| centerId | int | 中心id  
+| centerName | String | 中心名称 
+| childCenterName | String | 子中心名称 
+| chargePerson | String | 负责人 
+| mark | String | 环境名称
+| envId | int | 环境id
+| createTime | String | 创建时间
+| moduleContentName | String | 模块目录名称 
+| moduleName | String | 模块名称 
+| moduleId | int | 模块id 
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型 2: git源码类型
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": {
+    "list": [
+      {
+        "centerId": 12,
+        "centerName": "测试中心",
+        "childCenterName": "zi测试中心",
+        "chargePerson": "jellf2009",
+        "createTime": "2019-05-15 16:38:11",
+        "envId": 1,
+        "mark": "PAAS_MSIT",
+        "moduleContentName": "testModuleName10",
+        "moduleId": 15,
+        "moduleName": "testModule222",
+        "moduleProjectCode": "project_code",
+        "moduleType": 0
+      }
+    ],
+    "pageNum": 1,
+    "pageSize": 10,
+    "pages": 1,
+    "total": 2
+  },
+  "msg": "请求成功"
+}
+----
+
+==== /module/downloadFile 模块添加excel模板下载
+直接访问即可下载模板文件
+
+
+==== /module/getOne 获取模块信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块名称 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| centerId| int | 中心id
+| centerCode| String | 中心code
+| moduleId| int | 模块id
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型
+| certificateId| int | 凭证id,根据moduleType决定是否返回
+| moduleContentName| String | 模块目录名称
+| moduleName| String | 模块名称
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": {
+    "centerId": 2,
+    "certificateId": 2,
+    "moduleContentName": "bss_data",
+    "moduleId": 2,
+    "moduleName": "业务查询模块",
+    "moduleType": 1
+  },
+  "msg": "请求成功"
+}
+----
+==== /module/updateInfo 更新模块信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+| svnExcelFile | File | svn excel模板上传名称 | false
+| programPackages | File数组 | 程序包数组 | false
+| moduleName | String | 模块名称 | true
+| moduleContentName | String |模块目录名称(不可更改)| true
+| moduleType | String |模块类型 0: svn源码类型 1: 程序包类型| true
+| centerId | String | 模块中心的id 必须是数字 | true
+| certificateId | String | svn凭证id 必须是数字 | false
+| svnUpType | String | svn源码载入类型 0: 模板文件上传 1: 文本框填入| false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但更新失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "更新成功",
+  "msg": "请求成功"
+}
+----
+==== /module/deleteModule 删除模块信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但删除失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "删除成功",
+  "msg": "请求成功"
+}
+----
+==== /module/package/getByModuleId 获取模块信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块名称 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| id| int | package的id
+| moduleId| int | 模块id
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型
+| packagePathName| String | 文件地址
+| createTime| String | 创建时间
+| codeUrl| String | codeUrl地址
+| contentName| String | 源码地址对应的目录名称
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": [
+    {
+            "codeReversion": "-1",
+            "codeUrl": "https://134.96.231.52:8002/svn/smt-bss-project/smt-bss-core/trunk/",
+            "contentName": "smt-bss-core",
+            "createTime": "2019-06-06 14:12:41",
+            "id": 105,
+            "moduleContentName": "comtetn",
+            "moduleId": 45,
+            "moduleName": "mdouel_345",
+            "moduleProjectCode": "project-code",
+            "moduleType": 0,
+            "packagePathName": "pstr9/center234/comtetn/smt-bss-core"
+        },
+        {
+            "codeReversion": "-1",
+            "codeUrl": "https://134.96.231.52:8002/svn/smt-bss-project/smt-bss-data-core/trunk/",
+            "contentName": "smt-bss-data-core",
+            "createTime": "2019-06-06 14:12:42",
+            "id": 106,
+            "moduleContentName": "comtetn",
+            "moduleId": 45,
+            "moduleName": "mdouel_345",
+            "moduleProjectCode": "project-code",
+            "moduleType": 0,
+            "packagePathName": "pstr9/center234/comtetn/smt-bss-data-core"
+        }
+  ],
+  "msg": "请求成功"
+}
+----
+==== /module/package/insertPackageInfo 添加一个package信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+| programFile | file | 程序包文件 | false
+| contentName | String | svn地址对应目录名 | false
+| codeUrl | String | codeUrl地址 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "添加成功",
+  "msg": "请求成功"
+}
+----
+==== /module/package/delPackageInfo 删除一个package信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| packageId | int | package的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并删除成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "删除成功",
+  "msg": "请求成功"
+}
+----
+==== /module/package/updatePackageInfo 更新一个package信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| packageId | int | package的id | true
+| codeUrl | String | codeUrl地址 | true
+| contentName | String | codeUrl对应的地址名 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并更新成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "更新成功",
+  "msg": "请求成功"
+}
+----
+==== /module/package/getCodeLogInfo 获取源码Url地址对应的log信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| packageId | int | package的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果vo
+| author | String | svn提交人员
+| commitLog | String | svn提交备注
+| opDate | String | 提交时间
+| reversion | int | 提交版本号
+| changeContent | list | 具体更改目录数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "author": "jellf",
+            "changeContent": [
+                "/app/slow--A /app/slow"
+            ],
+            "commitLog": "slow 3",
+            "opDate": "2019-01-29 15:23:12",
+            "reversion": 9
+        },
+        {
+            "author": "admin",
+            "changeContent": [
+                "/app/a.txt--A /app/a.txt"
+            ],
+            "commitLog": "a commit",
+            "opDate": "2019-01-29 17:02:07",
+            "reversion": 10
+        },
+        {
+            "author": "admin",
+            "changeContent": [
+                "/app/slow/snb--A /app/slow/snb",
+                "/app/slow/snb/oneforall.txt--A/app/slow/snb/oneforall.txt"
+            ],
+            "commitLog": "go add some",
+            "opDate": "2019-02-19 16:47:36",
+            "reversion": 12
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+==== /module/getFoldersByModuleId 获取模块目录文件树形结构信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块名称 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| absolutePath| String | 目录的绝对路径名
+| children| vo | 目录的子目录结构
+| dir| boolean | 是否是文件夹 true 是 false 否
+| name| String | 文件夹名称\文件名称
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": {
+    "absolutePath": "F:\\storge\\center_code2\\testModuleName6",
+    "children": [
+      {
+        "absolutePath": "F:\\storge\\center_code2\\testModuleName6\\third",
+        "children": [
+          {
+            "absolutePath": "F:\\storge\\center_code2\\testModuleName6\\third\\hello.txt",
+            "dir": false,
+            "name": "hello.txt"
+          }
+        ],
+        "dir": true,
+        "name": "third"
+      }
+    ],
+    "dir": true,
+    "name": "testModuleName6"
+  },
+  "msg": "请求成功"
+}
+----
+==== /moduleJob/insertJob 添加一个job内容
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobName | String | 该条job的名称 | true
+| crontabExpression | String | 定时执行表达式 | false
+| centerId | int | 中心id | true
+| moduleId | int | 模块id | true
+| envId | int | 环境id | true
+| compileType | int | 编译类型 0 命令行编译 1 编译脚本上传 | true 
+| compileCommand | String | 编译命令 | false
+| compilerFile | file | 编译文件 | false
+| dockerfileType | int | dockerfile文件类型 0 指定dockerfilePath 1 上传dockerfile文件 | true
+| dockerfile | file | dockerfile文件类型 | false
+| dockerfilePath | String | dockerfile的具体路径Path | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并更新成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "添加job成功",
+  "msg": "请求成功"
+}
+----
+
+==== /center/env/centers 查询某个环境下对应所有中心信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并更新成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<vo> | 返回center信息的集合
+| id | int | center的Id
+| centerName | String | center的name
+| childCenterName | String | 子中心的name
+| centerCode | String | center的code
+| remark | String | 备注
+| isDeleted | int | 是否已经删除 0 否 1 是
+| createTime | String | 创建时间
+| updateTime | String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerCode": "test_code",
+            "centerName": "测试中心",
+            "childCenterName": "子测试中心",
+            "centerPath": "/data2/storge/MSIT1/test_code",
+            "createTime": "2019-05-15 16:33:34",
+            "envId": 1,
+            "id": 12,
+            "isDeleted": 0,
+            "updateTime": "2019-05-15 16:33:34"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /module/getAllModuleByCenterId 根据centerId查询中心下的所有可用模块信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| centerId | int | 中心id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<vo> | 返回结果list集合
+| id| int | 模块的id
+| moduleContentName| String | 模块目录名称
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型
+| moduleName| String | 模块地址
+| centerId| int | 中心id
+| certificateId| int | 凭证id 前提存在的情况下
+| userId| int | 操作添加的用户id 前提存在的情况下
+| createTime| String | 创建时间
+| isDelete| int | 是否已经删除 0 否 1 是
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerId": 2,
+            "certificateId": 2,
+            "createTime": "2019-02-28 14:44:28",
+            "id": 2,
+            "isDelete": 0,
+            "moduleContentName": "bss_data",
+            "moduleName": "业务查询模块",
+            "moduleType": 1,
+            "updateTime": "2019-02-28 14:44:31",
+            "userId": 2
+        },
+        {
+            "centerId": 2,
+            "certificateId": 2,
+            "createTime": "2019-03-28 15:02:22",
+            "id": 16,
+            "isDelete": 0,
+            "moduleContentName": "testModuleName1",
+            "moduleName": "testModule",
+            "moduleType": 0,
+            "updateTime": "2019-03-28 15:02:22"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+==== /user/getUserInfo 获取当前登录的用户的信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| X-token | String | token信息请放在请求头里面来进行访问 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+| id | String| user的id
+|username| String | user的name
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "id": "XVHGFGH345",
+        "username": "wjj.xc"
+    },
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/pageJobAll 获取分页显示的job信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobName | String | 该job的名称 可模糊查询 | fasle
+| moduleName | String  | 模块名称 可模糊查询 | false
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型 | false
+| envId | int | 环境id | false
+| centerId | int | 中心id | false
+| userId | String | 用户id | false
+|beginTime| String| 开始时间 格式: 2019-03-14 12:00:00| false
+|endTime |String | 截止时间 格式: 2019-03-14 12:00:00 | false
+| pageNum | int | 当前页数 默认 1 | false
+| pageSize | int | 每页数据量 默认10 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果信息
+| id | String| user的id
+|centerId| int | 中心的id
+|centerName| String | 中心名称
+|childCenterName| String | 子中心名称
+|envId| int | 环境id
+|envName| String | 环境名称
+|jobId| int | job的id
+|jobName| String | job的名称
+|moduleName| String | 模块的名称
+|moduleId| int | 模块的id
+|moduleType| int | 模块类型 0: svn源码类型 1: 程序包类型
+|status| String | 当前模块状态
+|nextBuildNumber| int | 下次构建版本号
+|createTime| String | 创建时间 格式: 2019-03-14 12:00:00
+|updateTime| String | 更新时间 格式: 2019-03-14 12:00:00
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "centerId": 1,
+                "centerName": "center1",
+                "childCenterName": "childcenter1",
+                "createTime": "2019-04-01 11:21:00",
+                "envId": 1,
+                "envName": "test_1",
+                "jobId": 5,
+                "jobName": "job567",
+                "moduleId": 35,
+                "moduleName": "name1",
+                "moduleType": 1,
+                "nextBuildNumber": 1,
+                "status": "idle",
+                "updateTime": "2019-04-01 11:21:00"
+            },
+            {
+                "centerId": 1,
+                "centerName": "center1",
+                "childCenterName": "childcenter1",
+                "createTime": "2019-04-01 11:19:14",
+                "envId": 1,
+                "envName": "test_1",
+                "jobId": 4,
+                "jobName": "job455790",
+                "moduleId": 35,
+                "moduleName": "name1",
+                "moduleType": 1,
+                "nextBuildNumber": 1,
+                "status": "idle",
+                "updateTime": "2019-04-01 11:19:14"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 5
+    },
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/getOneJob 根据job的id获取job信息用来修改job内容
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果vo数据
+| jobId| int | job的id
+| jobName| String | job的名称
+| moduleId| int | 模块id
+| moduleType | int | 模块类型 0: svn源码类型 1: 程序包类型
+| moduleName| String | 模块地址
+| centerId| int | 中心id
+| crontabExpression| String | crontab表达式
+| centerName| String | 中心名称
+| childCenterName| String | 中心名称
+| envId| int | 环境id
+| envName| String | 环境名称
+| compileFilePath| String | 编译文件地址
+| compileCommand| String | 编译命令
+| dockerfilePath| String | dockerfile文件地址
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "centerId": 1,
+        "centerName": "center1",
+        "childCenterName": "child-center1",
+        "compileFilePath": "F:/storge/code1/module_content_5/svn_module.xlsx201904011120597702890",
+        "dockerfilePath": "F:/storge/code1/module_content_5/一键发布需求概要设计.docx20190401111913492ba3b",
+        "envId": 1,
+        "envName": "test_1",
+        "jobId": 5,
+        "jobName": "job567",
+        "moduleId": 35,
+        "moduleName": "name1",
+        "moduleType": 1
+    },
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/deleteJob 删除一个job信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并删除成功 201 请求成功但获取失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "删除成功",
+  "msg": "请求成功"
+}
+----
+==== /moduleJob/runJob 构建job信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并启动成功 201 请求成功但请求失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "job run success",
+    "msg": "请求成功"
+}
+----
+==== POST /moduleJob/stopJob 终止正在打包的job
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| moduleId | int | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并启动成功 201 请求成功但请求失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "job已取消",
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/getJobDetails 构建job信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并启动成功 201 请求成功但请求失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果信息vo类
+| jobId | int | job的id
+| jobName | String | job的名称
+| buildDetails | list<vo> | build的详情信息
+| IsBuilding | boolean | 是否真正构建当中 false 否 true 是
+| buildDate | String | 构建启动时间
+| buildNumber | int | 构建版本号
+| duration | int | 构建耗时 单位ms
+| result | String | 构建结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "buildDetails": [
+            {
+                "IsBuilding": false,
+                "buildDate": "2019-04-03 14:58:28",
+                "buildNumber": 5,
+                "duration": 1803,
+                "result": "FAILURE"
+            },
+            {
+                "IsBuilding": false,
+                "buildDate": "2019-04-03 14:48:28",
+                "buildNumber": 4,
+                "duration": 2835,
+                "result": "FAILURE"
+            }
+        ],
+        "jobId": 6,
+        "jobName": "job566"
+    },
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/getJobConsoleOutput 构建job信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|buildNumber | int | 构建版本号| true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功 201 请求成功但请求失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果字符串信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "Started by user adminjellf\r\nRunning in Durability level: MAX_SURVIVABILITY\r\n[Pipeline] node\r\nRunning on Jenkins in /app/jenkins_home/workspace/job566\r\n[Pipeline] {\r\n[Pipeline] stage\r\n[Pipeline] { (compile)\r\n[Pipeline] sh\r\n+ cd\r\n+ sh\r\n[Pipeline] }\r\n[Pipeline] // stage\r\n[Pipeline] stage\r\n[Pipeline] { (mirror)\r\n[Pipeline] sh\r\n+ docker rmi\r\n\"docker rmi\" requires at least 1 argument(s).\r\nSee 'docker rmi --help'.\r\n\r\nUsage:  docker rmi [OPTIONS] IMAGE [IMAGE...]\r\n\r\nRemove one or more images\r\n+ cd\r\n+ docker build --no-cache -f . -t\r\nflag needs an argument: 't' in -t\r\nSee 'docker build --help'.\r\n[Pipeline] }\r\n[Pipeline] // stage\r\n[Pipeline] stage\r\n[Pipeline] { (other)\r\nStage \"other\" skipped due to earlier failure(s)\r\n[Pipeline] }\r\n[Pipeline] // stage\r\n[Pipeline] }\r\n[Pipeline] // node\r\n[Pipeline] End of Pipeline\r\nERROR: script returned exit code 125\r\nFinished: FAILURE\r\n",
+    "msg": "请求成功"
+}
+----
+==== /moduleJob/getMirrorByJobId 获取某个job对应生成的成功的镜像信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| jobId | int | job的id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并启动成功 201 请求成功但请求失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List | 返回结果信息集合vo类
+| id | int | 镜像的id
+| jobId | int | job的id
+| isAvailable | int | 是否可用 0 否 1 是
+| jobReversion | int | 构建生成的版本号
+| mirrorName | String | 镜像名称
+| moduleEnvId | int | 环境id
+| moduleId | int | 模块id
+| createTime | String | 创建时间 2019-04-03 14:48:16
+| updateTime | String | 生成时间 2019-04-03 14:48:16
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-04-03 14:48:16",
+            "id": 1,
+            "isAvailable": 1,
+            "jobId": 6,
+            "jobReversion": 4,
+            "mirrorName": "134.96.231.129:8000/code1/module_content_5:2019040314481586273fb",
+            "moduleEnvId": 1,
+            "moduleId": 35,
+            "updateTime": "2019-04-03 14:48:16"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/selectCertAll 查询Certificate表的所有name和username；作为env表单更新添加下拉列表
+.ReqVO说明
+|===
+无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果信息
+| name| String | 返回凭证表的name
+| username| String | 返回凭证表的username
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "id": 1,
+            "name": "jenkins",
+            "username": "admin"
+        },
+        {
+            "id": 2,
+            "name": "svn",
+            "username": "jellf"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/selectPsAll 查询环境模块中paas的envname，作为env表单更新添加下拉列表
+.ReqVO说明
+|===
+无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| envName| String | paas环境的paasname
+| paasId| int | paas环境id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "envName": "PAAS_MSIT",
+            "paasId": 1
+        },
+        {
+            "envName": "测试平台1",
+            "paasId": 2
+        },
+        {
+            "envName": "测试平台2",
+            "paasId": 3
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/insertOneEnv env环境模块添加
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| harborUrl | String |harbor仓库地址| true
+| passId | Int |pass环境id 必须是数字| true
+| k8sConfig | String | kubectl操作所需文件内容 | true
+| certificateId | Int | svn凭证id 必须是数字 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": "环境模块添加成功",
+  "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/selectOne 环境模块单条查询(环境模块更新前置查询)
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所查询数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| id| int | moduleEnv的id
+| username | String |harbor用户名 
+| harborUrl | String |harbor仓库地址
+| paasId | Int |pass环境id 
+| envCode | String |环境的code 
+| envName | String |环境的名称 
+| k8sConfig | String | kubectl操作所需文件内容
+| certificateId | Int | harbor凭证id 
+| certificateName | String | harbor凭证名称
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "certificateId": 4,
+        "certificateName": "harbortest",
+        "envCode": "MSIT",
+        "envName": "PAAS_MSIT",
+        "harborUrl": "134.96.231.129:8000",
+        "k8sConfig": "文件内容",
+        "username": "jellf"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/update 环境模块单条更新
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所更新数据的id | false
+| harborUrl | String |harbor仓库地址| false
+| passId | Int |pass环境id 必须是数字| false
+| k8sConfig | String | kubectl操作所需文件内容 | false
+| certificateId | Int | svn凭证id 必须是数字 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "环境模块更新成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== /moduleEnv/delectOne 环境模块单条删除
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所更新数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "环境模块删除成功",
+    "msg": "请求成功"
+}
+----
+
+==== /moduleEnv/getAllModuleEnv   查询所有
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果信息
+| id | int | moduleEnv本条数据的id 
+| harborUrl | String |harbor仓库地址
+| envName | String |pass环境name 
+| envCode | String |pass环境env
+| username | String | svn凭证的username 
+| name | String | svn凭证的名称
+| createTime | String | 创建时间
+| updateTime | String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-04-09 11:13:44",
+            "envCode": "DEV",
+            "envName": "测试平台2",
+            "harborUrl": "134.96.231.129:8000",
+            "id": 3,
+            "name": "harbor",
+            "updateTime": "2019-04-09 11:14:48",
+            "username": "admin"
+        },
+        {
+            "createTime": "2019-02-19 15:17:03",
+            "envCode": "MSIT",
+            "envName": "PAAS_MSIT",
+            "harborUrl": "134.96.231.129:8000",
+            "id": 1,
+            "name": "harbor",
+            "updateTime": "2019-04-08 11:03:42",
+            "username": "admin"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/module/env 查询某个环境下可以发布的所有模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| list<vo> | 返回操作结果集合信息
+| centerCode | String | 环境code
+| centerId | int | 环境id
+| centerName | String | 中心名称
+| childCenterName | String | 子中心名称
+| moduleId | int | 模块id
+| moduleName | String | 模块名称
+| moduleType | int | 模块类型 0 svn源码 1 程序包
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerCode": "center_code2",
+            "centerId": 2,
+            "centerName": "center2",
+            "childCenterName": "child-center2",
+            "moduleId": 33,
+            "moduleName": "testModule23",
+            "moduleType": 0
+        },
+        {
+            "centerCode": "code1",
+            "centerId": 1,
+            "centerName": "center1",
+            "childCenterName": "child-center2",
+            "moduleId": 35,
+            "moduleName": "name12",
+            "moduleType": 1
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/create/yaml 创建发布信息添加对应yaml文件信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| deployAppName | String | 发布应用名称 | true
+| moduleId | int | 模块id | true
+| envId | int | 环境id | true
+| yamlFileType | int | yaml文件上传类型 0 指定yamlpath 1 yaml文件上传 | true
+| svcYamlFileType | int | svc_yaml文件上传类型 0 指定yamlpath 1 yaml文件上传 | true
+| yamlFile | file | 文件上传 | false
+| yamlPath | String | yaml文件路径 | false
+| svcYamlFile | file | svc的yaml文件上传 | false
+| svcYamlPath | String | svc的yaml文件路径 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "建立发布成功",
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/update/yaml 更新要上线的yaml文件信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| deployYamlId | int | 该条发布yaml对应的id | true
+| deployAppName | String | 发布应用名称 | false
+| yamlFileType | int | yaml文件上传类型 0 指定yamlpath 1 yaml文件上传 | true
+| svcYamlFileType | int | yaml文件上传类型 0 指定yamlpath 1 yaml文件上传 | true
+| yamlFile | file | 文件上传 | false
+| yamlPath | String | yaml文件路径 | false
+| svcYamlFile | String | svc的yaml文件上传 | false
+| svcYamlPath | String | svc的yaml文件路径 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更新yaml文件成功",
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/pageAll 分页查询所有的发布和对应的yaml信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | false
+| yamlType | String | yaml类型,常用的几种类型Deployment,pod,Service,DaemonSet,ReplicaSet,ReplicationController,Ingress等等 | false
+| moduleType | int | 模块类型 0 svn源码 1 程序包 | false
+| keyName | String | 关键词模糊查询 模糊匹配moduleName,yamlName | false
+| isOnlineYaml | int | 是否为上线yaml 0 否 1 是 | false
+| beginTime | String | 开始时间 | false
+| endTime | String | 结束时间 | false
+| pageNum | int | 当前页数 默认 1 | false
+| pageSize | int | 每页数据量 默认10 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| pageInfoVO | 返回分页结果信息 
+| pageNum | int | 当前页数  
+| pageSize | int | 每页数据量  
+| pages | int | 总页数 
+| total | int | 总数据量
+| deployId | int | 发布id
+| deployName | String | 发布应用名称
+| deployYamlId | int | 发布yaml文件对应
+| envCode | String | 环境code
+| envName | String | 环境名称
+| isOnlineYaml | int | 是否为上线yaml 0 否 1 是
+| moduleId | int | 模块id
+| moduleName | String | 模块名称
+| moduleType | int | 模块类型 0 svn源码 1 程序包
+| yamlName | String | yaml的metadata的name
+| yamlType | String | yaml文件kind类型
+| createTime| String| 创建时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "deployId": 7,
+                "deployName": "deplo3",
+                "deployYamlId": 6,
+                "envCode": "MSIT",
+                "envName": "PAAS_MSIT",
+                "isOnlineYaml": 1,
+                "moduleName": "testModule",
+                "moduleType": 0,
+                "yamlName": "mgt-clearmemory-v1",
+                "yamlType": "Deployment",
+                "createTime": "2019-04-10 16:40:50"
+            },
+            {
+                "deployId": 6,
+                "deployName": "deploy1",
+                "deployYamlId": 5,
+                "envCode": "MSIT",
+                "envName": "PAAS_MSIT",
+                "isOnlineYaml": 1,
+                "moduleName": "testModule222",
+                "moduleType": 0,
+                "yamlName": "bss-customer-asset-query-dubbo-gray",
+                "yamlType": "Service",
+                "createTime": "2019-04-10 16:40:50"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 2
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/delete/yaml 删除发布用的yaml文件信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| deployYamlId | int | 发布对应yaml的Id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除发布成功",
+    "msg": "请求成功"
+}
+----
+
+==== /center/insertOneCen 添加一条module_center数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| centerName | String |中心名字| true
+| centerCode | String |中心code| true
+| remark | String | 相关描述 | true
+| envId | String | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "中心配置模块添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== /center/selectOneCen 中心配置模块单条查询(中心配置模块更新前置查询)
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所查询数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| centerCode| String | 中心Code
+| centerName| String | 中心名字
+| childCenterName| String | 子中心名字
+| createTime| String | 创建时间
+| id| int | 本条数据id
+| isDeleted| int | 本条数据是否已删除的标记
+| remark| String | 相关描述
+| updateTime| String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "centerCode": "测试2",
+        "centerName": "测试2",
+        "childCenterName": "子测试2",
+        "createTime": "2019-04-10 16:40:50",
+        "id": 5,
+        "isDeleted": 0,
+        "remark": "测试2",
+        "updateTime": "2019-04-10 16:40:50"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /center/update 中心配置单条更新
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int |中心id| true
+| centerName | String |中心名字| false
+| childCenterName | String |中心名字| false
+| centerCode | String |中心code| true
+| remark | String | 相关描述 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "中心配置模块更新成功",
+    "msg": "请求成功"
+}
+----
+
+==== /center/deleteOneCen 中心配置单条删除标记
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所删除标记数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "中心配置模块删除标记成功",
+    "msg": "请求成功"
+}
+----
+
+==== /center/selectPageAll   分页查询（可按照条件）
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| NameCode | String |中心配置模块的name和code| false
+| envId| int | 环境id | false
+| beginTime | String |查询updattime时间起止| false
+| endTime | String |查询updattime时间终止| false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+| centerCode| String | 中心code
+| centerName| String | 中心名字
+| childCenterName| String | 子中心名字
+| createTime| String | 创造时间
+| id| int | 本条数据主键id
+| envId| int | 环境id
+| envCode| String | 环境code
+| envName| String | 环境名称
+| remark| String | 相关描述
+| updateTime| String | 更新时间
+| pageNum | int | 当前页数  
+| pageSize | int | 每页数据量  
+| pages | int | 总页数 
+| total | int | 总数据量  
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "centerCode": "测试6",
+                "envId": 3,
+                "envCode": "MSIT",
+                "envName": "测试平台1",
+                "centerName": "测试6",
+                "childCenterName": "子测试6",
+                "createTime": "2019-04-10 16:54:40",
+                "id": 6,
+                "remark": "测试6",
+                "updateTime": "2019-04-11 09:52:52"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 1
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/getInfo/yaml 预览yaml文件信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| deployYamlId | int | yaml文件对应的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回yaml文件对应的json结构信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+            "name": "bss-customer-asset-query-dubbo-gray",
+            "labels": {
+                "name": "bss-customer-asset-query-dubbo-gray"
+            }
+        },
+        "spec": {
+            "type": "NodePort",
+            "ports": [
+                {
+                    "port": 35104,
+                    "nodePort": 35104
+                }
+            ],
+            "selector": {
+                "name": "bss-customer-asset-query-dubbo-gray"
+            }
+        }
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/env/center/module/info 获取已经建立发布的环境-中心-模块关系信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| 无 |  |  | 
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<vo> | 返回已经发布的集合信息
+| envCode| String | 环境code
+| envId| int | 环境id
+| envName| String | 环境名称
+| centerList| list | 当前环境包含的所有已建立发布的中心的信息
+| centerId| int | 中心id
+| centerName| String | 中心名称
+| manageList| list | 当前环境已建立发布的中心下的模块信息
+| id| int | 模块id
+| moduleName| String | 模块名称
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": [
+    {
+      "centerList": [
+        {
+          "centerDTOList": [
+            {
+              "centerId": 20,
+              "childCenterName": "订单查询中心",
+              "manageList": [
+                {
+                  "envId": 10,
+                  "id": 31,
+                  "moduleName": "module测试类"
+                }
+              ]
+            }
+          ],
+          "centerName": "查询中心"
+        },
+        {
+          "centerDTOList": [
+            {
+              "centerId": 25,
+              "childCenterName": "客户服务协同中心",
+              "manageList": [
+                {
+                  "envId": 10,
+                  "id": 41,
+                  "moduleName": "客户服务门户基础模块前端"
+                }
+              ]
+            }
+          ],
+          "centerName": "客户服务中心"
+        }
+      ],
+      "envCode": "crm_mst_code",
+      "envId": 10,
+      "envName": "134.108.3.220测试环境"
+    }
+  ],
+  "msg": "请求成功"
+}
+----
+
+==== /certificate/insertOneCer 添加一条module_certificate数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| name | String |凭证名称| true
+| username | String |用户名| true
+| password | String | 密码 | true
+| type | int | 凭证类型 1 svn 2 harbor 3 git | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "凭证配置模块添加成功",
+    "msg": "请求成功"
+}
+或者
+{
+    "code": 200,
+    "data": "name已存在",
+    "msg": "请求失败"
+}
+----
+
+==== /certificate/selectOneCer 凭证配置模块单条查询(凭证配置模块更新前置查询)
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所查询数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+| password| String | 密码
+| name| String | 凭证名字
+| username| String | 用户名字
+| createTime| String | 创建时间
+| id| int | 本条数据id
+| isDeleted| int | 本条数据是否已删除的标记
+| type| String | 凭证类型 1 svn 2 harbor
+| updateTime| String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "createTime": "2019-04-12 09:22:19",
+        "id": 6,
+        "isDeleted": 0,
+        "name": "测试6",
+        "password": "666",
+        "type": 2,
+        "udpateTime": "2019-04-12 09:51:47",
+        "username": "测试"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== /certificate/update 凭证配置单条更新
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int |凭证id| true
+| name | String |凭证名称| true
+| username | String |用户名| true
+| password | String | 密码 | true
+| type | int | 凭证类型 1 svn 2 harbor | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "凭证配置模块更新成功",
+    "msg": "请求成功"
+}
+----
+
+==== /certificate/deleteOneCer 凭证配置单条删除标记
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 所删除标记数据的id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "凭证配置模块删除标记成功",
+    "msg": "请求成功"
+}
+----
+
+==== /certificate/selectAll   查询全部数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+| password| String | 密码
+| name| String | 凭证名字
+| username| String | 用户名字
+| createTime| String | 创建时间
+| id| int | 本条数据id
+| isDeleted| int | 本条数据是否已删除的标记
+| type| String | 凭证类型 1 svn 2 harbor
+| updateTime| String | 更新时间 
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-04-11 17:05:36",
+            "id": 5,
+            "isDeleted": 0,
+            "name": "测试2",
+            "password": "123",
+            "type": 1,
+            "udpateTime": "2019-04-11 17:05:36",
+            "username": "测试1"
+        },
+        {
+            "createTime": "2019-04-11 17:02:42",
+            "id": 4,
+            "isDeleted": 0,
+            "name": "测试1",
+            "password": "123",
+            "type": 1,
+            "udpateTime": "2019-04-11 17:02:42",
+            "username": "测试1"
+        },
+        {
+            "createTime": "2019-03-21 10:48:46",
+            "id": 3,
+            "isDeleted": 0,
+            "name": "svn_jellf2",
+            "password": "jellf",
+            "type": 1,
+            "udpateTime": "2019-03-28 10:48:50",
+            "username": "jellf"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /certificate/selectType   查询全部数据以type为条件
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| type| Int | 凭证类型 1 svn 2 harbor | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| name| String | 凭证名字
+| username| String | 用户名字
+| id| int | 本条数据id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "id": 1,
+            "name": "harbor",
+            "username": "admin"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/module/info   获取模块发布的pod对应的信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| list<VO> | 返回pod列表信息
+| containerRunningSize| int | pod中容器运行的size
+| containerSize| int | pod中容器总size
+| mainContainerMirrorName| String | 主的容器使用的镜像名称
+| mainContainerName| String | 主容器使用的容器名称
+| mainContainerRestartCount| int | 主容器重启次数
+| nodeIP| String | 发布节点的ip地址
+| podIP| String | pod的id地址
+| startTime| String | 启动时间 
+| status| String | pod当前状态 
+| containerDTOList| list<VO> | 容器集合数据 
+| containerName| String | 容器名称 
+| describeMsg| String | 容器当前描述信息 
+| imageName| String | 所使用的镜像名称 
+| restartCount| int | 重启次数 
+| status| String | 容器当前状态 
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "containerDTOList": [
+                {
+                    "containerName": "boot-demo1",
+                    "describeMsg": "start time: 2019-04-19 09:30:10",
+                    "imageName": "134.96.231.129:8000/javademo:v1",
+                    "restartCount": 0,
+                    "status": "running"
+                }
+            ],
+            "containerRunningSize": 1,
+            "containerSize": 1,
+            "mainContainerMirrorName": "134.96.231.129:8000/javademo:v1",
+            "mainContainerName": "boot-demo1",
+            "mainContainerRestartCount": 0,
+            "nodeIP": "134.108.3.224",
+            "podIP": "10.128.4.109",
+            "podName": "boot-demo1-567fd5fb86-65x9b",
+            "startTime": "2019-04-19 09:30:08",
+            "status": "Running"
+        },
+        {
+            "containerDTOList": [
+                {
+                    "containerName": "boot-demo1",
+                    "describeMsg": "ImagePullBackOff",
+                    "imageName": "134.96.231.129:8000/javademo:v1",
+                    "restartCount": 0,
+                    "status": "waiting"
+                }
+            ],
+            "containerRunningSize": 0,
+            "containerSize": 1,
+            "mainContainerMirrorName": "134.96.231.129:8000/javademo:v1",
+            "mainContainerName": "boot-demo1",
+            "mainContainerRestartCount": 0,
+            "nodeIP": "134.108.3.223",
+            "podIP": "10.128.3.36",
+            "podName": "boot-demo1-567fd5fb86-92sj7",
+            "startTime": "2019-04-19 09:30:08",
+            "status": "Pending"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== /deploy/module/online   上线模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "发布操作成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== /deploy/module/offline   下线模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "下线成功",
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/module/scale   扩缩容
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+| moduleSize| Int | 容器副本数 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== /deploy/module/update/mirror   更换镜像发布
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+| mirrorId| Int | 可用镜像id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更换镜像成功",
+    "msg": "请求成功"
+}
+----
+
+==== /mirror/showMirrorList   查询模块的可用镜像列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<VO> | 返回镜像列表信息
+| id | int | 镜像id
+| mirrorName | String | 镜像名称
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-04-18 15:44:01",
+            "id": 325,
+            "isAvailable": 1,
+            "jobId": 25,
+            "jobReversion": 4,
+            "mirrorName": "134.108.3.220/cloud/test_content:20190418154401101aa29",
+            "moduleEnvId": 10,
+            "moduleId": 65,
+            "updateTime": "2019-04-18 15:44:01"
+        },
+        {
+            "createTime": "2019-04-18 15:43:58",
+            "id": 324,
+            "isAvailable": 1,
+            "jobId": 25,
+            "jobReversion": 3,
+            "mirrorName": "134.108.3.220/cloud/test_content:20190418154358101dafc",
+            "moduleEnvId": 10,
+            "moduleId": 65,
+            "updateTime": "2019-04-18 15:43:58"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /module/svc 根据指定的svc文件创建svc
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "发布svc成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /module/svc/info 获取svc信息查看
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "....",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /deploy/module/del/pods 删除pods 可做批量删除
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+| podNames| String[] | podName的数组结构 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /deploy/module/delete/svc 删除svc 删除对应的svc信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId| Int | 模块id | true
+| envId| Int | 环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但操作失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== /moduleEnv/selectEnvAll 查询所有的环境
+.ReqVO说明
+|===
+无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| vo | 返回结果对象
+| envCode| String | env环境的code
+| envName| String | env环境的name
+| id| int | env环境id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "envCode": "MSIT",
+            "envName": "PAAS_MSIT",
+            "id": 1
+        },
+        {
+            "envCode": "MSIT",
+            "envName": "测试平台1",
+            "id": 10
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== /center/show/modules   查询所有的中心及中心下的模块对应关系
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| 无 | 无 |无| 无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<VO> | 返回结果对象
+| centerId | String | 中心id
+| centerName | int | 中心名称 
+| manageList | List<VO> | 模块列表信息
+| id | int | 模块id
+| moduleName | String | 模块名称
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerId": 1,
+            "centerName": "center1",
+            "manageList": [
+                {
+                    "id": 35,
+                    "moduleName": "name12"
+                },
+                {
+                    "id": 36,
+                    "moduleName": "name13"
+                }
+            ]
+        },
+        {
+            "centerId": 2,
+            "centerName": "center2",
+            "manageList": [
+                {
+                    "id": 33,
+                    "moduleName": "testModule23"
+                },
+                {
+                    "id": 37,
+                    "moduleName": "testModule"
+                },
+                {
+                    "id": 38,
+                    "moduleName": "testModule222"
+                }
+            ]
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== /mirror/module/pageInfo   查询mirror信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| pageNum | Int |当前页数 | false
+| pageSize | Int |当前页面显示数量 | false
+| moduleId | Int |模块id | false
+| nameCode | String |关键字 主要是mirror的模糊查询 | false
+| envId | Int |环境id | false
+| beginTime | String |开始时间 | false
+| endTime | String |截止时间 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| VO | 返回结果对象一个集合对象
+| createTime | String |创建时间
+| envName | int | 环境名称 
+| isAvailable | int |是否可用
+| jobId| int | 任务id
+| id| int | 镜像id
+| jobName| String | 任务名称
+| jobReversion| int | 任务版本
+| mirrorName| String | 镜像名称
+| moduleEnvId| int | 环境id
+| moduleId| int | 模块id
+| moduleName| String | 模块名称
+| updateTime| String | 生成时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "createTime": "2019-04-17 16:15:48",
+                "envName": "PAAS_MSIT",
+                "isAvailable": 1,
+                "jobId": 9,
+                "id": 3,
+                "jobName": "job_38_1",
+                "jobReversion": 31,
+                "mirrorName": "134.96.231.129:8000/center_code2/testModuleName10:20190417161544104d260",
+                "moduleEnvId": 1,
+                "moduleId": 38,
+                "moduleName": "testModule222",
+                "updateTime": "2019-04-17 16:15:48"
+            },
+            {
+                "createTime": "2019-04-08 16:15:02",
+                "envName": "PAAS_MSIT",
+                "isAvailable": 1,
+                "jobId": 9,
+                "id": 4,
+                "jobName": "job_38_1",
+                "jobReversion": 30,
+                "mirrorName": "134.96.231.129:8000/center_code2/testModuleName10:201904081615021035bae",
+                "moduleEnvId": 1,
+                "moduleId": 38,
+                "moduleName": "testModule222",
+                "updateTime": "2019-04-08 16:15:02"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 6
+    },
+    "msg": "请求成功"
+}
+----
+
+==== POST /module/package/updateReversion 修改package对应的svn版本号
+.ReqVO说明
+|===
+| packageId | Int |package包的id | true
+| reversion | Int | codeUrl的版本号,必须要在此源码Url下存在的 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更改成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /deploy/log/showDeployLogs 查看
+.ReqVO说明
+|===
+| moduleId | Int |模块id | true
+| envId | Int | 环境id | true
+| record | string | 显示条数 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| List<VO> | 返回结果集合信息
+| opActive | String | 操作动作
+| args | String | 操作参数
+| opResult | int | 操作结果 0 失败 1 成功
+| createTime | String | 操作时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "opActive":"扩缩容",
+            "args":""{"mirrorName":"134.96.231.129:8000/cloud/content1:20190426085333_9cf5"},
+            "opResult":1,
+            "createTime":"2019-04-08 16:15:02"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /mirror/deleteOne 删除镜像信息,并且删除镜像在harbor中的存储
+.ReqVO说明
+|===
+| mirrorId | Int |镜像id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /mirror/harbor/clear 清理各环境harbor仓库
+.ReqVO说明
+|===
+| envIds | int[] | 环境id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "清理完成",
+    "msg": "请求成功"
+}
+----
+
+==== POST /module/package/updateAllCode 针对模块手动更新模块对应的所有代码
+.ReqVO说明
+|===
+| moduleId | Int |模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更新代码成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploy/getOneInfo/yaml 获取发布yaml信息的详情
+.ReqVO说明
+|===
+| deployId | Int |发布id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+| centerId| int | 中心id
+| centerName| String | 中心名称
+| childCenterName| String | 子中心名称
+| envId| int | 环境id
+| envName| String | 环境名称
+| moduleId| int | 模块id
+| moduleName| String | 模块名称
+| moduleDeployYamls| LIST | yaml文件信息
+| deployId| int | 发布id
+| fileObject| JSONString | yaml文件json字符串显示
+| isDeployed| int | 是否已经发布 0否 1是
+| isOnlineYaml| int | 是否为发布文件 0否 1是
+| yamlType| String | yaml文件类型
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "centerId": 10,
+        "centerName": "测试中心1",
+        "childCenterName": "子测试中心1",
+        "envCode": "MSIT",
+        "envId": 10,
+        "envName": "测试平台1",
+        "moduleDeployYamls": [
+            {
+                "createTime": "2019-05-08 15:44:18",
+                "deployId": 6,
+                "fileObject": {
+                    "apiVersion": "extensions/v1beta1",
+                    "kind": "Deployment",
+                    "metadata": {
+                        "name": "boot-demo2"
+                    },
+                    "spec": {
+                        "replicas": 2,
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "app": "boot-demo2"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "boot-demo2",
+                                        "image": "134.96.231.129:8000/javademo:v1",
+                                        "imagePullPolicy": "IfNotPresent",
+                                        "ports": [
+                                            {
+                                                "containerPort": 8989
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "imagePullSecrets": [
+                                    {
+                                        "name": "image-secret"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "id": 10,
+                "isDeployed": 1,
+                "isOnlineYaml": 1,
+                "updateTime": "2019-05-08 15:44:18",
+                "yamlName": "boot-demo2",
+                "yamlPath": "/data2/storge/test_center1/module_content1/boot-deploy2.yaml20190508154419_0b71",
+                "yamlType": "Deployment"
+            }
+        ],
+        "moduleId": 7,
+        "moduleName": "模块1"
+    },
+    "msg": "请求成功"
+}   
+----
+
+==== POST /module/manage/updateInfo 模块管理更新信息
+.ReqVO说明
+|===
+| moduleId | Int |模块id | true
+| envId | Int |环境id | true
+| chargeName | String |负责人 | false
+| moduleName | String |模块名称 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更改成功",
+    "msg": "更改成功"
+}
+----
+
+==== POST /moduleJob/updateJobInfo 模块job更新信息
+.ReqVO说明
+|===
+| jobId | Int |模块jobId | true
+| moduleId | Int |模块id | true
+| envId | Int |环境id | true
+| dockerfile | File |dockerfile文件上传 | false
+| complieFile | File |编译文件上传 | false
+| dockerfileType | Int |dockerfile指定类型 0 文件指定 1 dockerfile文件上传 | true
+| compileType | Int |编译指定类型 0命令行 1编译文件上传 | true
+| compileCommand | String |编译内容指定 | false
+| dockerfilePath | String |dockerfile文件指定 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更新成功",
+    "msg": "更新成功"
+}
+----
+
+==== POST /module/batchDeleteModule 批量删除模块
+.ReqVO说明
+|===
+| moduleIds | Int[] |模块Id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "smt-bss-cpc-message-project": "删除成功",
+        "smt-bss-cpc-rule-engine-dubbo-project": "删除成功"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== GET /module/getFilePathByModuleId 快速查找对应dockerfile和k8s文件的位置
+.ReqVO说明
+|===
+| moduleId | int |模块Id | true
+| type | int | 查询类型1:dockerfile文件 2:k8s文件夹 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "crm_mst_code10/select_center/smt-bss-cpc-controller-offer-project/smt-bss-cpc-controller-offer/k8s",
+    "msg": "请求成功"
+}
+----
+
+==== GET /billing/pod/show 亚信发布的pod展示
+.ReqVO说明
+|===
+| envId | int | 环境id | false
+| beginTime| String| 开始时间 格式: 2019-03-14 12:00:00|false
+| endTime |String | 截止时间 格式: 2019-03-14 12:00:00 | false
+| pageNum | int | 当前页数 默认 1 | false
+| pageSize | int | 每页数据量 默认10 | false
+| nameCode | String |关键字(模糊匹配) | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| voList | 返回结果类信息
+| pageNum | int | 当前页数  
+| pageSize | int | 每页数据量  
+| pages | int | 总页数 
+| total | int | 总数据量  
+| appname | String | 应用名称  
+| centerName | String | 中心名称  
+| createResult | String | 创建结果 200 成功 201 失败  
+| createTime | String | 创建时间  
+| envCode | String | 环境code  
+| imagename | String | 镜像名  
+| isDelete | int | 是否删除/是否下线 0否 1是  
+| podname | String | pod的名称  
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "appname": "测试应用",
+                "centerName": "开发中心",
+                "createResult": 200,
+                "createTime": "2019-08-13 19:44:16",
+                "envCode": "crm_mst_code",
+                "envId": 10,
+                "id": 1,
+                "imagename": "134.108.3.220/test_center/module_content_12:20190505143342_3c19",
+                "isDelete": 0,
+                "podname": "pod_demo1"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 1
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /billing/image/show 亚信发布的image展示
+.ReqVO说明
+|===
+| envId | int | 环境id | false
+| beginTime| String| 开始时间 格式: 2019-03-14 12:00:00|false
+| endTime |String | 截止时间 格式: 2019-03-14 12:00:00 | false
+| pageNum | int | 当前页数 默认 1 | false
+| pageSize | int | 每页数据量 默认10 | false
+| nameCode | String |关键字(模糊匹配) | false
+| isReviewed | int | 审核状态 0 未通过审核 1通过审核 2待审核 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| voList | 返回结果类信息
+| pageNum | int | 当前页数  
+| pageSize | int | 每页数据量  
+| pages | int | 总页数 
+| total | int | 总数据量  
+| centerName | String | 中心名称  
+| createTime | String | 创建时间  
+| envCode | String | 环境code  
+| imagename | String | 镜像名  
+| isReviewed | int | 审核状态 0 未通过审核 1通过审核 2待审核 
+| reviewTime | String | 审核时间  
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "centerName": "开发中心",
+                "createTime": "2019-08-13 19:32:58",
+                "envCode": "crm_mst_code",
+                "envId": 10,
+                "id": 1,
+                "imageName": "134.108.3.220/test_center/module_content_12:20190505143342_3c19",
+                "isAvailable": 1,
+                "isReviewed": 2,
+                "reviewTime": "2019-08-13 20:06:15",
+                "updateTime": "2019-08-13 20:06:15"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 1
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /billing/opoff/show 亚信发布的操作开关展示
+.ReqVO说明
+|===
+| envId | int | 环境id | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| voList | 返回结果类信息
+| envCode | String | 环境code  
+| envId | int | 环境id
+| isAbleNext | int | 开关是否打开 0否 1是
+| opTime | String | 上次操作时间
+| opUserId | String | 上次操作用户
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "id": 1,
+            "isAbleNext": 0,
+            "opTime": "2019-08-13 20:10:34",
+            "opUserId": "cjdjsf"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /billing/opoff/up 亚信发布的操作开关控制
+.ReqVO说明
+|===
+| envId | int | 环境id | false
+| isAbleNext | int | 开关是否打开 0否 1是 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /billing/batch/review/image 亚信镜像的批量审核操作
+.ReqVO说明
+|===
+| envId | int | 环境id | false
+| imageIds | int[] | 镜像列表的镜像id数组 | true
+| isReviewed | int | 审核状态 0 未通过审核 1通过审核 2待审核| true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| String | 返回结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /logout 登出系统 同时登出原来的zdyw系统
+.ReqVO说明
+|===
+|无|无|无|无
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功 201 请求成功但添加失败 500 请求失败服务器抛出错误
+| msg | String | 返回相关信息
+| data| 无 | 返回登录平台,直接跳转页面
+|===
+==== 示例
+.返回示例:
+----
+无
+----
+
+
+==== WEBSOCKET /websocket/jenkins 直接启动job通过websocket连接实时显示构建日志 相关参数以get方式传送
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | Int |模块id | true
+| envId | Int |环境id | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| msg | String | websocket服务端发送的信息 
+|===
+==== 示例
+.返回示例:
+----
+{
+已启动构建job,请先等待 svn up >>>
+just wait ...
+just wait ...
+just wait ...
+just wait ...
+Started by user adminjellf Running in Durability level: MAX_SURVIVABILITY [Pipeline] node Running on Jenkins in /app/jenkins_home/workspace/job_37_1 [Pipeline] { [Pipeline] stage [Pipeline] { (compile) [Pipeline] sh + cd F:/storge/center_code2/testModuleName8 /app/jenkins_home/workspace/job_37_1@tmp/durable-7ab51567/script.sh: 2: cd: can't cd to F:/storge/center_code2/testModuleName8 [Pipeline] } [Pipeline] // stage [Pipeline] stage [Pipeline] { (mirror) Stage "mirror" skipped due to earlier failure(s) [Pipeline] } [Pipeline] // stage [Pipeline] stage [Pipeline] { (other) Stage "other" skipped due to earlier failure(s) [Pipeline] } [Pipeline] // stage [Pipeline] } [Pipeline] // node [Pipeline] End of Pipeline ERROR: script returned exit code 2 Finished: FAILURE
+}
+----
+
+selectCertAll
+==== WEBSOCKET /websocket/k8s/pod/logs 用来查看k8s内的pod日志信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleEnvId | Int |模块id | true
+| podName | String |pod的名称 | true
+| containerName | String |容器的名称 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| msg | String | websocket服务端发送的信息 
+|===
+==== 示例
+.返回示例:
+----
+{
+. ____ _ __ _ _
+
+/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+
+\\/ ___)| |_)| | | | | || (_| | ) ) ) )
+
+' |____| .__|_| |_|_| |_\__, | / / / /
+
+=========|_|==============|___/=/_/_/_/
+
+:: Spring Boot :: (v2.0.3.RELEASE)
+
+2019-04-23 09:32:58.414 INFO 1 --- [ main] com.test.boot.demo1.Demo1Application : Starting Demo1Application v0.0.1-SNAPSHOT on boot-demo1-567fd5fb86-jmjs6 with PID 1 (/app/demo.jar started by root in /app)
+...................
+2019-04-23 09:33:03.462 INFO 1 --- [ main] com.test.boot.demo1.Demo1Application : Started Demo1Application in 6.122 seconds (JVM running for 7.692)
+}
+----
+
+==== WEBSOCKET /websocket/jenkins/runJob/ 用来做批量构建的websocket主要用来表示svn up更新的进度条
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| message | String |job的id数组json字符串,需要客户端主动发送才能触发后续操作 | true
+|===
+.请求示例:
+----
+ [1,3,4,5,7]
+----
+==== 返回参数说明
+.响应Resp说明
+|===
+| msg | String | websocket服务端发送的信息 
+|===
+==== 示例
+.返回示例:
+----
+{
+  {"current":1,"jobId":8,"result":false,"status":0,"total":3}
+  {"current":2,"jobId":8,"result":false,"status":0,"total":3}
+  {"current":3,"jobId":8,"result":false,"status":0,"total":3}
+}
+----
+
+
+==== WEBSOCKET /websocket/k8s/clearmemory/pods 用来调用清除pod内存的脚本
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleEnvId | Int |环境id | true
+| podNames | String |需要调用清除脚本的pod的名称用,隔开 | true
+| moduleId | int |模块id | true
+| X-token | String |当前登录用户的token | true
+|===
+.请求示例:
+----
+{
+    "moduleEnvId": 1,
+    "podNames": "intelligence-devops-5897b679f9-9w877,intelligence-devops-5897b679f9-km5bs"
+    "moduleId": 23
+    "X-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjEwMTQ3MzYsInVzZXJJZCI6IlpKWENBMDA4MSIsInVzZXJuYW1lIjoid2pqLnhjIn0.C8dymfOF6nqB_5U9Lkd8FKjN7slPrsKnvcHGgFwqSZw"
+}
+----
+==== 返回参数说明
+.响应Resp说明
+|===
+| msg | String | websocket服务端发送的信息 
+|===
+==== 示例
+.返回示例:
+----
+{
+ "intelligence-devops-5897b679f9-9w877":"...返回数据..."，
+ "intelligence-devops-5897b679f9-km5bs":"...返回数据..."
+}
+----
+
+==== WEBSOCKET /websocket/upload/moduleManage 用来做批量上传excel文档生成模块相关数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | Int |环境id | true
+| certificateId | Int |凭证id | true
+| projectCode | String |harbor对应的项目code | true
+| X-token | String |当前登录用户的token | true
+|===
+.请求示例:
+----
+{
+    "envId": 10,
+    "projectCode": "project_code"
+    "certificateId": 7
+    "X-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjIwMzQ0MjEsInVzZXJJZCI6IlpKWENBMDAyNyIsInVzZXJuYW1lIjoid3Vqai54YyJ9.8MbeJ7RS4wxGLaG-UfbTuX5BRa6rtFWiy8LtB2_TiGc"
+}
+----
+==== 返回参数说明
+.响应Resp说明
+|===
+| fileName | String | 文件名称
+| msg | String | 提示消息
+| total | Integer | 总数
+| current | Integer | 当前进度
+| status | Integer | 0 正在进行中 1 失败 2 成功
+|===
+==== 示例
+.返回示例:
+----
+{
+  svn_module_test.xlsx20190702170003_c66c : 文件上传成功
+ {"current":1,"fileName":"svn_module_test.xlsx20190702170003_c66c","msg":"验证svn_url正确性中","status":0,"total":2}
+ {"current":2,"fileName":"svn_module_test.xlsx20190702170003_c66c","msg":"验证svn_url正确性中","status":0,"total":2}
+ {"fileName":"svn_module_test.xlsx20190702170003_c66c","msg":"模块数据解析成功","status":2}
+}
+----
+
+==== GET  /node/infos 列出nodes信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| nodeIPKey | String | nodeIP查询匹配 | false
+| labelKeyName | String | 标签查询匹配 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| NodeList | 返回NodeList信息
+| createTime | String | 创建时间
+| labelMap | object | 一组标签信息
+| nodeIP | String | k8s的node节点的IP
+| nodeName | String | K8s的node节点的名称
+| podCIDR | String | k8s的node节点的网段
+| roleName | String | k8s的node节点所属角色
+| status | String | k8s的node节点的在集群中的状态
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-04-16 15:34:13",
+            "labelMap": {},
+            "nodeIP": "134.108.3.220",
+            "nodeName": "zjpaas-test-deploy-01",
+            "podCIDR": "10.128.1.0/24",
+            "roleName": "Master",
+            "status": "Ready"
+        },
+        {
+            "createTime": "2019-06-04 14:31:38",
+            "labelMap": {
+                "center": "deploy"
+            },
+            "nodeIP": "134.108.3.223",
+            "nodeName": "zjpaas-test-deploy-04",
+            "podCIDR": "10.128.5.0/24",
+            "roleName": "Node",
+            "status": "Ready"
+        },
+        {
+            "createTime": "2019-04-16 15:40:17",
+            "labelMap": {
+                "center": "deploy",
+            },
+            "nodeIP": "134.108.3.224",
+            "nodeName": "zjpaas-test-deploy-05",
+            "podCIDR": "10.128.4.0/24",
+            "roleName": "Node",
+            "status": "Ready"
+        },
+        {
+            "createTime": "2019-07-25 19:53:48",
+            "labelMap": {
+                "center": "bssPlatform"
+            },
+            "nodeIP": "134.108.3.213",
+            "nodeName": "zjpass-test-udal-003",
+            "podCIDR": "10.128.8.0/24",
+            "roleName": "Node",
+            "status": "NotReady"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== POST  /node/unschedule 隔离node节点
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| nodeName | String | node节点的名称 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data":"操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST  /node/resume/schedule 恢复node节点
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| nodeName | String | node节点的名称 | true
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data":"操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST  /node/updateLabel 更新node节点的标签
+.ReqVO说明 JSON格式数据发送
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| nodeName | String | node节点的名称 | true
+|===
+==== 示例
+.发送示例:
+----
+{
+    "envId": 10,
+    "nodeName": "zjpaas-test-deploy-04",
+    "labelMap": {
+        "center": "deploy",
+        "bss": "other"
+    }
+}
+----
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "修改成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET  /node/detail 获取node节点的详情信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| nodeName | String | node节点的名称 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| Object | node信息的YAML文件显示
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "metadata": {
+            "uid": "68349dbe-8692-11e9-97d2-d2c62142faff",
+            "resourceVersion": "23034936",
+            "name": "zjpaas-test-deploy-04",
+            ...
+        },
+        "apiVersion": "v1",
+        "kind": "Node",
+        "spec": {
+            "externalID": "zjpaas-test-deploy-04",
+            "podCIDR": "10.128.5.0/24"
+        },
+        "status": {
+           ...
+        }
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== GET  /k8s/resource/all 获取全部资源信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| k8sStatus | String | 资源状态 0 已下线 1 在线 2全部 | true
+| k8sKindType | int | 资源类型 为int类型 DEPLOYMENT(1, "Deployment"),
+    POD(2, "pod"),
+    SERVICE(3, "Service"),
+    DAEMONSET(4, "DaemonSet"),
+    REPLICASET(6, "ReplicaSet"),
+    REPLICATIONCONTROLLER(7, "ReplicationController"),
+    INGRESS(8, "Ingress"),
+    CONFIG_MAP(9, "ConfigMap")| true
+| namespace | String | 可不传 默认default | false
+| keywords  | String |关键词 |false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List<Object> | 资源信息的列表展示
+| createTime | String | 创建时间
+| envId | int | 环境id
+| envName | String | 环境名称
+| resourceKind | String | 资源类型
+| resourceName | String | 资源名称
+| resourceNamespace | String | 资源所在名称空间
+| resourceStatus | String | 资源状态 0 已下线 1 在线
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2019-09-26 11:26:43",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "id": 15,
+            "resourceJson": "",
+            "resourceKind": "Deployment",
+            "resourceName": "boot-demo2",
+            "resourceNamespace": "default",
+            "resourceStatus": 0
+        },
+        {
+            "createTime": "2019-09-03 20:38:44",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "id": 17,
+            "resourceJson": "",
+            "resourceKind": "Deployment",
+            "resourceName": "intelligence-devops",
+            "resourceNamespace": "default",
+            "resourceStatus": 1
+        },
+        {
+            "createTime": "2019-08-29 15:15:40",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "id": 16,
+            "resourceJson": "",
+            "resourceKind": "Deployment",
+            "resourceName": "func-content",
+            "resourceNamespace": "default",
+            "resourceStatus": 1
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== POST  /k8s/resource/insertOne 上线YAML文件
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| yamlFile | File | yaml文件上传 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "上传并发布成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST  /k8s/resource/updateOne 更换YAML文件发布资源
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| yamlFile | File | yaml文件上传 | true
+| resourceId | int | 资源id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "替换上线OK",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST  /k8s/resource/status 更改资源的上下线状态
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| k8sStatus | int | 资源状态 0 下线 1 上线 | true
+| resourceId | int | 资源id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET  /k8s/resource/details 获取资源的详情信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| resourceId | int | 资源id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| Object | 返回资源详情信息
+| createTime | String | 创建时间
+| envId | String | 环境id
+| envName | String | 环境名称
+| id | String | 资源id
+| resourceFilePath | String | 资源YAML文件名
+| resourceJson | String | 资源JSON信息
+| resourceKind | String | 资源类型
+| resourceName | String | 资源名称
+| resourceNamespace | String | 资源名称空间
+| resourceStatus | String | 资源状态
+| userId | String | 添加用户id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "createTime": "2019-09-27 14:34:08",
+        "envId": 10,
+        "envName": "134.108.3.220测试环境",
+        "id": 18,
+        "resourceFilePath": "yamlFile20190927145025",
+        "resourceJson": "{\"apiVersion\":\"extensions/v1beta1\",\"kind\":\"Deployment\",\"metadata\":{\"labels\":{\"app\":\"boot-demo2\"},\"name\":\"boot-demo2\",\"namespace\":\"default\"},\"spec\":{\"replicas\":2,\"template\":{\"metadata\":{\"labels\":{\"app\":\"boot-demo2\"}},\"spec\":{\"containers\":[{\"image\":\"134.108.3.220/project_code/select_center/mod1:112_c83b\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"boot-demo2\",\"ports\":[{\"containerPort\":8989}]}],\"imagePullSecrets\":[{\"name\":\"image-secret\"}]}}}}",
+        "resourceKind": "Deployment",
+        "resourceName": "boot-demo2",
+        "resourceNamespace": "default",
+        "resourceStatus": 0,
+        "userId": "ZJXCA0027"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== DELETE  /k8s/resource/deleteOne 删除已下线的资源内容
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| resourceId | int | 资源id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET  /module/package/git/remote/branchs 获取子模块目录的分支列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| packageId | int | 子模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {"master","branch1","branch2"},
+    "msg": "请求成功"
+}
+----
+
+==== POST  /module/package/change/branch 获取子模块目录的分支列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| packageId | int | 子模块id | true
+| branchName | string | 分支名称 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "切换分支成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET  /deploy/deployment/args 获取模块的deployment的参数
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| moduleId | int | 模块id | true
+| argsType | int | 参数类型 1,deployment的资源限制参数 2,deployment的标签参数 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| Map类型 | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "memory": "1200Mi",
+        "cpu": "3"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== POST  /deploy/hot/update/deployment 热配置修改deployment的相关参数
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| moduleId | int | 模块id | true
+| argsType | int | 参数类型 1,deployment的资源限制参数 2,deployment的标签参数 | true
+| limitMemory | string | 限制的内存参数 | true
+| limitCPU | string | 限制的cpu参数 | true
+| labelKey | string | 标签的key值 | true
+| labelValue | string | 标签的value值 | true
+| volumeMapList | List | 挂载卷列表 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| Map类型 | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更改成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET  /billing/op/hostnames 获取计费发布管理可操作的hostnames列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        "host1",
+        "host3",
+        "host2",
+        "host4",
+        "host6"
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== POST  /billing/op/hostnames 更新计费发布管理可操作的hostnames列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| hostnames | string[] | hostname列表数组内容 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET  /deploy/module/location 根据关键词查询相关的模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| keyName | string | 关键词可模糊匹配模块名称/模块目录名称 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerId": 37,
+            "centerName": "test_中心1",
+            "childCenterName": "test_子中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "moduleContentName": "cpct-eslog",
+            "moduleId": 563,
+            "moduleName": "测试后台"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== GET  /deploy/module/list 根据关键词查询相关的模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| centerId | int | 中心id | true
+| moduleId | int | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "centerEnvDTO": {
+            "centerId": 37,
+            "childCenterName": "test_子中心",
+            "manageList": [
+                {
+                    "envId": 10,
+                    "id": 43,
+                    "moduleName": "模块管理2"
+                },
+                {
+                    "envId": 10,
+                    "id": 563,
+                    "moduleName": "测试后台"
+                }
+            ]
+        },
+        "path": "/center1/index5"
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== GET  /mirror/harbor/tags 获取模块对应的harbor仓库中的标签列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| moduleId | int | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191014144209_db67",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191012205301_76dd",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191012213136_18e0",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191012211307_0f34",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191014090658_cd27",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191012210054_5405",
+        "134.108.3.248:8100/sit/bss-order-shopcart-dubbo:20191014105833_c87b"
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+
+==== POST /deploys/modules 添加模块到模块发布清单
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| moduleIds | int[] | 模块id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /deploys/modules/list 获取模块待发布清单列表
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | false
+| centerId | int | 中心id | false
+| keyName | String | 关键字匹配(模块名称) | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+| centerId | int | 中心id
+| centerName | String | 中心名称
+| childCenterName | String | 子中心名称
+| envCode | String | 环境code
+| envId | int | 环境id
+| envName | String | 环境名称
+| moduleContentName | String | 模块目录名称
+| moduleId | int | 模块id
+| moduleName | String | 模块名称
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerId": 37,
+            "centerName": "test_中心1",
+            "childCenterName": "test_子中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "moduleContentName": "module_test_2",
+            "moduleId": 43,
+            "moduleName": "模块管理2"
+        },
+        {
+            "centerId": 20,
+            "centerName": "查询中心",
+            "childCenterName": "订单查询中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "moduleContentName": "git_path_2",
+            "moduleId": 575,
+            "moduleName": "git测试模块分支"
+        },
+        {
+            "centerId": 37,
+            "centerName": "test_中心1",
+            "childCenterName": "test_子中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "moduleContentName": "test5_test",
+            "moduleId": 581,
+            "moduleName": "模块5测试"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /deploys/modules/list/remove 移除模块清单中的模块数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleIds | int[] | 模块id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "移除成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploys/modules/list/pods 获取待发布清单列表包含pods数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| centerId | int | 中心id | true
+| keyName | string | 关键词 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+| centerId | int | 中心id
+| centerName | String | 中心名称
+| childCenterName | String | 子中心名称
+| envCode | String | 环境code
+| envId | int | 环境id
+| envName | String | 环境名称
+| moduleContentName | String | 模块目录名称
+| moduleId | int | 模块id
+| moduleName | String | 模块名称
+| k8sPodDTOS |List|模块对应的pod数据
+| svcInfo |object|模块对应的svc数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "centerId": 37,
+            "centerName": "test_中心1",
+            "childCenterName": "test_子中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "k8sPodDTOS": [],
+            "svcInfo":{
+                "clusterIP":"10.103.36.126",
+                "name":"boot-demo2",
+                "selector":{
+                    "name":"boot-demo2"
+                },
+                "servicePortDTOList":[{
+                    "nodePort":30899,
+                    "port":8989,
+                    "protocol":"TCP",
+                    "targetPort":"8989"
+                }],
+                "type":"NodePort"
+            },
+            "moduleContentName": "module_test_2",
+            "moduleId": 43,
+            "moduleName": "模块管理2"
+        },
+        {
+            "centerId": 20,
+            "centerName": "查询中心",
+            "childCenterName": "订单查询中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "k8sPodDTOS": [],
+            "svcInfo":{
+                "clusterIP":"10.103.36.126",
+                "name":"boot-demo2",
+                "selector":{
+                    "name":"boot-demo2"
+                },
+                "servicePortDTOList":[{
+                    "nodePort":30899,
+                    "port":8989,
+                    "protocol":"TCP",
+                    "targetPort":"8989"
+                }],
+                "type":"NodePort"
+            },
+            "moduleContentName": "git_path_2",
+            "moduleId": 575,
+            "moduleName": "git测试模块分支"
+        },
+        {
+            "centerId": 37,
+            "centerName": "test_中心1",
+            "childCenterName": "test_子中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "k8sPodDTOS": [],
+            "moduleContentName": "test5_test",
+            "moduleId": 581,
+            "moduleName": "模块5测试"
+        },
+        {
+            "centerId": 20,
+            "centerName": "查询中心",
+            "childCenterName": "订单查询中心",
+            "envCode": "crm_mst_code",
+            "envId": 10,
+            "envName": "134.108.3.220测试环境",
+            "k8sPodDTOS": [
+                {
+                    "containerDTOList": [
+                        {
+                            "containerName": "boot-demo2",
+                            "describeMsg": "start time: 2019-10-30 16:25:49",
+                            "imageName": "134.108.3.220/project_code/select_center/mod1:20191009110700_1e34",
+                            "restartCount": 0,
+                            "status": "Running"
+                        }
+                    ],
+                    "containerRunningSize": 1,
+                    "containerSize": 1,
+                    "mainContainerMirrorName": "134.108.3.220/project_code/select_center/mod1:20191009110700_1e34",
+                    "mainContainerName": "boot-demo2",
+                    "mainContainerRestartCount": 0,
+                    "nodeIP": "134.108.3.223",
+                    "podIP": "10.128.5.119",
+                    "podName": "boot-demo2-7f85874f44-69znk",
+                    "startTime": "2019-10-30 16:25:46",
+                    "status": "Running"
+                },
+                {
+                    "containerDTOList": [
+                        {
+                            "containerName": "boot-demo2",
+                            "describeMsg": "start time: 2019-10-30 16:25:48",
+                            "imageName": "134.108.3.220/project_code/select_center/mod1:20191009110700_1e34",
+                            "restartCount": 0,
+                            "status": "Running"
+                        }
+                    ],
+                    "containerRunningSize": 1,
+                    "containerSize": 1,
+                    "mainContainerMirrorName": "134.108.3.220/project_code/select_center/mod1:20191009110700_1e34",
+                    "mainContainerName": "boot-demo2",
+                    "mainContainerRestartCount": 0,
+                    "nodeIP": "134.108.3.224",
+                    "podIP": "10.128.4.188",
+                    "podName": "boot-demo2-7f85874f44-79gpc",
+                    "startTime": "2019-10-30 16:25:46",
+                    "status": "Running"
+                }
+            ],
+            "moduleContentName": "mod1",
+            "moduleId": 31,
+            "moduleName": "module测试类"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== POST /deploys/modules/replace/mirrors 批量更换最新镜像
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleIds | int[] | 模块id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| Object | 返回操作结果信息
+| key|String|模块名称
+|value| boolean|操作结果 true 成功 false 失败
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": 
+    {
+        "module测试类": true,
+        "module测试类2": false
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploy/threadDump/export 下载导出java的thread dump相关的日志
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| podName | String | 模块id数组 | true
+| envId | int | 环境id | true
+| moduleId | int | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| 文件直接下载 
+|===
+==== 示例
+.返回示例:
+----
+{}
+----
+
+
+
+==== GET /deploy/log/getDeployCountData 获取发布概况的统计数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| data | 返回操作结果信息
+| busyNodeCount | int | 繁忙的节点数
+| centerCountMap | map | 每个中心的模块发布数据
+| deployAllModuleCount | int | 累计发布模块数
+| deployNowModuelCount | int | 本周发布模块数
+| incrPercent | String | 周环比增加
+| nodeCount | int | 节点总数
+| podCount | int | pod总数
+| runNodeCount | int | 运行节点总数
+|===
+==== 示例
+.返回示例:
+----
+{
+  "code": 200,
+  "data": {
+    "busyNodeCount": 3,
+    "centerCountMap": {
+      "查询中心": 1
+    },
+    "deployAllModuleCount": 1,
+    "deployNowModuelCount": 1,
+    "incrPercent": "0.00",
+    "nodeCount": 8,
+    "podCount": 3,
+    "runNodeCount": 8
+  },
+  "msg": "请求成功"
+}
+----
+
+
+==== GET  /deploy/log/getTop 查看模块发布TOP
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| beginTime | String | 查询起始时间 | false
+| endTime | String | 查询起止时间 | false
+|total  | int | 查询条数| false (默认为10条)
+| envIds | Set | 环境id列表 | false
+|===
+
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "总排行": [
+            {
+                "centerName": "客户服务能力中心",
+                "envId": 24,
+                "mark": "测试平台2",
+                "moduleName": "客户资产定位控制层",
+                "total": 1
+            }
+        ],
+        "测试平台2": [
+            {
+                "centerName": "客户服务能力中心",
+                "envId": 24,
+                "mark": "测试平台2",
+                "moduleName": "客户资产定位控制层",
+                "total": 1
+            }
+        ]
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /deploys/uploadExcel 添加模块到模块发布清单
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| region | String | CRM或者计费 | true
+| excelFile | MultipartFile | 发布清单excel | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "env": "生产",
+            "responseDTO": {
+                "code": 201,
+                "data": "环境或模块名不匹配",
+                "msg": "环境或模块名不匹配"
+            }
+        },
+        {
+            "env": "开发",
+            "responseDTO": {
+                "code": 200,
+                "data": [
+                    {
+                        "moduleName": "罗昌彬测试",
+                        "status": "true"
+                    },
+                    {
+                        "moduleName": "购物车controller",
+                        "status": "false"
+                    },
+                    {
+                        "moduleName": "订单流程服务-对内",
+                        "status": "false"
+                    }
+                ],
+                "msg": "请求成功"
+            }
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploy/getVolumes 查询模块的挂载卷
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | Integer | 环境id | true
+| moduleId | Integer | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功并添加成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果信息
+| name| String | 挂载卷名称
+| volumePath| String | 卷路径
+| mountPath| String | 容器挂载路径
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "name": "tz-config",
+            "volumePath": "/etc/localtime",
+            "mountPath": "/etc/localtime"
+        },
+        {
+            "name": "app-log",
+            "volumePath": "/app/app-log",
+            "mountPath": "/app/logs"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploy/log/getDeployChangeLog 查询发布变更日志
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | Integer | 环境id | true
+| moduleName | String | 模块名 | false
+| beginTime | String | 查询起始时间 | true
+| endTime | String | 查询起止时间 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| args| String | 变更内容
+| changeTime | String | 发布变更时间
+| createTime | String | 模块添加时间
+| opActive | String | 变更类型
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "args": "{"image":"20191223152239_743b","limit":{"memory":"512Mi","cpu":"1"}}",
+            "changeTime": "2020-05-19 14:08:39",
+            "createTime": "2019-12-20 16:43:26",
+            "moduleName": "罗昌彬测试",
+            "opActive": "下线模块"
+        },
+        {
+            "args": "{"new":{"memory":"500Mi","cpu":"1"}}",
+            "changeTime": "2020-05-19 14:09:03",
+            "createTime": "2019-12-20 16:43:26",
+            "moduleName": "罗昌彬测试",
+            "opActive": "发布上线"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== GET /base/permission/all 查询所有的基础权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+|keyName| 搜索关键字 | String | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| basePerCode| String | 基础权限code
+| basePerName | String | 基础权限名称
+| createTime | String | 创建时间
+| updateTime | String | 更新时间
+| id | int | 基础权限id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "basePerCode": "b74e79aeeb414740b28d34d1c7532a4d",
+                "basePerName": "镜像制作查询权",
+                "createTime": "2020-05-22 10:15:23",
+                "id": 47,
+                "updateTime": "2020-05-22 10:15:23"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 1,
+        "total": 1
+    },
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/add 新增一个基础权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePerCode| String | 基础权限code | false
+| basePerName | String | 基础权限名称 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/updateOne 更改基础权限信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePerCode| String | 基础权限code | false
+| basePerName | String | 基础权限名称 | true
+| id | int | 基础权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "修改成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/getOne 获取单条基础权限信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePermissionId | int | 基础权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| basePerCode| String | 基础权限code
+| basePerName | String | 基础权限名称
+| createTime | String | 创建时间
+| updateTime | String | 更新时间
+| id | int | 基础权限id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "basePerCode": "test-one-one",
+        "basePerName": "基础测试权限结果测试",
+        "createTime": "2020-05-22 15:18:26",
+        "id": 82,
+        "updateTime": "2020-05-22 15:16:09"
+    },
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/getBaseBindPermList 获取基础权限对应的最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePermissionId | int | 基础权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| action| String | 权限定义字符串
+| actionName | String | 权限定义中文名
+| id | int | 最小权限id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "action": "deploy_list_replace_mirrors",
+            "actionName": "批量更换镜像",
+            "createTime": "2020-05-21 17:30:11",
+            "updateTime": "2020-05-21 17:30:11",
+            "id": 2
+        },
+        {
+            "action": "deploy_list_remove_modules",
+            "actionName": "批量移除",
+            "createTime": "2020-05-21 17:30:11",
+            "updateTime": "2020-05-21 17:30:11",
+             "id": 3
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/bindListBasePerm 绑定最小权限到基础权限  修改绑定共用
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePermissionId | int | 基础权限id | true
+| permIds | int[] | 最小权限id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /base/permission/delBasePerm 删除基础权限数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| basePermissionId | int | 基础权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /permission/insert 添加最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| action | String | 权限定义字符串 | true
+| url | String | 接口url路径 | false
+| actionName | String | 权限定义中文名 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加权限成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /permission/update 修改最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| action | String | 权限定义字符串 | false
+| url | String | 接口url路径 | false
+| actionName | String | 权限定义中文名 | false
+| id | int | 最小权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "修改权限成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /permission/getAllPermission 分页查询最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| pageNum | int | 当前页数 | false 默认1
+| pageSize | String | 每页显示数量 | false 默认10
+| keyName | String | 关键词 | false
+| beginTime | String | 开始时间 | false
+| endTime | String | 截止时间 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| Object | 返回操作结果
+| pageNum| int | 当前页数
+| pageSize| int | 每页显示数量
+| pages| int | 总页数
+| total| int | 总数
+| list| list | 查询结果集
+| action| String | 权限定义字符串
+| actionName| String | 权限定义中文名
+| createTime| String | 创建时间
+| id| int | 最小权限id
+| updateTime| String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "action": "base_config_certificate_add",
+                "actionName": "凭证配置新增",
+                "createTime": "2020-05-21 17:30:11",
+                "id": 110,
+                "updateTime": "2020-05-21 17:30:11"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 10,
+        "pages": 11,
+        "total": 101
+    },
+    "msg": "请求成功"
+}
+----
+
+==== POST /permission/delete 删除最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| permissionId | int | 最小权限id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除权限成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /permission/deletePermissions 批量删除最小权限
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| permissionIds | int[] | 最小权限id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除权限成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /role/insert 添加角色
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleName | String | 角色名称 | true
+| roleCode | String | 角色code | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /role/getAllRole 获取所有角色
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+|无|无|无|无
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| roleCode| String | 角色code
+| roleName| String | 角色名称
+| updateTime| String | 更新时间
+| createTime| String | 创建时间
+| id | int | 角色id
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2020-05-18 17:20:31",
+            "id": 1,
+            "roleCode": "fast_deploy_all",
+            "roleName": "一键发布所有权限",
+            "updateTime": "2020-05-18 17:20:31"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== POST /role/updateRole 更新角色信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleName | String | 角色名称 | false
+| roleCode | String | 角色code | false
+| id | int | 角色id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "修改成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /role/roleBindBasePermisson 绑定角色关联基础权限信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleId | int | 角色id | true
+| basePermissionIds | int[] | 基础权限ids | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /role/updateRolePermission 修改绑定角色关联基础权限信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleId | int | 角色id | true
+| basePermissionIds | int[] | 基础权限ids | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更改成功",
+    "msg": "请求成功"
+}
+----
+
+==== GET /role/getRolePermission 查询角色对应的关联的权限的信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleId | int | 角色id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| action | String | 权限定义字符串
+| actionName | String | 权限定义中文
+| createTime | String | 创建时间
+| id | String | 最小权限id
+| updateTime | String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "action": "base_config_center_select",
+            "actionName": "中心配置查询",
+            "createTime": "2020-05-21 17:30:11",
+            "id": 109,
+            "updateTime": "2020-05-21 17:30:11"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== GET /role/getRoleBasePerm 查询角色对应的关联的基础权限的信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleId | int | 角色id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| List | 返回操作结果
+| basePerCode | String | 基础权限code
+| basePerName | String | 基础权限名称
+| createTime | String | 创建时间
+| id | String | 基础权限id
+| updateTime | String | 更新时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "basePerCode": "5a1cf09957784ea9a641914f220ba62c",
+            "basePerName": "中心配置查询权",
+            "createTime": "2020-05-22 10:15:23",
+            "id": 43,
+            "updateTime": "2020-05-22 10:15:23"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== POST /role/deleteRole 删除角色
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| roleId | int | 角色id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /pUser/register 注册用户
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| username | String | 用户名 | true
+| mobile | String | 电话 | false
+| wxcode | String | 微信号 | false
+| remark | String | 备注 | false
+| password | String | 密码 | true
+| nickname | String | 昵称 | false
+| firstName | String | 首名字 | false
+| lastName | String | 尾名字 | false
+| email | String | 邮箱 | false
+| qq | String | qq号 | false
+| cname | String | 中文名 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /pUser/pLogin 用户登录
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| username | String | 用户名 | true
+| password | String | 密码 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回登录成功的token
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTA1NjY4MjMsInVzZXJJZCI6IlpKWENBMDA4MSIsInVzZXJuYW1lIjoid2pqLnhjIn0.ZNbSNdIayOKwB67Yh22Bvf4GTuTGu67Tg7tla4jF9xE",
+    "msg": "请求成功"
+}
+----
+
+==== POST /pUser/addUserRoleBind 添加用户角色绑定数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| userId | int | 用户id | true
+| roleId | int | 角色id | true
+| envIds | int[] | 环境ids数组 | true
+| centerIds | int[] | 中心ids数组 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回登录成功的token
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "添加成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+==== POST /pUser/updateUserRoleBind 修改用户角色绑定数据
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| userId | int | 用户id | true
+| roleId | int | 角色id | true
+| envIds | int[] | 环境ids数组 | true
+| userRoleBindId | int | 用户角色绑定id | true
+| centerIds | int[] | 中心ids数组 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回登录成功的token
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "修改成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /pUser/getUserRoleEnvBind 查询用户拥有的所有角色信息 用户--环境--角色 并分页显示
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| pageNum | int | 当前页数 | false
+| pageSize | int | 每页数量 | false
+| keyName | String | 关键字 | false
+| userId | int | 用户id | false
+| roleId | int | 角色id | false
+| envId | int | 环境id | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| Object | 返回查询结果数据
+| pageNum| int | 当前页数
+| pageSize| int | 每页数量
+| total| int | 总数据量
+| pages| int | 总页数
+| list| List | 结果集合
+| userRoleBindId| int | 用户角色绑定id
+| username| String | 用户名
+| roleName| String | 角色名
+| userId| int | 用户id
+| roleId| int | 角色id
+| envIds| String | 环境ids数据数组
+| envNames| String | 环境名称数组
+| cname| String | 中文名称
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 30,
+        "pages": 3,
+        "list": [
+            {
+                "userRoleBindId": 188,
+                "username": "***",
+                "roleName": "一键发布所有权限",
+                "userId": 132,
+                "roleId": 1,
+                "envIds": "9,10,22,24,25,26,27,30,32,33,34,35,36,37,38,39",
+                "envNames": "pst,134.108.3.220测试环境,计费pst测试,平台测试环境,CRM-PST环境,CRM-比对环境,CRM-UAT环境,CRM-生产环境,平台基础应用生产环境,CRM-PT环境,CRM-灾备环境,计费-生产环境,计费-PT环境,CRM-SIT环境,计费-SIT环境,mxp测试环境",
+                "cname": "***"
+            }
+        ]
+    },
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+==== POST /pUser/deleteUserRoleEnvBind 删除用户角色绑定关系
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| userRoleBindIds | int[] | 绑定id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回登录成功的token
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "删除成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+==== POST /pUser/deleteUserInfo 删除用户
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| userId | int | 用户id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回登录成功的token
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "删除成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+==== GET /pUser/page/all 分页查询获取所有用户信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| pageNum | int | 当前页数 | false
+| pageSize | int | 每页数量 | false
+| keyName | String | 关键字 | false
+| beginTime | String | 起始时间 | false
+| endTime | String | 结束时间 | false
+| isActive | int | 是否激活 0否1是 | false
+| depId | int | 所属部门id | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| Object | 返回查询结果数据
+| pageNum| int | 当前页数
+| pageSize| int | 每页数量
+| total| int | 总数据量
+| pages| int | 总页数
+| list| List | 结果集合
+| id| int | 用户主键id
+| username | String | 用户名
+| mobile | String | 电话
+| wxcode | String | 微信号
+| remark | String | 备注
+| password | String | 密码
+| nickname | String | 昵称
+| firstName | String | 首名字
+| lastName | String | 尾名字
+| email | String | 邮箱
+| qq | String | qq号
+| cname | String | 中文名
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": {
+        "pageNum": 1,
+        "pageSize": 10,
+        "total": 170,
+        "pages": 17,
+        "list": [
+            {
+                "id": 130,
+                "username": "zdhinspect",
+                "mobile": "",
+                "wxcode": "",
+                "remark": "",
+                "userPermissionInfo": null,
+                "userId": "ZJCXA0001",
+                "password": null,
+                "nickname": null,
+                "isSuperuser": false,
+                "firstName": "",
+                "lastName": "",
+                "email": "",
+                "isActive": "1",
+                "qq": "",
+                "cname": "",
+                "isStaff": false,
+                "dateJoined": "2020-03-08T12:11:27.000+0000",
+                "llevel": 1,
+                "lastLogin": "2020-04-28T06:20:55.000+0000",
+                "depidId": "ZJXCA009",
+                "puserId": null,
+                "orgdtype": 0,
+                "trx": 0,
+                "clocktime": "2020-03-08T12:11:27.000+0000",
+                "createTime": "2020-05-21T09:19:18.000+0000",
+                "updateTime": "2020-05-21T09:19:18.000+0000"
+            }
+        ]
+    },
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+==== GET /pUser/info/{id} 这个路径id指定的是用户主键id 根据id查询用户的信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 用户主键id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| Object | 返回查询结果数据
+| id| int | 用户主键id
+| username | String | 用户名
+| mobile | String | 电话
+| wxcode | String | 微信号
+| remark | String | 备注
+| password | String | 密码
+| nickname | String | 昵称
+| firstName | String | 首名字
+| lastName | String | 尾名字
+| email | String | 邮箱
+| qq | String | qq号
+| cname | String | 中文名
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": {
+        "id": 137,
+        "username": "ligang",
+        "mobile": "15305712013",
+        "wxcode": "",
+        "remark": "",
+        "userPermissionInfo": null,
+        "userId": "ZJXCA0006",
+        "password": "***",
+        "nickname": null,
+        "isSuperuser": false,
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "isActive": "0",
+        "qq": "",
+        "cname": "李纲",
+        "isStaff": false,
+        "dateJoined": "2017-09-16T11:56:04.000+0000",
+        "llevel": 1,
+        "lastLogin": "2018-06-05T01:29:18.000+0000",
+        "depidId": "ZJXCA002",
+        "puserId": "ZJXCA0000",
+        "orgdtype": 0,
+        "trx": 0,
+        "clocktime": "2018-09-13T07:33:36.000+0000",
+        "createTime": "2020-05-21T09:19:18.000+0000",
+        "updateTime": "2020-05-21T09:19:18.000+0000"
+    },
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /pUser/updateOne 修改用户信息
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 用户主键id | true
+| username | String | 用户名 | false
+| mobile | String | 电话 | false
+| wxcode | String | 微信号 | false
+| remark | String | 备注 | false
+| password | String | 密码 | false
+| nickname | String | 昵称 | false
+| firstName | String | 首名字 | false
+| lastName | String | 尾名字 | false
+| email | String | 邮箱 | false
+| qq | String | qq号 | false
+| cname | String | 中文名 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回查询结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "修改成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /pUser/changePass 修改用户密码
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| pass | String | 密码 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回查询结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "data": "修改成功",
+    "code": 200,
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/insert 新增一条需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| envId | int | 环境id | true
+| dr | int | 有无灾备 | true
+| needNumber | String | 需求编号 | true
+| needContent | String | 需求内容 | true
+| needDescribe | String | 需求描述 | true
+| deployTime | Date | 发布时间 | true
+| moduleIds | int[] | 模块id数组 | true
+| reportFile | file | 测试报告 | true
+| drTest | int | 灾备测试 1表示通过 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "需求添加成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/deleteNeed 删除一条需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "删除成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/updateNeed 更新一条需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| id | int | 需求id | true
+| needNumber | String | 需求编号 | false
+| needContent | String | 需求内容 | true
+| needDescribe | String | 需求描述 | true
+| reportFile | file | 测试报告 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更新成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /need/selectAllNeed 查询所有需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+|beginTime | String | 起始时间 | false
+|endTime | String | 结束时间 | false
+|searchKey | String | 搜索关键字 | false
+|developer | String | 需求申请员 | false
+|status | int | 审核状态 | false
+|envId | int | 上线环境 | false
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+| pageNum| int | 当前页数
+| pageSize| int | 每页数量
+| total| int | 总数据量
+| pages| int | 总页数
+| developer | String | 申请需求的开发人员
+| dr | int | 有无灾备环境,0:无;1:有
+| envId | int | 环境id
+| envName | String | 环境名字
+| id | int | 需求id
+| needContent | String | 需求内容
+| needDescribe | String | 需求描述
+| needNumber | String | 需求编号
+| approver | String | 审核人员
+| approveTime | Date | 审核时间
+| approveStatus | int | 0:未提交,1:已提交,2:审核通过,3:审核不通过
+| drTest | int | 灾备测试,0:未通过;1:通过
+| pstTest | int | pst测试,0:未通过;1:通过
+| testReportPath | String | 测试报告文件路径
+| deployTime | Date | 发布时间
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": {
+        "list": [
+            {
+                "approveStatus": 2,
+                "approveTime": "2020-08-26 16:26:43",
+                "approver": "罗昌彬",
+                "createTime": "2020-08-26 14:27:59",
+                "deployTime": "2020-08-26 14:54:35",
+                "developer": "罗昌彬",
+                "dr": 1,
+                "drTest": 1,
+                "envId": 10,
+                "envName": "CRM-开发环境",
+                "id": 5,
+                "needContent": "修复话费不能充满的BUG",
+                "needDescribe": "客户为上",
+                "needNumber": "1123257757584",
+                "pstTest": 1,
+                "testReportPath": "uploadReport/report.txt",
+                "updateTime": "2020-08-26 16:26:43"
+            }
+        ],
+        "pageNum": 1,
+        "pageSize": 1,
+        "pages": 1,
+        "total": 1
+    },
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/updateModuleNeed 修改需求的模块绑定
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+| moduleIds | int[] | 模块id数组 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "更新成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/commitApprove 将需求提交到局方审批
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needIds | int[] | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "提交成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/approveNeed 审批需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needIds | int[] | 需求id | true
+| pass | int | 1:通过;0:不通过 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "修改成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/commitToDeployList 将需求关联的模块导入发布清单
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needIds | int[] | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "添加成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== POST /need/commitReport 提交测试报告
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+| reportFile | MultipartFile | 报告文件 | true
+| envIds | int[] | 环境id数组 | true
+| drTest | int | 灾备测试,1表示通过 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /need/getOneNeedModules 查询需求关联的模块
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+| id | int | 模块id
+| moduleName | String | 模块名
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "childCenterName": "测试中心-测试1",
+            "moduleName": "罗昌彬测试"
+        },
+        {
+            "childCenterName": "CPC配置能力中心能力层",
+            "moduleName": "罗志祥测试"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /need/exportNeed 导出需求
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needIds | int[] | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| 文件直接下载 
+|===
+==== 示例
+.返回示例:
+----
+{}
+----
+
+
+==== GET /need/downloadReport 查看测试报告
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| 下载测试报告
+|===
+==== 示例
+.返回示例:
+----
+{}
+----    
+
+==== GET /deploy/compare/yaml 比对上线配置是否与下线时一致
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+| envId | int | 环境id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |201 校验失败
+| msg | String | 返回相关信息
+| data| String | 表示replicas和limit不一致，返回为线上值
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 201,
+    "data": {
+        "replicas": 1,
+        "limit": {
+            "memory": "500Mi",
+            "cpu": "1"
+        }
+    },
+    "msg": "{replicas=1, limit={\"memory\":\"500Mi\",\"cpu\":\"1\"}}"
+}
+----
+
+
+==== POST /deploy/changerollingUpdate 更改滚动升级参数
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+| envId | int | 环境id | true
+| maxSurge | int |  比原设定多出的数值   |true
+| maxUnavailable | int | 主动下线的数值    | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "取值已达到副本数的一半",
+    "msg": "请求成功"
+}
+----
+
+
+==== GET /deploy/getStratgyArgs 获取滚动升级参数
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleId | int | 模块id | true
+| envId | int | 环境id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "maxSurge": 1,
+    "maxUnavailable": 1
+}
+----
+
+
+==== GET /deploy/getYamlCompare 获取yaml比对结果
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+| diffArgs | String | 差异字段
+| yamlName | String | deployment
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": [
+        {
+            "createTime": "2021-01-18 17:10:06",
+            "diffArgs": "replicas",
+            "envName": "开发环境",
+            "id": 1,
+            "yamlName": "boot-demo"
+        },
+        {
+            "createTime": "2021-01-18 17:10:06",
+            "diffArgs": "replicas,resources",
+            "envName": "CRM-开发环境",
+            "id": 3,
+            "yamlName": "boot-demo"
+        }
+    ],
+    "msg": "请求成功"
+}
+----
+
+==== GET /need/exportDeployList 导出发布清单
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| moduleIds | int[] | 模块id | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| 文件直接下载 
+|===
+==== 示例
+.返回示例:
+----
+{}
+----
+
+
+==== POST /need/circulationNeed 提交需求到灾备或生产
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+| envId | int | 环境id | true
+| pstTest | int | pst测试状态| true
+| drTest | int | 灾备测试状态 | true
+| reportFile | MultipartFile | 报告文件 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----
+
+==== POST /need/recallNeed 将需求撤回到灾备或测试
+.ReqVO说明
+|===
+| 列名|类型|说明|是否必填
+| needId | int | 需求id | true
+| envId | int | 环境id | true
+| status | int | 需求状态 | true
+|===
+==== 返回参数说明
+.响应Resp说明
+|===
+| code | int |200 请求成功
+| msg | String | 返回相关信息
+| data| String | 返回操作结果数据
+|===
+==== 示例
+.返回示例:
+----
+{
+    "code": 200,
+    "data": "操作成功",
+    "msg": "请求成功"
+}
+----

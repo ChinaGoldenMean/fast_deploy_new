@@ -1,0 +1,83 @@
+server:
+  port: 8096
+spring:
+  datasource:
+    name: fast_deploy_test
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      master:
+        url: jdbc:mysql://134.108.6.246:8806/zdyw?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: root
+        password: Zdh!@adm_18
+      slave:
+        url: jdbc:mysql://134.108.1.149:8821/psotdata?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: zdhadmin
+        password: Zdh!@adm_19
+      initial-size: 5
+      min-idle: 10
+      max-active: 50
+      max-wait: 600000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+      poolPreparedStatements: true
+jenkins:
+  url: http://134.108.6.215:8001/jenkins/
+  username: isale
+  password: isale@!A_bc
+logging:
+  path: /app/fast_deploy_new/logs
+file:
+  storge:
+    path:
+      prefix: /data/fast_deploy/
+      uploadPath: /data/fast_deploy/svn_module_excel/
+      excelPath: /data/fast_deploy/model_file/svn_module.xlsx
+      modelPath: /data/fast_deploy/model_file/model.zip
+      moduleUploadPath: /data/fast_deploy/upload_path/
+      moduleExportPath: /data/fast_deploy/export_path/
+      deploySelfYamlPath: /data/fast_deploy/deploy_self_yaml/
+local:
+  ipAddr: 134.108.6.216:8096
+#k8sBill:
+#  harbor:
+#    username: billing
+#    password: Zjyx_123
+#    api_url: http://134.108.3.248:8100/api/
+#    image_prefix: 134.108.3.248:8100/
+netty:
+  websocket:
+    port: 6001
+    host: 134.108.6.216
+    bossLoopGroupThreads: 100
+    workerLoopGroupThreads: 100
+    optionSoBacklog: 128
+    childOptionSoRcvbuf: 1024
+    childOptionSoSndbuf: 1024
+myself:
+  httpUrl:
+    getPermissionUrl: http://134.108.6.244:8000/multiauth/fast_deploy/listemid_roleid2/?empid=
+    judgeIsLogin: http://134.108.6.244:8000/multiauth/Session_online/islogin/
+    getNodeResources: http://134.108.6.244:8000/multiauth/K8s_monitor/listnode/?page=1&page_size=100&
+    redirectLogin: http://134.108.6.244:8000/multiauth/Session_online/sso/?loginurl=http://134.108.6.216:8096/loginHtml
+    loginUrl: http://134.108.6.216:8096/loginHtml
+    logoutUrl: http://134.108.6.244:8000/multiauth/User/logout/
+    loginIp: 134.108.6.244
+    zdywCookeyKey: zdywpaassession
+  pspass:
+    prod: true
+    ids: 4,10,19,25,26,27,29
+    prodId: 30,32,34,35
+    realprodid: 30,35
+    oldversion: 22,24,25,26,27,30,32,33,35,36,37,38,39
+  queue:
+    size: 8
+redisConfig:
+  ip: 134.108.0.46,134.108.0.47
+  port: 9051
+  database: 0
+  password: BSS_DEPLOY_001_USER#Bss!_dEp
+  maxIdle: 30
+  minIdle: 5
+  maxTotal: 50
+  MaxWaitMillis: 3000

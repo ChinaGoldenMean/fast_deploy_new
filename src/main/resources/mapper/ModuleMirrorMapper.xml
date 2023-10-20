@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleMirrorMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleMirror">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="module_env_id" property="moduleEnvId" jdbcType="INTEGER"/>
+        <result column="mirror_name" property="mirrorName" jdbcType="VARCHAR"/>
+        <result column="job_id" property="jobId" jdbcType="INTEGER"/>
+        <result column="job_reversion" property="jobReversion" jdbcType="INTEGER"/>
+        <result column="module_id" property="moduleId" jdbcType="INTEGER"/>
+        <result column="is_available" property="isAvailable" jdbcType="INTEGER"/>
+        <result column="is_promptly" property="isPromptly" jdbcType="INTEGER"/>
+        <result column="is_used" property="isUsed" jdbcType="INTEGER"/>
+        <result column="op_user_id" property="opUserId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="dev_user_id" property="devUserId" jdbcType="INTEGER"/>
+
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="EnvCenterManage" type="com.xc.fast_deploy.vo.module_vo.ModuleEnvCenterManageVo">
+        <id column="module_Id" property="moduleId" jdbcType="INTEGER"/>
+        <result column="center_name" property="centerName" jdbcType="VARCHAR"/>
+        <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , module_env_id, mirror_name, job_id, job_reversion, module_id, is_available, op_user_id,is_promptly,dev_user_id,
+        create_time, update_time
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleMirrorExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_mirror
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_mirror
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_mirror
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleMirrorExample">
+        delete from module_mirror
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleMirror">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_mirror") AS id
+        </selectKey>
+        insert into module_mirror (id,module_env_id, mirror_name, job_id,
+        job_reversion, module_id, is_available,is_promptly,
+        op_user_id, create_time, update_time,dev_user_id
+        )
+        values (#{id,jdbcType=INTEGER},#{moduleEnvId,jdbcType=INTEGER}, #{mirrorName,jdbcType=VARCHAR},
+        #{jobId,jdbcType=INTEGER},
+        #{jobReversion,jdbcType=INTEGER}, #{moduleId,jdbcType=INTEGER},
+        #{isAvailable,jdbcType=INTEGER},#{isPromptly,jdbcType=INTEGER},
+        #{opUserId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP },#{devUserId,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleMirror">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_mirror") AS id
+        </selectKey>
+        insert into module_mirror
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="moduleEnvId != null">
+                module_env_id,
+            </if>
+
+            <if test="mirrorName != null">
+                mirror_name,
+            </if>
+            <if test="jobId != null">
+                job_id,
+            </if>
+            <if test="jobReversion != null">
+                job_reversion,
+            </if>
+            <if test="isPromptly != null">
+                is_promptly,
+            </if>
+            <if test="moduleId != null">
+                module_id,
+            </if>
+            <if test="isAvailable != null">
+                is_available,
+            </if>
+            <if test="opUserId != null">
+                op_user_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="devUserId != null">
+                dev_user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="moduleEnvId != null">
+                #{moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="mirrorName != null">
+                #{mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobId != null">
+                #{jobId,jdbcType=INTEGER},
+            </if>
+            <if test="jobReversion != null">
+                #{jobReversion,jdbcType=INTEGER},
+            </if>
+            <if test="isPromptly != null">
+                #{isPromptly,jdbcType=INTEGER},
+            </if>
+            <if test="moduleId != null">
+                #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="isAvailable != null">
+                #{isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="opUserId != null">
+                #{opUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devUserId != null">
+                #{devUserId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleMirrorExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_mirror
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_mirror
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.moduleEnvId != null">
+                module_env_id = #{record.moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="record.mirrorName != null">
+                mirror_name = #{record.mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.jobId != null">
+                job_id = #{record.jobId,jdbcType=INTEGER},
+            </if>
+            <if test="record.jobReversion != null">
+                job_reversion = #{record.jobReversion,jdbcType=INTEGER},
+            </if>
+            <if test="record.moduleId != null">
+                module_id = #{record.moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="record.isAvailable != null">
+                is_available = #{record.isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="record.opUserId != null">
+                op_user_id = #{record.opUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.devUserId != null">
+                dev_user_id = #{record.devUserId,jdbcType=INTEGER},
+
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_mirror
+        set id = #{record.id,jdbcType=INTEGER},
+        module_env_id = #{record.moduleEnvId,jdbcType=INTEGER},
+        mirror_name = #{record.mirrorName,jdbcType=VARCHAR},
+        job_id = #{record.jobId,jdbcType=INTEGER},
+        job_reversion = #{record.jobReversion,jdbcType=INTEGER},
+        module_id = #{record.moduleId,jdbcType=INTEGER},
+        is_available = #{record.isAvailable,jdbcType=INTEGER},
+        dev_user_id = #{record.devUserId,jdbcType=INTEGER},
+        op_user_id = #{record.opUserId,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleMirror">
+        update module_mirror
+        <set>
+            <if test="moduleEnvId != null">
+                module_env_id = #{moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="mirrorName != null">
+                mirror_name = #{mirrorName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobId != null">
+                job_id = #{jobId,jdbcType=INTEGER},
+            </if>
+            <if test="isPromptly != null">
+                is_promptly = #{isPromptly,jdbcType=INTEGER},
+            </if>
+            <if test="jobReversion != null">
+                job_reversion = #{jobReversion,jdbcType=INTEGER},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="isAvailable != null">
+                is_available = #{isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="opUserId != null">
+                op_user_id = #{opUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isUsed != null">
+                is_used = #{isUsed,jdbcType=INTEGER},
+            </if>
+            <if test="devUserId != null">
+                dev_user_id= #{devUserId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleMirror">
+        update module_mirror
+        set module_env_id = #{moduleEnvId,jdbcType=INTEGER},
+            mirror_name   = #{mirrorName,jdbcType=VARCHAR},
+            job_id        = #{jobId,jdbcType=INTEGER},
+            job_reversion = #{jobReversion,jdbcType=INTEGER},
+            module_id     = #{moduleId,jdbcType=INTEGER},
+            dev_user_id   = #{devUserId,jdbcType=INTEGER},
+            is_available  = #{isAvailable,jdbcType=INTEGER},
+            op_user_id    = #{opUserId,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            update_time   = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="selectAvailableMirrorById" parameterType="com.xc.fast_deploy.model.master_model.ModuleMirror"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_mirror
+        <where>
+            is_available = 1
+            <if test="moduleId != null and moduleId >= 0">
+                AND module_id = #{moduleId,jdbcType=INTEGER}
+            </if>
+            <if test="moduleEnvId != null and moduleEnvId >= 0">
+                AND module_env_id = #{moduleEnvId,jdbcType=INTEGER}
+            </if>
+            <if test="id != null and id >= 0">
+                AND id = #{id,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectCenManage" parameterType="com.xc.fast_deploy.vo.module_vo.ModuleEnvCenterManageVo"
+            resultMap="EnvCenterManage">
+        SELECT DISTINCT center.center_name AS center_name, manage.module_name AS module_name,manage.id AS module_Id
+        FROM module_mirror mirror LEFT JOIN module_manage manage
+        ON mirror.module_id = manage.id
+        LEFT JOIN module_center center
+        ON manage.center_id = center.id
+        LEFT JOIN module_env env
+        ON mirror.module_env_id = env.id
+        <where>
+            mirror.is_available = 1
+            <if test="envId != null and envId >= 0">
+                AND env.id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="moduleName != null and moduleName != ''">
+                AND manage.module_name LIKE concat('%',#{moduleName,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <resultMap id="MirrorJobEnvVo" type="com.xc.fast_deploy.vo.module_vo.ModuleMirrorJobEnvVo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="mirrorName" property="mirrorName" jdbcType="VARCHAR"/>
+        <result column="jobName" property="jobName" jdbcType="VARCHAR"/>
+        <result column="jobReversion" property="jobReversion" jdbcType="VARCHAR"/>
+        <result column="envName" property="envName" jdbcType="VARCHAR"/>
+        <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!--<select id="selectByModuleId" resultMap="MirrorJobEnvVo" parameterType="java.lang.Integer">-->
+    <!--SELECT mirror.id AS id, mirror.mirror_name AS mirrorName,-->
+    <!--job.job_name AS jobName,mirror.job_reversion AS jobReversion,-->
+    <!--paas.env AS envName,mirror.update_time AS updateTime-->
+    <!--FROM module_mirror mirror-->
+    <!--LEFT JOIN module_job job-->
+    <!--ON mirror.job_id = job.id-->
+    <!--LEFT JOIN module_env env-->
+    <!--ON mirror.module_env_id = env.id-->
+    <!--LEFT JOIN ps_paas paas-->
+    <!--ON env.paas_id = paas.paasid-->
+    <!--WHERE mirror.module_id = #{moduleId,jdbcType=INTEGER}-->
+    <!--ORDER BY updateTime DESC-->
+    <!--LIMIT 20-->
+    <!--</select>-->
+
+    <select id="selectLatestMirrorNameByModuleId" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT mirror_name
+        FROM module_mirror
+        WHERE is_available = 1
+          AND module_id = #{moduleId,jdbcType=INTEGER}
+        ORDER BY update_time
+                DESC LIMIT 1
+    </select>
+
+    <select id="selectAvailInfoByParam" resultType="com.xc.fast_deploy.dto.module.ModuleMirrorDTO"
+            parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleMirrorSelectParamVo">
+        SELECT b.mark AS envName,b.module_name AS moduleName,b.id AS moduleId,a.module_env_id AS moduleEnvId,
+        a.mirror_name AS mirrorName,a.job_id AS jobId,a.update_time AS updateTime,e.job_name AS jobName,
+        a.job_reversion AS jobReversion,a.is_available AS isAvailable,a.create_time AS createTime,a.id AS id
+        FROM module_mirror a
+        LEFT JOIN module_manage b
+        ON a.module_id = b.id
+        LEFT JOIN module_job e
+        ON e.id = a.job_id
+        <where>
+            a.is_available = 1
+            AND
+            b.is_delete = 0
+            <if test="nameCode != null and nameCode != ''">
+                AND a.mirror_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="moduleId != null and moduleId >= 0">
+                AND b.id = #{moduleId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null and envId >= 0">
+                AND a.module_env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.update_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.update_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND a.module_env_id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY a.update_time
+        DESC
+    </select>
+
+    <select id="selectAllAvailableMirrorInfo" resultType="com.xc.fast_deploy.dto.module.ModuleMirrorCertificateEnvDTO">
+        SELECT c.username    AS username,
+               c.password    AS password,
+               b.harbor_url  AS harborUrl,
+               a.mirror_name AS mirrorName,
+               b.id          AS envId,
+               a.id          AS id
+        FROM module_mirror a
+                 LEFT JOIN module_env b
+                           ON a.module_env_id = b.id
+                 LEFT JOIN module_certificate c
+                           ON b.certificate_id = c.id
+                 LEFT JOIN module_manage d
+                           ON d.id = a.module_id
+        WHERE a.is_available = 1
+          AND c.is_deleted = 0
+          AND d.is_delete = 0
+    </select>
+
+    <select id="selectMirrorInfoById" resultType="com.xc.fast_deploy.dto.module.ModuleMirrorCertificateEnvDTO"
+            parameterType="java.lang.Integer">
+        SELECT c.username    AS username,
+               c.password    AS password,
+               b.harbor_url  AS harborUrl,
+               a.mirror_name AS mirrorName,
+               b.id          AS envId,
+               a.id          AS id
+        FROM module_mirror a
+                 LEFT JOIN module_env b
+                           ON a.module_env_id = b.id
+                 LEFT JOIN module_certificate c
+                           ON b.certificate_id = c.id
+        WHERE a.is_available = 1
+          AND c.is_deleted = 0
+          AND a.id = #{mirrorId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByJobIds" parameterType="java.util.Set" resultMap="BaseResultMap">
+        SELECT max(a.update_time) AS update_time,a.job_id,a.is_available
+        FROM module_mirror a
+        <if test="collection != null and collection.size > 0">
+            WHERE a.job_id
+            IN
+            <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            AND a.is_available = 1
+            GROUP BY job_id
+            ORDER BY update_time
+            DESC ;
+        </if>
+    </select>
+
+    <select id="selectLastestMirrorInfo" parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleMirrorSelectParamVo"
+            resultType="com.xc.fast_deploy.dto.module.ModuleMirrorDTO">
+        SELECT b.mark AS envName,b.module_name AS moduleName,b.id AS moduleId,a.module_env_id AS moduleEnvId,
+        a.mirror_name AS mirrorName,a.job_id AS jobId,
+        a.update_time AS updateTime,e.job_name AS jobName,b.center_id AS centerId,
+        a.job_reversion AS jobReversion,a.is_available AS isAvailable,a.is_used AS isUsed,
+        a.create_time AS createTime,a.id AS id
+        FROM module_mirror a
+        LEFT JOIN module_manage b
+        ON a.module_id = b.id
+        LEFT JOIN module_job e
+        ON e.id = a.job_id
+        <where>
+            <if test="opUserId != null and opUserId != ''">
+                and ( a.op_user_id = #{opUserId,jdbcType=VARCHAR} or a.dev_user_id = #{opUserId,jdbcType=VARCHAR})
+            </if>
+            <if test="isUsed !=null">
+                AND a.is_used = #{isUsed ,jdbcType=INTEGER}
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND a.module_env_id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+            ORDER BY a.update_time DESC
+            limit #{size ,jdbcType=INTEGER}
+        </where>
+    </select>
+
+    <select id="selectModuleMirrorLatestBatch"
+            resultType="com.xc.fast_deploy.vo.module_vo.ModuleEnvManageMirrorVo">
+        SELECT
+        a.module_env_id AS envId,b.id AS moduleId,b.module_name AS moduleName,
+        a.id AS mirrorId,a.mirror_name AS mirrorName,a.update_time AS updateTime
+        FROM module_mirror a
+        LEFT JOIN module_manage b
+        ON a.module_id = b.id
+        WHERE a.id IN
+        (SELECT max(d.id)
+        FROM module_mirror d
+        WHERE
+        d.module_id IN
+        <foreach collection="collection" index="index" item="moduleId" open="(" separator="," close=")">
+            #{moduleId}
+        </foreach>
+        AND d.is_available =1
+        GROUP BY d.module_id);
+    </select>
+
+    <update id="updateMirrorIsUsedByModuleId" parameterType="integer">
+        update module_mirror
+        set is_used = 0
+        where module_id = #{moduleId,jdbcType=INTEGER}
+          and is_used = 1
+    </update>
+
+    <select id="selectIsNotUsedMirror" parameterType="java.util.Set"
+            resultType="com.xc.fast_deploy.dto.module.ModuleMirrorCertificateEnvDTO">
+        SELECT c.username AS username,c.password AS password ,b.harbor_url AS harborUrl,a.mirror_name AS mirrorName,
+        b.id AS envId,a.id AS id
+        FROM module_mirror a
+        LEFT JOIN module_env b
+        ON a.module_env_id = b.id
+        LEFT JOIN module_certificate c
+        ON b.certificate_id = c.id
+        where
+        (a.is_available = 0 or a.is_available = 2 or a.is_used = 0)
+        <if test="collection != null and collection.size > 0">
+            AND a.module_env_id
+            IN
+            <foreach collection="collection" index="index" item="envId" open="(" separator="," close=")">
+                #{envId}
+            </foreach>
+        </if>
+    </select>
+
+
+</mapper>

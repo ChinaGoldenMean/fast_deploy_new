@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleEnvMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleEnv">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="env_name" property="envName" jdbcType="VARCHAR"/>
+        <result column="paasname" property="paasname" jdbcType="VARCHAR"/>
+        <result column="env_code" property="envCode" jdbcType="VARCHAR"/>
+        <result column="region_name" property="regionName" jdbcType="VARCHAR"/>
+        <result column="certificate_id" property="certificateId" jdbcType="INTEGER"/>
+        <result column="paas_id" property="paasId" jdbcType="INTEGER"/>
+        <result column="harbor_url" property="harborUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="mvn_profile" property="mvnProfile" jdbcType="VARCHAR"/>
+        <result column="is_need_node_selector" property="isNeedNodeSelector" jdbcType="INTEGER"/>
+        <result column="is_resource_limit" property="isResourceLimit" jdbcType="INTEGER"/>
+        <result column="k8s_config" property="k8sConfig" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ResultMapWithBLOBs" type="com.xc.fast_deploy.model.master_model.ModuleEnv" extends="BaseResultMap">
+        <result column="k8s_config" property="k8sConfig" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,env_name,paas_id,paasname ,env_code, certificate_id,harbor_url,create_time,update_time,
+        mvn_profile,is_need_node_selector,is_resource_limit
+    </sql>
+    <sql id="Blobs_Column_List">
+        k8s_config
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_env a
+        LEFT JOIN ps_paas b
+        ON a.paas_id = b.paasid
+        WHERE a.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectWithBlobsByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blobs_Column_List"/>
+        FROM module_env a
+        LEFT JOIN ps_paas b
+        ON a.paas_id = b.paasid
+        WHERE a.id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleEnv">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_env") AS id
+        </selectKey>
+        insert into module_env(id,env_name,env_code,paas_id, k8s_config, certificate_id,harbor_url, create_time,is_prod,
+        update_time
+        )
+        values
+        (#{id,jdbcType=INTEGER},#{envName,jdbcType=VARCHAR},#{envCode,jdbcType=VARCHAR},#{paasId,jdbcType=INTEGER},#{k8sConfig,jdbcType=LONGVARCHAR},
+        #{certificateId,jdbcType=INTEGER}, #{harborUrl,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},#{isProd,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select id,
+               paas_id,
+               k8s_config,
+               certificate_id,
+               harbor_url,
+               env_name
+        from module_env
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectPsAll" resultMap="BaseResultMap" parameterType="java.util.Set">
+        SELECT
+        paas_id , paasname
+        FROM ps_paas a
+        LEFT JOIN module_env b
+        ON a.paasid = b.paas_id
+        <if test="collection != null and collection.size > 0">
+            WHERE b.id
+            IN
+            <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectEnvAll" resultType="com.xc.fast_deploy.model.master_model.ModuleEnv"
+            parameterType="java.util.Set">
+        select env.id AS id,env.env_code AS envCode,env.env_name AS envName,paas.paasname AS paasname,
+        env.mvn_profile AS mvnProfile,env.is_prod AS isProd
+        from module_env env
+        left join ps_paas paas
+        ON env.paas_id = paas.paasid
+        <if test="collection != null and collection.size > 0">
+            WHERE env.id
+            IN
+            <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleEnv">
+        update module_env
+        <set>
+            <if test="envName != null">
+                env_name = #{envName,jdbcType=VARCHAR},
+            </if>
+            <if test="envCode != null">
+                env_code = #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="harborUrl != null">
+                harbor_url = #{harborUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="k8sConfig != null">
+                k8s_config = #{k8sConfig,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="paasId != null">
+                paas_id = #{paasId,jdbcType=INTEGER},
+            </if>
+            <if test="certificateId != null">
+                certificate_id = #{certificateId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_env
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+
+    <select id="selectWithCertById" resultType="com.xc.fast_deploy.vo.module_vo.ModuleEnvVo"
+            parameterType="java.lang.Integer">
+        SELECT a.env_name   AS envName,
+               a.env_code   AS envCode,
+               a.harbor_url AS harborUrl,
+               c.username,
+               c.password
+        FROM module_env a
+                 LEFT JOIN ps_paas b
+                           ON a.paas_id = b.paasid
+                 LEFT JOIN module_certificate c
+                           ON a.certificate_id = c.id
+        WHERE a.id = #{id,jdbcType=INTEGER}
+          AND c.type = 2
+    </select>
+
+    <select id="getAllModuleEnv" resultType="com.xc.fast_deploy.model.master_model.ModuleEnv"
+            parameterType="java.util.Set">
+        SELECT a.id, a.env_name AS envName ,a.env_code AS envCode,a.harbor_url AS harborUrl,
+        c.username,c.name,a.create_time AS createTime,a.update_time AS updateTime
+        FROM module_env a
+        LEFT JOIN ps_paas b
+        ON a.paas_id = b.paasid
+        LEFT JOIN module_certificate c
+        ON a.certificate_id = c.id
+        <where>
+            c.type = 2
+            and a.is_prod = #{prod,jdbcType=INTEGER}
+            <if test="collection != null and collection.size > 0">
+                AND a.id
+                IN
+                <foreach collection="collection" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY a.create_time
+        DESC
+    </select>
+
+    <select id="selectCerEnvInfoById" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.dto.module.ModuleEnvDTO">
+        SELECT b.paasid     AS paasId,
+               a.env_name   AS envName,
+               a.env_code   AS envCode,
+               a.harbor_url AS harborUrl,
+               a.k8s_config AS k8sConfig,
+               c.username,
+               c.name       AS certificateName,
+               c.id         AS certificateId
+        FROM module_env a
+                 LEFT JOIN ps_paas b
+                           ON a.paas_id = b.paasid
+                 LEFT JOIN module_certificate c
+                           ON a.certificate_id = c.id
+        WHERE a.id = #{id,jdbcType=INTEGER}
+          AND c.type = 2
+    </select>
+
+    <select id="getEnvIdByPaasId" resultType="com.xc.fast_deploy.model.master_model.ModuleEnv">
+        SELECT b.paasid AS paasId, a.id AS id
+        FROM module_env a
+                 LEFT JOIN ps_paas b
+                           ON a.paas_id = b.paasid
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT id, env_name, paas_id, env_code
+        FROM module_env
+    </select>
+
+    <select id="getEnvIdByEnvName" resultType="java.lang.Integer"
+            parameterType="java.lang.String">
+        select id
+        FROM module_env
+        where env_name = #{envName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPsAllData" resultType="com.xc.fast_deploy.vo.module_vo.PsPaasEnvVo">
+        SELECT a.paasid AS paasid, a.paasname AS paasname, a.env AS env
+        FROM ps_paas a
+    </select>
+
+</mapper>

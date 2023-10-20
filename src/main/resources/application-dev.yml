@@ -1,0 +1,102 @@
+server:
+  port: 8093
+file:
+  storge:
+    path:
+      prefix: D:/storge/
+      uploadPath: D:\storge\svn_module_excel\
+      excelPath: D:\storge\model_file\svn_module.xlsx
+      modelPath: D:\storge\model_file\model.zip
+      moduleUploadPath: D:\storge\upload_path\
+      moduleExportPath: D:\storge\export_path\
+      deploySelfYamlPath: D:\storge\deploy_self_yaml\
+logging:
+  path: D:\storge
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      master:
+        url: jdbc:mysql://134.108.6.246:8806/deploy?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: root
+        password: Zdh!@adm_18
+      slave:
+        url: jdbc:mysql://134.108.1.149:8821/psotdata?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+        username: zdhadmin
+        password: Zdh!@adm_19
+      initial-size: 5
+      min-idle: 10
+      max-active: 50
+      max-wait: 600000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+      poolPreparedStatements: true
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 30000
+  #测试
+  #      url: jdbc:mysql://134.96.252.44:8806/zdyw?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+  #      username: root
+  #      password: admin@123456
+  #生产
+  #      url: jdbc:mysql://134.108.6.246:8806/zdyw?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&?zeroDateTimeBehavior=convertToNull&useSSL=false
+  #      username: root
+  #      password: Zdh!@adm_18
+
+#  redis:
+#    database: 0
+#    host: 134.98.102.77
+#    port: 6379
+#    jedis:
+#      pool:
+#        max-active: 200
+#        max-wait: -1ms
+#        max-idle: 10
+#        min-idle: 2
+#    timeout: 1000ms
+#jenkins:
+#    url: http://192.168.132.135:8080/
+#    username: admin
+#    password: admin123
+jenkins:
+  url: http://134.96.253.71:8001/jenkins
+  username: luocb
+  password: Tasa!9$%
+local:
+  ipAddr: localhost:8093
+netty:
+  websocket:
+    port: 6001
+    # host: 0.0.0.0
+    bossLoopGroupThreads: 20
+    workerLoopGroupThreads: 20
+    optionSoBacklog: 128
+    childOptionSoRcvbuf: 1024
+    childOptionSoSndbuf: 1024
+myself:
+  httpUrl:
+    getPermissionUrl: http://134.96.252.42:8000/multiauth/fast_deploy/listemid_roleid2/?empid=
+    judgeIsLogin: http://134.96.252.42:8000/multiauth/Session_online/islogin/
+    getNodeResources: http://134.108.6.244:8000/multiauth/K8s_monitor/listnode/?page=1&page_size=100&
+    redirectLogin: loginurl=http://134.98.102.81:8091/loginHtml
+    loginUrl: http://134.98.102.81:8091/loginHtml
+    logoutUrl: http://134.98.102.81:8091/loginHtml
+    loginIp: 134.98.102.81
+    zdywCookeyKey: zdywtestsession
+  pspass:
+    prod: false
+    ids: 4,10,19,25,26,27,29
+    prodId: 10
+    realprodid:
+    oldversion: 22,24,25,26,27,30,32,33,35,36,37,38,39
+  queue:
+    size: 3
+redisConfig:
+  ip: 134.108.11.175
+  port: 9054
+  database: 0
+  password: TEST_BSS_DEPLOY_001_USER#TEST_BSS_DEPLOY_001_USER123
+  maxIdle: 30
+  minIdle: 5
+  maxTotal: 50
+  MaxWaitMillis: 3000

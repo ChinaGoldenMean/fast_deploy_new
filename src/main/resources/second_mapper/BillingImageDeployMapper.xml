@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.slave_dao.BillingImageDeployMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.slave_model.BillingImageDeploy">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="tar_name" property="tarName" jdbcType="VARCHAR"/>
+        <result column="image_name" property="imageName" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="env_code" property="envCode" jdbcType="VARCHAR"/>
+        <result column="center_name" property="centerName" jdbcType="VARCHAR"/>
+        <result column="is_available" property="isAvailable" jdbcType="INTEGER"/>
+        <result column="is_reviewed" property="isReviewed" jdbcType="INTEGER"/>
+        <result column="review_time" property="reviewTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , tar_name, image_name, env_id, env_code, center_name, is_available, is_reviewed,
+    review_time, create_time, update_time
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.slave_model.example.BillingImageDeployExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from billing_image_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from billing_image_deploy
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from billing_image_deploy
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.slave_model.example.BillingImageDeployExample">
+        delete from billing_image_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.slave_model.BillingImageDeploy">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into billing_image_deploy (tar_name, image_name, env_id,
+        env_code, center_name, is_available,
+        is_reviewed, review_time, create_time,
+        update_time)
+        values (#{tarName,jdbcType=VARCHAR}, #{imageName,jdbcType=VARCHAR}, #{envId,jdbcType=INTEGER},
+        #{envCode,jdbcType=VARCHAR}, #{centerName,jdbcType=VARCHAR}, #{isAvailable,jdbcType=INTEGER},
+        #{isReviewed,jdbcType=INTEGER}, #{reviewTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.slave_model.BillingImageDeploy">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into billing_image_deploy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tarName != null">
+                tar_name,
+            </if>
+            <if test="imageName != null">
+                image_name,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="envCode != null">
+                env_code,
+            </if>
+            <if test="centerName != null">
+                center_name,
+            </if>
+            <if test="isAvailable != null">
+                is_available,
+            </if>
+            <if test="isReviewed != null">
+                is_reviewed,
+            </if>
+            <if test="reviewTime != null">
+                review_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tarName != null">
+                #{tarName,jdbcType=VARCHAR},
+            </if>
+            <if test="imageName != null">
+                #{imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="centerName != null">
+                #{centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="isAvailable != null">
+                #{isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="isReviewed != null">
+                #{isReviewed,jdbcType=INTEGER},
+            </if>
+            <if test="reviewTime != null">
+                #{reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.slave_model.example.BillingImageDeployExample"
+            resultType="java.lang.Integer">
+        select count(*) from billing_image_deploy
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update billing_image_deploy
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.tarName != null">
+                tar_name = #{record.tarName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.imageName != null">
+                image_name = #{record.imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.envCode != null">
+                env_code = #{record.envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.centerName != null">
+                center_name = #{record.centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isAvailable != null">
+                is_available = #{record.isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="record.isReviewed != null">
+                is_reviewed = #{record.isReviewed,jdbcType=INTEGER},
+            </if>
+            <if test="record.reviewTime != null">
+                review_time = #{record.reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update billing_image_deploy
+        set id = #{record.id,jdbcType=BIGINT},
+        tar_name = #{record.tarName,jdbcType=VARCHAR},
+        image_name = #{record.imageName,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        env_code = #{record.envCode,jdbcType=VARCHAR},
+        center_name = #{record.centerName,jdbcType=VARCHAR},
+        is_available = #{record.isAvailable,jdbcType=INTEGER},
+        is_reviewed = #{record.isReviewed,jdbcType=INTEGER},
+        review_time = #{record.reviewTime,jdbcType=TIMESTAMP},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.slave_model.BillingImageDeploy">
+        update billing_image_deploy
+        <set>
+            <if test="tarName != null">
+                tar_name = #{tarName,jdbcType=VARCHAR},
+            </if>
+            <if test="imageName != null">
+                image_name = #{imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                env_code = #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="centerName != null">
+                center_name = #{centerName,jdbcType=VARCHAR},
+            </if>
+            <if test="isAvailable != null">
+                is_available = #{isAvailable,jdbcType=INTEGER},
+            </if>
+            <if test="isReviewed != null">
+                is_reviewed = #{isReviewed,jdbcType=INTEGER},
+            </if>
+            <if test="reviewTime != null">
+                review_time = #{reviewTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.slave_model.BillingImageDeploy">
+        update billing_image_deploy
+        set tar_name     = #{tarName,jdbcType=VARCHAR},
+            image_name   = #{imageName,jdbcType=VARCHAR},
+            env_id       = #{envId,jdbcType=INTEGER},
+            env_code     = #{envCode,jdbcType=VARCHAR},
+            center_name  = #{centerName,jdbcType=VARCHAR},
+            is_available = #{isAvailable,jdbcType=INTEGER},
+            is_reviewed  = #{isReviewed,jdbcType=INTEGER},
+            review_time  = #{reviewTime,jdbcType=TIMESTAMP},
+            create_time  = #{createTime,jdbcType=TIMESTAMP},
+            update_time  = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectPageInfo" parameterType="com.xc.fast_deploy.vo.module_vo.param.BillingImageSelectParamVo"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM billing_image_deploy a
+        <where>
+            <if test="envId != null and envId >0">
+                AND a.env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="isReviewed != null and isReviewed >= 0">
+                AND a.is_reviewed = #{isReviewed,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.update_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.update_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="nameCode != null and nameCode != ''">
+                AND (a.center_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+                OR a.image_name LIKE concat('%',#{nameCode,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

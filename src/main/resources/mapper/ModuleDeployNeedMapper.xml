@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleDeployNeedMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleDeployNeed">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="env_id" jdbcType="INTEGER" property="envId"/>
+        <result column="env_name" jdbcType="VARCHAR" property="envName"/>
+        <result column="approve_status" jdbcType="INTEGER" property="approveStatus"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="pst_test" jdbcType="INTEGER" property="pstTest"/>
+        <result column="dr_test" jdbcType="INTEGER" property="drTest"/>
+        <result column="deploy_time" jdbcType="TIMESTAMP" property="deployTime"/>
+        <result column="need_number" jdbcType="VARCHAR" property="needNumber"/>
+        <result column="need_content" jdbcType="VARCHAR" property="needContent"/>
+        <result column="need_describe" jdbcType="VARCHAR" property="needDescribe"/>
+        <result column="approver" jdbcType="VARCHAR" property="approver"/>
+        <result column="approve_time" jdbcType="TIMESTAMP" property="approveTime"/>
+        <result column="developer" jdbcType="VARCHAR" property="developer"/>
+        <result column="test_report_path" jdbcType="VARCHAR" property="testReportPath"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , env_id, env_name, approve_status, dr, pst_test, dr_test, deploy_time, need_number, need_content,
+    need_describe, approver, approve_time, developer, test_report_path, create_time, 
+    update_time
+    </sql>
+    <select id="selectByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployNeedExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_deploy_need
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_deploy_need
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_deploy_need
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployNeedExample">
+        delete from module_deploy_need
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployNeed">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_need") AS id
+        </selectKey>
+        insert into module_deploy_need (id, env_id, env_name, approve_status,
+        dr, pst_test, dr_test,
+        deploy_time, need_number, need_content,
+        need_describe, approver, approve_time,
+        developer, test_report_path, create_time,
+        update_time)
+        values (#{id,jdbcType=INTEGER}, #{envId,jdbcType=INTEGER}, #{envName,jdbcType=VARCHAR},
+        #{approveStatus,jdbcType=INTEGER},
+        #{dr,jdbcType=INTEGER}, #{pstTest,jdbcType=INTEGER}, #{drTest,jdbcType=INTEGER},
+        #{deployTime,jdbcType=TIMESTAMP}, #{needNumber,jdbcType=VARCHAR}, #{needContent,jdbcType=VARCHAR},
+        #{needDescribe,jdbcType=VARCHAR}, #{approver,jdbcType=VARCHAR}, #{approveTime,jdbcType=TIMESTAMP},
+        #{developer,jdbcType=VARCHAR}, #{testReportPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployNeed">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_deploy_need") AS id
+        </selectKey>
+        insert into module_deploy_need
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="envName != null">
+                env_name,
+            </if>
+            <if test="approveStatus != null">
+                approve_status,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="pstTest != null">
+                pst_test,
+            </if>
+            <if test="drTest != null">
+                dr_test,
+            </if>
+            <if test="deployTime != null">
+                deploy_time,
+            </if>
+            <if test="needNumber != null">
+                need_number,
+            </if>
+            <if test="needContent != null">
+                need_content,
+            </if>
+            <if test="needDescribe != null">
+                need_describe,
+            </if>
+            <if test="approver != null">
+                approver,
+            </if>
+            <if test="approveTime != null">
+                approve_time,
+            </if>
+            <if test="developer != null">
+                developer,
+            </if>
+            <if test="testReportPath != null">
+                test_report_path,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envName != null">
+                #{envName,jdbcType=VARCHAR},
+            </if>
+            <if test="approveStatus != null">
+                #{approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="pstTest != null">
+                #{pstTest,jdbcType=INTEGER},
+            </if>
+            <if test="drTest != null">
+                #{drTest,jdbcType=INTEGER},
+            </if>
+            <if test="deployTime != null">
+                #{deployTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="needNumber != null">
+                #{needNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="needContent != null">
+                #{needContent,jdbcType=VARCHAR},
+            </if>
+            <if test="needDescribe != null">
+                #{needDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="approver != null">
+                #{approver,jdbcType=VARCHAR},
+            </if>
+            <if test="approveTime != null">
+                #{approveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="developer != null">
+                #{developer,jdbcType=VARCHAR},
+            </if>
+            <if test="testReportPath != null">
+                #{testReportPath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleDeployNeedExample"
+            resultType="java.lang.Long">
+        select count(*) from module_deploy_need
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_deploy_need
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.envName != null">
+                env_name = #{record.envName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approveStatus != null">
+                approve_status = #{record.approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.dr != null">
+                dr = #{record.dr,jdbcType=INTEGER},
+            </if>
+            <if test="record.pstTest != null">
+                pst_test = #{record.pstTest,jdbcType=INTEGER},
+            </if>
+            <if test="record.drTest != null">
+                dr_test = #{record.drTest,jdbcType=INTEGER},
+            </if>
+            <if test="record.deployTime != null">
+                deploy_time = #{record.deployTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.needNumber != null">
+                need_number = #{record.needNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.needContent != null">
+                need_content = #{record.needContent,jdbcType=VARCHAR},
+            </if>
+            <if test="record.needDescribe != null">
+                need_describe = #{record.needDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approver != null">
+                approver = #{record.approver,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approveTime != null">
+                approve_time = #{record.approveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.developer != null">
+                developer = #{record.developer,jdbcType=VARCHAR},
+            </if>
+            <if test="record.testReportPath != null">
+                test_report_path = #{record.testReportPath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_deploy_need
+        set id = #{record.id,jdbcType=INTEGER},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        env_name = #{record.envName,jdbcType=VARCHAR},
+        approve_status = #{record.approveStatus,jdbcType=INTEGER},
+        dr = #{record.dr,jdbcType=INTEGER},
+        pst_test = #{record.pstTest,jdbcType=INTEGER},
+        dr_test = #{record.drTest,jdbcType=INTEGER},
+        deploy_time = #{record.deployTime,jdbcType=TIMESTAMP},
+        need_number = #{record.needNumber,jdbcType=VARCHAR},
+        need_content = #{record.needContent,jdbcType=VARCHAR},
+        need_describe = #{record.needDescribe,jdbcType=VARCHAR},
+        approver = #{record.approver,jdbcType=VARCHAR},
+        approve_time = #{record.approveTime,jdbcType=TIMESTAMP},
+        developer = #{record.developer,jdbcType=VARCHAR},
+        test_report_path = #{record.testReportPath,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployNeed">
+        update module_deploy_need
+        <set>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envName != null">
+                env_name = #{envName,jdbcType=VARCHAR},
+            </if>
+            <if test="approveStatus != null">
+                approve_status = #{approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="pstTest != null">
+                pst_test = #{pstTest,jdbcType=INTEGER},
+            </if>
+            <if test="drTest != null">
+                dr_test = #{drTest,jdbcType=INTEGER},
+            </if>
+            <if test="deployTime != null">
+                deploy_time = #{deployTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="needNumber != null">
+                need_number = #{needNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="needContent != null">
+                need_content = #{needContent,jdbcType=VARCHAR},
+            </if>
+            <if test="needDescribe != null">
+                need_describe = #{needDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="approver != null">
+                approver = #{approver,jdbcType=VARCHAR},
+            </if>
+            <if test="approveTime != null">
+                approve_time = #{approveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="developer != null">
+                developer = #{developer,jdbcType=VARCHAR},
+            </if>
+            <if test="testReportPath != null">
+                test_report_path = #{testReportPath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="findModuleEnvByNeeds" resultType="com.xc.fast_deploy.vo.module_vo.ModuleUpgradeVo">
+        select dn.env_id as envId,mn.module_id as moduleId,dn.id as needId from module_deploy_need dn left join
+        module_need mn on dn.id = mn.need_id
+        where dn.id in
+        <foreach collection="needIds" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </select>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleDeployNeed">
+        update module_deploy_need
+        set env_id           = #{envId,jdbcType=INTEGER},
+            env_name         = #{envName,jdbcType=VARCHAR},
+            approve_status   = #{approveStatus,jdbcType=INTEGER},
+            dr               = #{dr,jdbcType=INTEGER},
+            pst_test         = #{pstTest,jdbcType=INTEGER},
+            dr_test          = #{drTest,jdbcType=INTEGER},
+            deploy_time      = #{deployTime,jdbcType=TIMESTAMP},
+            need_number      = #{needNumber,jdbcType=VARCHAR},
+            need_content     = #{needContent,jdbcType=VARCHAR},
+            need_describe    = #{needDescribe,jdbcType=VARCHAR},
+            approver         = #{approver,jdbcType=VARCHAR},
+            approve_time     = #{approveTime,jdbcType=TIMESTAMP},
+            developer        = #{developer,jdbcType=VARCHAR},
+            test_report_path = #{testReportPath,jdbcType=VARCHAR},
+            create_time      = #{createTime,jdbcType=TIMESTAMP},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectModuleNeedById" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.model.master_model.ModuleNeed">
+        select id, need_id as needId, module_id as moduleId
+        from module_need
+        where need_id = #{needId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertModuleNeed" parameterType="java.util.List">
+        insert into module_need
+        (need_id, module_id)
+        values
+        <foreach collection="list" item="moduleNeedList" index="index" separator=",">
+            (#{moduleNeedList.needId,jdbcType=INTEGER},
+            #{moduleNeedList.moduleId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <select id="selectByNeedDescribe" resultType="integer">
+        select count(id)
+        from module_deploy_need
+        where need_describe = #{needDescribe,jdbcType=VARCHAR}
+          and env_id = #{envId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteModuleNeedByNeedId" parameterType="integer">
+        delete
+        from module_need
+        where need_id = #{needId,jdbcType=INTEGER}
+    </delete>
+    <select id="selectDeveploperById" resultType="string">
+        select user.user_id
+        from module_deploy_need need
+                 left join module_user user
+        on need.developer = user.cname
+        where need.id =#{needId}
+    </select>
+    <select id="selectAllNeedByDeveloper" parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleNeedSelectParamVo"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_deploy_need
+        <where>
+            env_id
+            IN
+            <foreach collection="envIds" index="index" item="id" open="(" separator="," close=")">
+                #{id,jdbcType=INTEGER}
+            </foreach>
+            <if test="developer != null and developer != ''">
+                and developer like concat('%',#{developer,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and deploy_time >= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and deploy_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envId != null">
+                and env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="status != null">
+                and approve_status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="searchKey != null and searchKey != ''">
+                and (need_number like concat('%',#{searchKey,jdbcType=VARCHAR},'%')
+                or need_content like concat('%',#{searchKey,jdbcType=VARCHAR},'%')
+                or need_describe like concat('%',#{searchKey,jdbcType=VARCHAR},'%'))
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectAllNeed" parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleNeedSelectParamVo"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_deploy_need
+        <where>
+            approve_status >= 1
+            AND env_id
+            IN
+            <foreach collection="envIds" index="index" item="id" open="(" separator="," close=")">
+                #{id,jdbcType=INTEGER}
+            </foreach>
+            <if test="beginTime != null and beginTime != ''">
+                and deploy_time >= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and deploy_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envId != null">
+                and env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="status != null">
+                and approve_status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="searchKey != null and searchKey != ''">
+                and (need_number like concat('%',#{searchKey,jdbcType=VARCHAR},'%')
+                or developer like concat('%',#{searchKey,jdbcType=VARCHAR},'%')
+                or need_content like concat('%',#{searchKey,jdbcType=VARCHAR},'%')
+                or need_describe like concat('%',#{searchKey,jdbcType=VARCHAR},'%'))
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectModuleNeedByNeedIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_deploy_need
+        where id in
+        <foreach collection="array" index="index" item="needId" open="(" close=")" separator=",">
+            #{needId}
+        </foreach>
+    </select>
+
+    <select id="selectAllModuleByneedId" resultType="integer">
+        select a.module_id as moduleIds
+        from module_need a, module_manage b
+        where
+        a.module_id = b.id
+        and a.need_id = #{needId,jdbcType=INTEGER}
+        <if test="envId != null">
+            and b.env_id = #{envId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+</mapper>
