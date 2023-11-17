@@ -4,6 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.xc.fast_deploy.dto.K8sYamlDTO;
+import com.xc.fast_deploy.dto.k8s.K8sApiResult;
+import com.xc.fast_deploy.dto.k8s.K8sObject;
+import com.xc.fast_deploy.myException.ServiceException;
 import com.xc.fast_deploy.myenum.k8sEnum.K8sApiversionTypeEnum;
 import com.xc.fast_deploy.myenum.k8sEnum.K8sKindTypeEnum;
 import com.xc.fast_deploy.utils.constant.K8sNameSpace;
@@ -21,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -197,11 +202,53 @@ public class K8sUtils {
       e.printStackTrace();
       throw new RuntimeException();
     }
-    
+  
     client = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.MINUTES).readTimeout(5, TimeUnit.MINUTES)
         .sslSocketFactory(sslSocketFactory, trustManager)
         .build();
     return client;
+  }
+  
+  public static K8sYamlDTO transJson2Vo(JSONObject json, String nameSpaces) {
+    K8sYamlDTO k8SYamlDTO = null;
+    if (json != null) {
+      String apiVersion = json.getString(K8sObject.API_VERSION);
+      log.info("属性apiVersion", apiVersion);
+      if (apiVersion == null || apiVersion.isEmpty()) {
+        return null;
+      }
+      V1ObjectMeta objectMeta = K8sUtils.toObject(json.get(K8sObject.METADATA), V1ObjectMeta.class);
+      
+      log.info("属性objectMeta", objectMeta);
+      if (objectMeta == null || objectMeta.getName() == null) {
+        return null;
+      }
+      String namespace = !org.springframework.util.StringUtils.isEmpty(objectMeta.getNamespace())
+          ? objectMeta.getNamespace()
+          : K8sObject.NAMESPACE;
+      String kind = json.getString(K8sObject.KIND);
+      
+      if (nameSpaces != null && nameSpaces.indexOf("all,") < 0) {
+        namespace = nameSpaces;
+        objectMeta.setNamespace(namespace);
+        json.put(K8sObject.METADATA, objectMeta);
+      }
+      String selfLink = objectMeta.getSelfLink();
+      log.info("属性namespace", namespace);
+      log.info("属性kind", kind);
+      if (kind == null || kind.isEmpty()) {
+        return null;
+      }
+      k8SYamlDTO = new K8sYamlDTO(namespace, apiVersion, kind, objectMeta.getName(), objectMeta.getLabels(), selfLink);
+      
+      k8SYamlDTO.setO(json);
+    }
+    return k8SYamlDTO;
+  }
+  
+  public static K8sYamlDTO transJson2Vo(JSONObject json) {
+    
+    return transJson2Vo(json, null);
   }
   
   /**
@@ -253,6 +300,31 @@ public class K8sUtils {
       e.printStackTrace();
     }
     return back;
+  }
+  
+  public static <T> T toObject(String str, Class<T> tClass) {
+    if (org.springframework.util.StringUtils.isEmpty(str)) {
+      return null;
+    }
+    final org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
+    final Object obj = yaml.load(str);
+    return toObject(obj, tClass);
+  }
+  
+  public static <T> T toObject(Object obj, Class<T> tClass) {
+    if (org.springframework.util.StringUtils.isEmpty(obj)) {
+      return null;
+    }
+    T cla;
+    try {
+      final String json = new Gson().toJson(obj);
+      cla = Yaml.loadAs(json, tClass);
+      
+    } catch (ScannerException e) {
+      throw new ServiceException(e.getMessage());
+    }
+    
+    return cla;
   }
   
   public static String okhttpDeleteBack(String k8sConfig, String url) throws ApiException {
@@ -329,6 +401,14 @@ public class K8sUtils {
       e.printStackTrace();
     }
     return back;
+  }
+  
+  public static String getMessage(ApiException e) {
+    String message = e.getMessage();
+    if (e.getResponseBody() != null) {
+      message = com.alibaba.fastjson.JSON.parseObject(e.getResponseBody(), K8sApiResult.class).getMessage();
+    }
+    return message;
   }
   
   private static X509TrustManager trustManagerForCertificates(String cad) {

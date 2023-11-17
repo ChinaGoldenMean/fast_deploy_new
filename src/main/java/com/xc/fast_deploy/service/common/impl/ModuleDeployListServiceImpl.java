@@ -354,7 +354,7 @@ public class ModuleDeployListServiceImpl implements ModuleDeployListService {
         //循环遍历替换镜像
         for (ModuleEnvManageMirrorVo envManageMirrorVo : mirrorList) {
           ResponseDTO resp = moduleDeployService.changeMirror(envManageMirrorVo.getModuleId(),
-              envManageMirrorVo.getEnvId(), envManageMirrorVo.getMirrorId(), moduleUser);
+              envManageMirrorVo.getEnvId(), envManageMirrorVo.getMirrorId(), moduleUser, null);
           resultMap.put(envManageMirrorVo.getModuleName(), resp.getCode() == 200);
         }
       }

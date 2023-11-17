@@ -27,6 +27,8 @@ public interface ModuleManageMapper extends BaseMapper<ModuleManage, Integer> {
   
   ModuleManage selectByPrimaryKey(Integer id);
   
+  String selectHarborUri(@Param("envId") Integer envId, @Param("moduleId") Integer moduleId);
+  
   int updateByExampleSelective(@Param("record") ModuleManage record, @Param("example") ModuleManageExample example);
   
   int updateByExample(@Param("record") ModuleManage record, @Param("example") ModuleManageExample example);

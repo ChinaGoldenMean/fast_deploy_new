@@ -31,45 +31,49 @@ public class RunJobWebSocket {
     private String token;
     private boolean isUpdateAllCode;
     private boolean isNeedUpCode;
-    
-    private boolean isOffline;
+  private boolean isGreenChannel;
+  private boolean isOffline;
     
     @OnOpen
     public void onOpen(Session session, ParameterMap parameterMap) {
 //        String envIdString = parameterMap.getParameter("envId");
-        String token = parameterMap.getParameter("X-token");
-        String isUpdate = parameterMap.getParameter("isUpdate");
-        String isNeedUp = parameterMap.getParameter("isNeedUpCode");
-        
-        String isOfflineStr = parameterMap.getParameter("isOffline");
-        log.info("打开websocket,参数token:{},isUpdate:{}", token, isUpdate);
-        if (StringUtils.isNotBlank(token)
-            && StringUtils.isNotBlank(isUpdate)) {
-            Integer isUpdateCode;
-            Integer isNeedUpInt;
-            Integer offline = null;
-            try {
-                isUpdateCode = Integer.valueOf(isUpdate);
-                isNeedUpInt = Integer.valueOf(isNeedUp);
-                offline = Integer.valueOf(isOfflineStr);
-            } catch (NumberFormatException e) {
-                session.sendText("输入参数不符合格式");
-                session.close();
-                return;
-            }
-            this.isUpdateAllCode = (isUpdateCode == 1);
-            this.isNeedUpCode = (isNeedUpInt == 1);
-            boolean isOffline = (offline == 1);
-            boolean flag = false;
-            Map<Integer, Set<String>> envPermissionMap =
-                userService.selectEnvPermissionByUserId(JwtUtil.getUserIdFromToken(token));
-            //表明该用户无任何环境的权限或者无该环境的权限
-            Set<Integer> keySet = envPermissionMap.keySet();
-            if (keySet.size() > 0) {
-                for (Integer envId : keySet) {
-                    Set<String> permissionSet = envPermissionMap.get(envId);
-                    if (permissionSet.contains("image_make_run_job")) {
-                        flag = true;
+      String token = parameterMap.getParameter("X-token");
+      String isUpdate = parameterMap.getParameter("isUpdate");
+      String isNeedUp = parameterMap.getParameter("isNeedUpCode");
+      String isGreenChannelStr = parameterMap.getParameter("isGreenChannel");
+  
+      String isOfflineStr = parameterMap.getParameter("isOffline");
+      log.info("打开websocket,参数token:{},isUpdate:{}", token, isUpdate);
+      if (StringUtils.isNotBlank(token)
+          && StringUtils.isNotBlank(isUpdate)) {
+        Integer isUpdateCode;
+        Integer isNeedUpInt;
+        Integer offline = null;
+        try {
+          isUpdateCode = Integer.valueOf(isUpdate);
+          isNeedUpInt = Integer.valueOf(isNeedUp);
+          offline = Integer.valueOf(isOfflineStr);
+        } catch (NumberFormatException e) {
+          session.sendText("输入参数不符合格式");
+          session.close();
+          return;
+        }
+        boolean isGreenChannel = Integer.valueOf(isGreenChannelStr) == 1;
+        this.isUpdateAllCode = (isUpdateCode == 1);
+        this.isNeedUpCode = (isNeedUpInt == 1);
+        boolean isOffline = (offline == 1);
+    
+        this.isGreenChannel = Integer.valueOf(isGreenChannelStr) == 1;
+        boolean flag = false;
+        Map<Integer, Set<String>> envPermissionMap =
+            userService.selectEnvPermissionByUserId(JwtUtil.getUserIdFromToken(token));
+        //表明该用户无任何环境的权限或者无该环境的权限
+        Set<Integer> keySet = envPermissionMap.keySet();
+        if (keySet.size() > 0) {
+          for (Integer envId : keySet) {
+            Set<String> permissionSet = envPermissionMap.get(envId);
+            if (permissionSet.contains("image_make_run_job")) {
+              flag = true;
                         break;
                     }
                 }
@@ -132,8 +136,9 @@ public class RunJobWebSocket {
                 }
                 RunJobDataVo runJobDataVo = new RunJobDataVo();
                 runJobDataVo.setIsUpdateAllCode(isUpdateAllCode);
-                runJobDataVo.setIsNeedUpCode(isNeedUpCode);
-                runJobDataVo.setIsPromptly(false);
+              runJobDataVo.setIsNeedUpCode(isNeedUpCode);
+              runJobDataVo.setIsGreenChannel(isGreenChannel);
+              runJobDataVo.setIsPromptly(false);
                 runJobDataVo.setNeedIdStr(null);
                 runJobDataVo.setJobId(jobId);
                 runJobDataVo.setSession(session);

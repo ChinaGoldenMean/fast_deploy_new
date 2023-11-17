@@ -43,6 +43,7 @@ import com.xc.fast_deploy.vo.module_vo.param.ModuleJobSelectParamVo;
 import com.xc.fast_deploy.vo.module_vo.param.ModulePackageParamVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,10 @@ import static com.xc.fast_deploy.utils.FoldUtils.SEP;
 @DependsOn("modulePackageServiceImpl")
 public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> implements ModuleJobService {
     @Autowired
+    ModuleBuildInfoMapper infoMapper;
+    @Autowired
+    ModulePackageMapperModule module;
+    @Autowired
     ModuleDeployNeedMapper needMapper;
     @Autowired
     private ModuleManageMapper manageMapper;
@@ -82,6 +87,8 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
     private ModuleEnvService envService;
     @Autowired
     private ModulePackageService packageService;
+    @Autowired
+    private ModulePackageMapper packageMapper;
     @Autowired
     private ModuleCertificateMapper certificateMapper;
     @Autowired
@@ -210,8 +217,9 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
     public boolean runJob(Session session, String token,
                           RunJobDataVo jobDataVo) throws Exception {
         boolean isUpdateAllCode = jobDataVo.getIsUpdateAllCode();
-        
+    
         boolean isNeedUpCode = jobDataVo.getIsNeedUpCode();
+        Boolean isGreenChannel = jobDataVo.getIsGreenChannel();
         Boolean isPromptly = jobDataVo.getIsPromptly();
         String needIdStr = jobDataVo.getNeedIdStr();
         Boolean isOffline = jobDataVo.getIsOffline();
@@ -221,6 +229,7 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
         ModuleJob moduleJob = selectById(jobId);
         StatusDTO statusDTO = new StatusDTO();
         statusDTO.setJobId(jobId);
+        String branch = null;
         statusDTO.setStatus(0);
         //正在进行当中的job是不能重复去启动构建job的
         if (moduleJob == null) {
@@ -280,8 +289,9 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                 } else {
                     return false;
                 }
-                
+    
                 Integer moduleId = moduleJob.getModuleId();
+                Integer envId = moduleJob.getModuleEnvId();
                 List<ModulePackageDTO> packageDTOS = packageService.selectByModuleId(moduleId);
                 ModuleCertificate certificate = certificateMapper.selectCertByModuleId(moduleId);
                 ModuleManageDTO manageDTO = manageMapper.selectInfoById(moduleId);
@@ -305,11 +315,26 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                             }
                         }
                         String packagePathName = null;
+                        if (isGreenChannel != null) {
+                            if (isGreenChannel) {
+                                //判断子包是否都为 master，或者是 release 绿通分支，如果不是 ，则终止。
+                                //如果是master，则继续
+                                int count = module.findBranch(moduleId);
+                                if (count > 0) {
+                                    throw new ServiceException("该模块下存在非master的分支,不能走绿通！");
+                                }
+                                //JwtUtil.getUserNameFromToken()
+                                branch = GitUtils.RELEASE;
+                            } else {
+                                branch = GitUtils.MASTER;
+                            }
+        
+                        }
                         if (isNeedUpCode) {
                             //更新代码的操作处理
                             List<ModulePackageDTO> packageDTOList = upCode(typeEnum,
                                 isUpdateAllCode, manageDTO, certificate,
-                                session, statusDTO, packageDTOS);
+                                session, statusDTO, packageDTOS, isGreenChannel);
                             if (packageDTOList != null && packageDTOList.size() > 0) {
                                 packagePathName = packageDTOList.get(0).getPackagePathName();
                             } else {
@@ -317,6 +342,11 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                             }
                         } else {
                             packagePathName = packageDTOS.get(0).getPackagePathName();
+                            if (isGreenChannel != null) {
+            
+                                packageService.chanageBranchByModuleId(envId, moduleId, branch);
+                            }
+        
                         }
                         
                         String compilePath = XMLUtils.genPOMXml(manageDTO, storgePrefix);
@@ -355,6 +385,8 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                         JSONObject.toJSONString(argsMap));
                     buildNumber = jenkinsManage.runJob(jenkinsServer, moduleJob.getJobName(), argsMap);
                     if (buildNumber != null) {
+                        String userName = JwtUtil.getUserNameFromToken(token);
+                        infoMapper.insertBuildInfo(userName, null, branch, moduleId, envId);
                         return true;
                     } else {
                         ModuleMirror moduleMirror = new ModuleMirror();
@@ -384,20 +416,25 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
      * @param packageDTOS
      * @return
      */
-    private List<ModulePackageDTO> upCode(ModuleTypeEnum typeEnum, boolean isUpdateAllCode, ModuleManageDTO manageDTO, ModuleCertificate certificate,
-                                          Session session, StatusDTO statusDTO,
-                                          List<ModulePackageDTO> packageDTOS) {
+    @Transactional(rollbackFor = Exception.class)
+    public List<ModulePackageDTO> upCode(ModuleTypeEnum typeEnum, boolean isUpdateAllCode, ModuleManageDTO manageDTO, ModuleCertificate certificate,
+                                         Session session, StatusDTO statusDTO,
+                                         List<ModulePackageDTO> packageDTOS, Boolean isGreenChannel) {
         List<ModulePackageDTO> packageDTOList = new LinkedList<>();
         //是svn_auto_up的类型的话,需要根据最新的脚本更新整个子模块的内容
         if (typeEnum.equals(ModuleTypeEnum.SVN_AUTO_UP_CODE) && isUpdateAllCode) {
             svnAutoUp(manageDTO, certificate, session, statusDTO, packageDTOS, packageDTOList);
         } else if (typeEnum.equals(ModuleTypeEnum.GIT_AUTO_UP_SOURCE_CODE) && isUpdateAllCode) {
-            packageService.gitAutoType(certificate, manageMapper.selectByPrimaryKey(manageDTO.getModuleId()), statusDTO, session, null);
+            packageService.gitAutoType(certificate, manageMapper.selectByPrimaryKey(manageDTO.getModuleId()), statusDTO, session, null, isGreenChannel);
         } else {
             statusDTO.setTotal(packageDTOS.size());
             try {
                 ModuleTypeEnum typeByCode = ModuleTypeEnum.
                     getTypeByCode(packageDTOS.get(0).getModuleType());
+                //查找非master的个数
+                Long count = packageDTOS.stream().filter(pack -> {
+                    return !GitUtils.MASTER.equals(pack.getGitBranch()) && !GitUtils.RELEASE.equals(pack.getGitBranch());
+                }).count();
                 for (int i = 0; i < packageDTOS.size(); i++) {
                     //更新到最新的版本
                     statusDTO.setCurrent(i + 1);
@@ -409,6 +446,22 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                         switch (typeByCode) {
                             case GIT_SOURCE_CODE:
                             case GIT_AUTO_UP_SOURCE_CODE:
+                                //如果数据有非master，则不走绿通
+                                if (count == 0 && isGreenChannel != null) {
+                                    String branchName = null;
+                                    if (isGreenChannel) {
+                                        branchName = GitUtils.RELEASE;
+                                        //如果没有非master，非绿通，走master
+                                    } else {
+                                        branchName = GitUtils.MASTER;
+                                    }
+                                    packageMapper.updateBranchNameById(branchName, packageDTOS.get(i).getId());
+                                    packageDTOS.get(i).setGitBranch(branchName);
+                                    GitUtils.gitCheckoutBranchAndPull(storgePrefix +
+                                            packageDTOS.get(i).getPackagePathName(),
+                                        certificate.getUsername(),
+                                        EncryptUtil.decrypt(certificate.getPassword()), branchName);
+                                }
                                 String reversion = packageDTOS.get(i).getCodeReversion();
                                 if ("-1".equals(reversion)) {
                                     GitUtils.gitPull(storgePrefix +

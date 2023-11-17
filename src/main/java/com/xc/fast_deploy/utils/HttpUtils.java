@@ -225,6 +225,13 @@ public class HttpUtils {
     return result;
   }
   
+  public static void main(String[] args) {
+    String username = "oss_test";
+    String password = "OssborZJ!920";
+    String token = Base64.getUrlEncoder().encodeToString((username + ":" + password).getBytes());
+    System.out.println(token);
+  }
+  
   public static String doDeleteHarborInfo(String url, String username, String password) {
     log.info("doDeleteHarborInfo url: {}, username: {}, password: {}", url, username, password);
     String result = null;

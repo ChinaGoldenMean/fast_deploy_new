@@ -701,7 +701,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
           
           case GIT_AUTO_UP_SOURCE_CODE:
             
-            gitAutoType(certificate, manageMapper.selectByPrimaryKey(moduleId), statusDTO, session, null);
+            gitAutoType(certificate, manageMapper.selectByPrimaryKey(moduleId), statusDTO, session, null, null);
             success = true;
             break;
           default:
@@ -715,7 +715,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
   @SneakyThrows
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean gitAutoType(ModuleCertificate certificate, ModuleManage moduleManage, StatusDTO statusDTO, Session session, StringBuilder filePrefixBase) {
+  public boolean gitAutoType(ModuleCertificate certificate, ModuleManage moduleManage, StatusDTO statusDTO, Session session, StringBuilder filePrefixBase, Boolean isGreenChannel) {
     StringBuilder filePrefix = new StringBuilder();
     if (filePrefixBase == null) {
       ModuleManageDTO manageDTO = manageMapper.selectInfoById(moduleManage.getId());
@@ -756,7 +756,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
             ExcelPhraseUtils.getAllGitShData(new FileInputStream(shFile));
         //GitUtils.generateXML(filePrefix.toString(), shFile.getName());
   
-        return saveGitModulePackage(certificate, moduleManage, paramVos, filePrefix, statusDTO, session);
+        return saveGitModulePackage(certificate, moduleManage, paramVos, filePrefix, statusDTO, session, isGreenChannel);
       } else {
         System.out.println("文件夹中不存在.sh文件");
       }
@@ -768,16 +768,30 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
   @SneakyThrows
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean saveGitModulePackage(ModuleCertificate certificate, ModuleManage moduleManage, List<ModulePackageParamVo> packageList, StringBuilder filePrefix, StatusDTO statusDTO, Session session) {
+  public boolean saveGitModulePackage(ModuleCertificate certificate, ModuleManage moduleManage, List<ModulePackageParamVo> packageList, StringBuilder filePrefix, StatusDTO statusDTO, Session session, Boolean isGreenChannel) {
     if (certificate != null) {
       if (statusDTO == null) {
         manageMapper.insertSelective(moduleManage);
       }
       List<ModulePackageDTO> packageGitDTOS = selectByModuleId(moduleManage.getId());
       List<ModulePackage> modulePackages = new ArrayList<>();
+      //查找非master的个数
+      Long count = packageList.stream().filter(pack -> {
+        return !GitUtils.MASTER.equals(pack.getGitBranch()) && !GitUtils.RELEASE.equals(pack.getGitBranch());
+      }).count();
       //然后对package里面的svnUrl做Url验证
       for (int i = 0; i < packageList.size(); i++) {
         ModulePackageParamVo packageVo = packageList.get(i);
+        //如果数据有非master，则不走绿通
+        if (count == 0 && isGreenChannel != null) {
+          if (isGreenChannel) {
+            packageVo.setGitBranch(GitUtils.RELEASE);
+            //如果没有非master，非绿通，走master
+          } else {
+            packageVo.setGitBranch(GitUtils.MASTER);
+          }
+        }
+        
         //如果源文件不存在 则重新checkout新代码
         GitUtils.cloneSubOrPull(packageVo.getCodeUrl(), filePrefix + packageVo.getContentName(), certificate.getUsername(), EncryptUtil.decrypt(certificate.getPassword()), packageVo.getGitBranch());
         
@@ -788,7 +802,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
         modulePackage.setContentName(packageVo.getContentName());
         modulePackage.setCodeUrl(packageVo.getCodeUrl());
         modulePackage.setModuleId(moduleManage.getId());
-        modulePackage.setGitBranch("master");
+        modulePackage.setGitBranch(packageVo.getGitBranch());
         modulePackage.setPackagePathName((filePrefix + packageVo.getContentName()).
             replace(storgePrefix, ""));
         modulePackages.add(modulePackage);
@@ -868,6 +882,31 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
       }
     }
     return null;
+  }
+  
+  /**
+   * 对子模块做切换分支处理
+   *
+   * @param envId
+   * @param packageId
+   * @param branchName
+   */
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean chanageBranchByModuleId(Integer envId, Integer moduleId, String branchName) {
+    boolean success = false;
+    
+    ModulePackageExample packageExample = new ModulePackageExample();
+    packageExample.createCriteria().andModuleIdEqualTo(moduleId);
+    List<ModulePackage> packages = packageMapper.selectByExample(packageExample);
+    if (CollectionUtils.isEmpty(packages)) {
+      return success;
+    }
+    for (ModulePackage modulePackage : packages) {
+      success = chanageBranch(envId, modulePackage.getId(), branchName);
+    }
+    
+    return success;
   }
   
   /**

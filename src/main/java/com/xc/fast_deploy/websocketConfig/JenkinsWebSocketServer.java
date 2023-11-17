@@ -75,7 +75,7 @@ public class JenkinsWebSocketServer {
     }
     boolean isUpdateAllCode = (isUpdateCode == 1);
     boolean isPromptlyCode = false;
-    boolean isGreenChannel = Integer.valueOf(isGreenChannelStr) == 1;
+    Boolean isGreenChannel = isGreenChannelStr == null ? null : Integer.valueOf(isGreenChannelStr) == 1;
     boolean isOffline = (offline == 1);
     if (StringUtils.isNotBlank(isPromptly)) {
       isPromptlyCode = Integer.valueOf(isPromptly) == 1;
@@ -136,7 +136,7 @@ public class JenkinsWebSocketServer {
         runJobDataVo.setIsPromptly(isPromptlyCode);
         runJobDataVo.setNeedIdStr(needIdStr);
         runJobDataVo.setIsNeedUpCode(true);
-        runJobDataVo.setIsGreenChannel(true);
+        runJobDataVo.setIsGreenChannel(isGreenChannel);
         
         runJobDataVo.setIsOffline(isOffline);
         runJobDataVo.setJenkinsManageVO(new JenkinsManageVO(jenkinsManage,

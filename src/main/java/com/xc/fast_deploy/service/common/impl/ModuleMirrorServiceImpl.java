@@ -22,7 +22,6 @@ import com.xc.fast_deploy.myenum.ModuleMirrorStatusEnum;
 import com.xc.fast_deploy.quartz_job.job.MyMirrorSyncThread;
 import com.xc.fast_deploy.service.common.ModuleDeployService;
 import com.xc.fast_deploy.service.common.ModuleMirrorService;
-import com.xc.fast_deploy.shiro.token.JwtUtil;
 import com.xc.fast_deploy.utils.encyption_utils.EncryptUtil;
 import com.xc.fast_deploy.utils.HttpUtils;
 import com.xc.fast_deploy.utils.jenkins.JenkinsManage;
@@ -34,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +51,12 @@ import static com.xc.fast_deploy.utils.constant.HarborContants.*;
 @Service
 @Slf4j
 public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integer> implements ModuleMirrorService {
-  
+  @Value("${myself.pspass.harbor.uri}")
+  String harborUri;
+  @Value("${myself.pspass.harbor.account}")
+  String harborAccount;
+  @Value("${myself.pspass.harbor.password}")
+  String harborPassword;
   @Autowired
   private ModuleMirrorMapper mirrorMapper;
   @Autowired
@@ -105,7 +110,7 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
         Integer isPromptly = moduleMirror.getIsPromptly();
         if (isPromptly != null && isPromptly == 1) {
           PModuleUser user = userMapper.selectByUserId(moduleMirror.getOpUserId());
-          deployService.changeMirror(moduleMirror.getModuleId(), moduleMirror.getModuleEnvId(), mirrorId, new ModuleUser(user));
+          deployService.changeMirror(moduleMirror.getModuleId(), moduleMirror.getModuleEnvId(), mirrorId, new ModuleUser(user), null);
         }
         return true;
       }
@@ -405,7 +410,7 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
       StringBuilder mirrorName = new StringBuilder();
       mirrorName.append(moduleManage.getModuleProjectCode())
           .append(CONTACT).append(moduleManage.getModuleContentName().toLowerCase());
-      
+    
       StringBuilder sb = new StringBuilder();
       //形成访问harborapi的taglist的url路径
       String mirrorTagsUrl = sb.append(HTTP_PREFIX).append(moduleEnvVo.getHarborUrl())
@@ -421,6 +426,43 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
             String tagName = mirrorTagDTO.getName();
             StringBuffer mirrorTagName = new StringBuffer();
             mirrorTagName.append(moduleEnvVo.getHarborUrl()).append(CONTACT)
+                .append(mirrorName).append(":").append(tagName);
+            mirrorNameList.add(mirrorTagName.toString());
+          }
+        }
+      }
+    }
+    return mirrorNameList;
+  }
+  
+  @Override
+  public List<String> getYunHarborMirrorList(Integer envId, Integer moduleId) {
+    List<String> mirrorNameList = new ArrayList<>();
+    ModuleEnvVo moduleEnvVo = envMapper.selectWithCertById(envId);
+    ModuleManage moduleManage = manageMapper.selectByPrimaryKey(moduleId);
+    //验证数据
+    if (moduleEnvVo != null && moduleManage != null && envId.equals(moduleManage.getEnvId())) {
+      //形成镜像名称
+      StringBuilder mirrorName = new StringBuilder();
+      String uri = manageMapper.selectHarborUri(envId, moduleId);
+      //mirrorName.append("crm-test-repo").append(CONTACT).
+      mirrorName.append(uri.toLowerCase());
+      
+      StringBuilder sb = new StringBuilder();
+      //形成访问harborapi的taglist的url路径
+      String mirrorTagsUrl = sb.append(HTTP_PREFIX).append(harborUri)
+          .append(CONTACT).append(API).append(CONTACT).append(REPOSTIRY).append(CONTACT)
+          .append(mirrorName).append(CONTACT).append(TAGS).toString();
+      //http请求数据获取返回
+      String result = HttpUtils.doGetHarborInfo(mirrorTagsUrl,
+          harborAccount, harborPassword);
+      if (StringUtils.isNotBlank(result)) {
+        List<MirrorTagDTO> tagDTOList = JSONObject.parseArray(result, MirrorTagDTO.class);
+        if (tagDTOList != null && tagDTOList.size() > 0) {
+          for (MirrorTagDTO mirrorTagDTO : tagDTOList) {
+            String tagName = mirrorTagDTO.getName();
+            StringBuffer mirrorTagName = new StringBuffer();
+            mirrorTagName.append(harborUri).append(CONTACT)
                 .append(mirrorName).append(":").append(tagName);
             mirrorNameList.add(mirrorTagName.toString());
           }

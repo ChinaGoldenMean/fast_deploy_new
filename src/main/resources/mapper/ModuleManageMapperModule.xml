@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleManageMapperModule">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleManage">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
+        <result column="module_content_name" property="moduleContentName" jdbcType="VARCHAR"/>
+        <result column="module_project_code" property="moduleProjectCode" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="env_code" property="envCode" jdbcType="VARCHAR"/>
+        <result column="mark" property="mark" jdbcType="VARCHAR"/>
+        <result column="charge_person" property="chargePerson" jdbcType="VARCHAR"/>
+        <result column="charge_telephone" property="chargeTelephone" jdbcType="VARCHAR"/>
+        <result column="offical_charge_person" property="officalChargePerson" jdbcType="VARCHAR"/>
+        <result column="offical_charge_telephone" property="officalChargeTelephone" jdbcType="VARCHAR"/>
+        <result column="certificate_id" property="certificateId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="center_id" property="centerId" jdbcType="INTEGER"/>
+        <result column="module_type" property="moduleType" jdbcType="INTEGER"/>
+        <result column="is_delete" property="isDelete" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="sh_path" property="shPath" jdbcType="VARCHAR"/>
+        <result column="svn_auto_url" property="svnAutoUrl" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="remark_yw" property="remarkYw" jdbcType="VARCHAR"/>
+        <result column="remark_bak" property="remarkBak" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , module_name, module_content_name, module_project_code, env_id, env_code, mark,
+        charge_person, charge_telephone, offical_charge_person, offical_charge_telephone,
+        certificate_id, user_id, center_id, module_type, is_delete, create_time, update_time,
+        sh_path, svn_auto_url, remark, remark_yw, remark_bak
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleManageExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_manage
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_manage
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_manage
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleManageExample">
+        delete from module_manage
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleManage">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_manage") AS id
+        </selectKey>
+        insert into module_manage (id,module_name, module_content_name, module_project_code,
+        env_id, env_code, mark,
+        charge_person, charge_telephone, offical_charge_person,
+        offical_charge_telephone, certificate_id,
+        user_id, center_id, module_type,
+        is_delete, create_time, update_time,
+        sh_path, svn_auto_url, remark,
+        remark_yw, remark_bak)
+        values (#{id,jdbcType=INTEGER},#{moduleName,jdbcType=VARCHAR}, #{moduleContentName,jdbcType=VARCHAR},
+        #{moduleProjectCode,jdbcType=VARCHAR},
+        #{envId,jdbcType=INTEGER}, #{envCode,jdbcType=VARCHAR}, #{mark,jdbcType=VARCHAR},
+        #{chargePerson,jdbcType=VARCHAR}, #{chargeTelephone,jdbcType=VARCHAR}, #{officalChargePerson,jdbcType=VARCHAR},
+        #{officalChargeTelephone,jdbcType=VARCHAR}, #{certificateId,jdbcType=INTEGER},
+        #{userId,jdbcType=VARCHAR}, #{centerId,jdbcType=INTEGER}, #{moduleType,jdbcType=INTEGER},
+        #{isDelete,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+        #{shPath,jdbcType=VARCHAR}, #{svnAutoUrl,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{remarkYw,jdbcType=VARCHAR}, #{remarkBak,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleManage">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_manage") AS id
+        </selectKey>
+        insert into module_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="moduleName != null">
+                module_name,
+            </if>
+            <if test="moduleContentName != null">
+                module_content_name,
+            </if>
+            <if test="moduleProjectCode != null">
+                module_project_code,
+            </if>
+            <if test="envId != null">
+                env_id,
+            </if>
+            <if test="envCode != null">
+                env_code,
+            </if>
+            <if test="mark != null">
+                mark,
+            </if>
+            <if test="chargePerson != null">
+                charge_person,
+            </if>
+            <if test="chargeTelephone != null">
+                charge_telephone,
+            </if>
+            <if test="officalChargePerson != null">
+                offical_charge_person,
+            </if>
+            <if test="officalChargeTelephone != null">
+                offical_charge_telephone,
+            </if>
+            <if test="certificateId != null">
+                certificate_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="centerId != null">
+                center_id,
+            </if>
+            <if test="moduleType != null">
+                module_type,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="shPath != null">
+                sh_path,
+            </if>
+            <if test="svnAutoUrl != null">
+                svn_auto_url,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="remarkYw != null">
+                remark_yw,
+            </if>
+            <if test="remarkBak != null">
+                remark_bak,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="moduleName != null">
+                #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleContentName != null">
+                #{moduleContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleProjectCode != null">
+                #{moduleProjectCode,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="mark != null">
+                #{mark,jdbcType=VARCHAR},
+            </if>
+            <if test="chargePerson != null">
+                #{chargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeTelephone != null">
+                #{chargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="officalChargePerson != null">
+                #{officalChargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="officalChargeTelephone != null">
+                #{officalChargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="certificateId != null">
+                #{certificateId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="centerId != null">
+                #{centerId,jdbcType=INTEGER},
+            </if>
+            <if test="moduleType != null">
+                #{moduleType,jdbcType=INTEGER},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="shPath != null">
+                #{shPath,jdbcType=VARCHAR},
+            </if>
+            <if test="svnAutoUrl != null">
+                #{svnAutoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="remarkYw != null">
+                #{remarkYw,jdbcType=VARCHAR},
+            </if>
+            <if test="remarkBak != null">
+                #{remarkBak,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleManageExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_manage
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_manage
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.moduleName != null">
+                module_name = #{record.moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleContentName != null">
+                module_content_name = #{record.moduleContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleProjectCode != null">
+                module_project_code = #{record.moduleProjectCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.envId != null">
+                env_id = #{record.envId,jdbcType=INTEGER},
+            </if>
+            <if test="record.envCode != null">
+                env_code = #{record.envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.mark != null">
+                mark = #{record.mark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.chargePerson != null">
+                charge_person = #{record.chargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="record.chargeTelephone != null">
+                charge_telephone = #{record.chargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="record.officalChargePerson != null">
+                offical_charge_person = #{record.officalChargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="record.officalChargeTelephone != null">
+                offical_charge_telephone = #{record.officalChargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="record.certificateId != null">
+                certificate_id = #{record.certificateId,jdbcType=INTEGER},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.centerId != null">
+                center_id = #{record.centerId,jdbcType=INTEGER},
+            </if>
+            <if test="record.moduleType != null">
+                module_type = #{record.moduleType,jdbcType=INTEGER},
+            </if>
+            <if test="record.isDelete != null">
+                is_delete = #{record.isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.shPath != null">
+                sh_path = #{record.shPath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.svnAutoUrl != null">
+                svn_auto_url = #{record.svnAutoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.remark != null">
+                remark = #{record.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.remarkYw != null">
+                remark_yw = #{record.remarkYw,jdbcType=VARCHAR},
+            </if>
+            <if test="record.remarkBak != null">
+                remark_bak = #{record.remarkBak,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_manage
+        set id = #{record.id,jdbcType=INTEGER},
+        module_name = #{record.moduleName,jdbcType=VARCHAR},
+        module_content_name = #{record.moduleContentName,jdbcType=VARCHAR},
+        module_project_code = #{record.moduleProjectCode,jdbcType=VARCHAR},
+        env_id = #{record.envId,jdbcType=INTEGER},
+        env_code = #{record.envCode,jdbcType=VARCHAR},
+        mark = #{record.mark,jdbcType=VARCHAR},
+        charge_person = #{record.chargePerson,jdbcType=VARCHAR},
+        charge_telephone = #{record.chargeTelephone,jdbcType=VARCHAR},
+        offical_charge_person = #{record.officalChargePerson,jdbcType=VARCHAR},
+        offical_charge_telephone = #{record.officalChargeTelephone,jdbcType=VARCHAR},
+        certificate_id = #{record.certificateId,jdbcType=INTEGER},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        center_id = #{record.centerId,jdbcType=INTEGER},
+        module_type = #{record.moduleType,jdbcType=INTEGER},
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        sh_path = #{record.shPath,jdbcType=VARCHAR},
+        svn_auto_url = #{record.svnAutoUrl,jdbcType=VARCHAR},
+        remark = #{record.remark,jdbcType=VARCHAR},
+        remark_yw = #{record.remarkYw,jdbcType=VARCHAR},
+        remark_bak = #{record.remarkBak,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleManage">
+        update module_manage
+        <set>
+            <if test="moduleName != null">
+                module_name = #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleContentName != null">
+                module_content_name = #{moduleContentName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleProjectCode != null">
+                module_project_code = #{moduleProjectCode,jdbcType=VARCHAR},
+            </if>
+            <if test="envId != null">
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envCode != null">
+                env_code = #{envCode,jdbcType=VARCHAR},
+            </if>
+            <if test="mark != null">
+                mark = #{mark,jdbcType=VARCHAR},
+            </if>
+            <if test="chargePerson != null">
+                charge_person = #{chargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeTelephone != null">
+                charge_telephone = #{chargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="officalChargePerson != null">
+                offical_charge_person = #{officalChargePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="officalChargeTelephone != null">
+                offical_charge_telephone = #{officalChargeTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="certificateId != null">
+                certificate_id = #{certificateId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="centerId != null">
+                center_id = #{centerId,jdbcType=INTEGER},
+            </if>
+            <if test="moduleType != null">
+                module_type = #{moduleType,jdbcType=INTEGER},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="shPath != null">
+                sh_path = #{shPath,jdbcType=VARCHAR},
+            </if>
+            <if test="svnAutoUrl != null">
+                svn_auto_url = #{svnAutoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="remarkYw != null">
+                remark_yw = #{remarkYw,jdbcType=VARCHAR},
+            </if>
+            <if test="remarkBak != null">
+                remark_bak = #{remarkBak,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleManage">
+        update module_manage
+        set module_name              = #{moduleName,jdbcType=VARCHAR},
+            module_content_name      = #{moduleContentName,jdbcType=VARCHAR},
+            module_project_code      = #{moduleProjectCode,jdbcType=VARCHAR},
+            env_id                   = #{envId,jdbcType=INTEGER},
+            env_code                 = #{envCode,jdbcType=VARCHAR},
+            mark                     = #{mark,jdbcType=VARCHAR},
+            charge_person            = #{chargePerson,jdbcType=VARCHAR},
+            charge_telephone         = #{chargeTelephone,jdbcType=VARCHAR},
+            offical_charge_person    = #{officalChargePerson,jdbcType=VARCHAR},
+            offical_charge_telephone = #{officalChargeTelephone,jdbcType=VARCHAR},
+            certificate_id           = #{certificateId,jdbcType=INTEGER},
+            user_id                  = #{userId,jdbcType=VARCHAR},
+            center_id                = #{centerId,jdbcType=INTEGER},
+            module_type              = #{moduleType,jdbcType=INTEGER},
+            is_delete                = #{isDelete,jdbcType=INTEGER},
+            create_time              = #{createTime,jdbcType=TIMESTAMP},
+            update_time              = #{updateTime,jdbcType=TIMESTAMP},
+            sh_path                  = #{shPath,jdbcType=VARCHAR},
+            svn_auto_url             = #{svnAutoUrl,jdbcType=VARCHAR},
+            remark                   = #{remark,jdbcType=VARCHAR},
+            remark_yw                = #{remarkYw,jdbcType=VARCHAR},
+            remark_bak               = #{remarkBak,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <!--self add-->
+    <!--    <select id="selectModuleVoPage" resultType="com.xc.fast_deploy.vo.module_vo.ModuleMangeVo">-->
+    <!--        SELECT a.id AS moduleId,a.module_name AS moduleName,a.module_content_name AS moduleContentName,-->
+    <!--        a.module_type AS moduleType,c.username AS username,b.center_id AS catalogName,a.create_time AS createTime-->
+    <!--        FROM module_manage a-->
+    <!--        LEFT JOIN module_center b-->
+    <!--        ON a.center_id = b.id-->
+    <!--        LEFT JOIN module_user c-->
+    <!--        ON a.user_id =c.id-->
+    <!--        WHERE a.is_delete = 0-->
+    <!--    </select>-->
+
+    <select id="selectModuleVoPageByVo" resultType="com.xc.fast_deploy.vo.module_vo.ModuleMangeVo"
+            parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleManageSelectParamVo">
+        SELECT a.id AS moduleId,a.module_name AS moduleName,a.module_content_name AS moduleContentName,
+        a.module_type AS moduleType,b.center_name AS centerName,a.create_time AS createTime,
+        a.module_project_code AS moduleProjectCode,b.id AS centerId,a.env_id AS envId,a.mark AS mark,
+        a.charge_person AS chargePerson,b.child_center_name AS childCenterName
+        FROM module_manage a
+        LEFT JOIN module_center b
+        ON a.center_id = b.id
+        <where>
+            a.is_delete = 0
+            AND
+            b.is_deleted = 0
+            <if test="moduleName != null and moduleName != ''">
+                AND (a.module_name LIKE concat('%',#{moduleName,jdbcType=VARCHAR},'%')
+                OR a.module_content_name LIKE concat('%',#{moduleName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="centerId != null and centerId >= 0">
+                AND b.id = #{centerId,jdbcType=INTEGER}
+            </if>
+            <if test="envId != null and envId >= 0">
+                AND a.env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="moduleType != null and moduleType >= 0">
+                AND a.module_type = #{moduleType,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.create_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND a.env_id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY a.create_time
+        DESC
+    </select>
+
+    <select id="selectInfoById" resultType="com.xc.fast_deploy.dto.module.ModuleManageDTO"
+            parameterType="java.lang.Integer">
+        SELECT a.id                        AS moduleId,
+               a.module_name               AS moduleName,
+               a.module_content_name       AS moduleContentName,
+               a.certificate_id            AS certificateId,
+               a.center_id                 AS centerId,
+               a.module_project_code       AS moduleProjectCode,
+               b.center_name               AS centerName,
+               b.center_code               AS centerCode,
+               a.module_type               AS moduleType,
+               b.center_path               AS centerPath,
+               a.env_id                    AS envId,
+               c.env_name                  AS mark,
+               a.charge_person             AS chargePerson,
+               a.charge_telephone          AS chargeTelephone,
+               c.region_name               AS regionName,
+               a.offical_charge_person     AS officalChargePerson,
+               a.offical_charge_telephone  AS officalChargeTelephone,
+               a.sh_path                   AS shPath,
+               a.svn_auto_url              AS svnAutoUrl,
+               b.child_center_name         AS childCenterName,
+               b.id                        AS centerId,
+               b.child_center_content_name AS childCenterContentName
+        FROM module_manage a
+                 LEFT JOIN module_center b
+                           ON a.center_id = b.id
+                 LEFT JOIN module_env c
+                           ON c.id = a.env_id
+        WHERE a.is_delete = 0
+          AND b.is_deleted = 0
+          AND a.id = #{module_id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module_manage
+        where id IN
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectInfoInJobByCenterId" resultType="com.xc.fast_deploy.model.master_model.ModuleManage"
+            parameterType="java.lang.Integer">
+        select a.module_name AS moduleName, a.id AS id
+        from module_manage a
+                 left join module_job b
+                           on a.id = b.module_id
+        where a.center_id = #{centerId,jdbcType=INTEGER}
+          AND b.is_delete = 0
+          AND a.is_delete = 0;
+    </select>
+
+    <select id="selectModuleNameOrContentExist" parameterType="com.xc.fast_deploy.model.master_model.ModuleManage"
+            resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM module_manage a
+        WHERE a.is_delete = 0
+          AND a.env_id = #{envId,jdbcType=INTEGER}
+          AND a.center_id = #{centerId,jdbcType=INTEGER}
+          AND (a.module_name = #{moduleName,jdbcType=VARCHAR}
+            OR a.module_content_name = #{moduleContentName,jdbcType=VARCHAR})
+    </select>
+
+
+    <select id="selectAllModuleByEnvId" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.vo.module_vo.ModuleManageDeployVO">
+        SELECT a.module_name              AS moduleName,
+               a.id                       AS moduleId,
+               b.child_center_name        AS childCenterName,
+               b.center_name              as centerName,
+               a.mark                     AS envName,
+               d.yaml_name                AS yamlName,
+               a.charge_person            AS chargePerson,
+               a.charge_telephone         AS chargeTelephone,
+               a.offical_charge_person    AS officalChargePerson,
+               a.offical_charge_telephone AS officalChargeTelephone,
+               a.create_time              AS createTime,
+               a.remark                   AS remark,
+               a.remark_yw                AS ywRemark
+        FROM module_manage a
+                 INNER JOIN module_center b
+                            ON a.center_id = b.id
+                 LEFT JOIN module_deploy c
+                           ON a.id = c.module_id
+                 LEFT JOIN module_deploy_yaml d
+                           ON c.id = d.deploy_id
+        WHERE a.is_delete = 0
+          AND b.is_deleted = 0
+          AND c.is_delete = 0
+          AND d.is_online_yaml = 1
+          AND a.env_id = #{envId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectBYMdouleName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_manage
+        WHERE env_id = 30
+        AND is_delete = 0
+        AND module_name = #{moduleName,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_manage
+        WHERE is_delete = 0
+    </select>
+
+    <select id="selectIdByMdouleName" parameterType="java.util.List"
+            resultType="com.xc.fast_deploy.model.master_model.ModuleManage">
+        select id, module_name AS moduleName, env_id AS envId FROM module_manage
+        where
+        <if test="list != null and list.size > 0">
+            module_name
+            IN
+            <foreach collection="list" index="index" item="moduleName" open="(" separator="," close=")">
+                #{moduleName}
+            </foreach>
+        </if>
+    </select>
+</mapper>

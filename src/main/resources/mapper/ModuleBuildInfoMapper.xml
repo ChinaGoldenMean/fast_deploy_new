@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleBuildInfoMapper">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleBuildInfo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="module_id" property="moduleId" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="INTEGER"/>
+        <result column="current_build_status" property="currentBuildStatus" jdbcType="VARCHAR"/>
+        <result column="last_build_status_prev" property="lastBuildStatusPrev" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <insert id="insertBuildInfo">
+        insert into module_build_info(create_time, creator, last_build_status_prev, current_build_status, module_id,
+                                      env_id)
+        values (now(), #{creator}, #{lastBuildStatusPrev}, #{currentBuildStatus}, #{moduleId}, #{envId})
+    </insert>
+    <select id="listBuildInfo" resultMap="BaseResultMap">
+        select *
+        from module_build_info
+        where module_id = #{moduleId}
+          and env_id = #{envId}
+    </select>
+</mapper>

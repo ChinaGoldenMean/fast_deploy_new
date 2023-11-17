@@ -189,6 +189,15 @@ public class ModuleMirrorController {
     return JSONObject.toJSONString(responseDTO);
   }
   
+  @GetMapping(value = "/harborYun/tags")
+  public String getYunHarborMirrorList(Integer envId, Integer moduleId) {
+    log.info("selfAppoint指定的参数为: moduleId:{}, envId:{}", moduleId, envId);
+    ResponseDTO responseDTO = new ResponseDTO();
+    List<String> mirrorList = moduleMirrorService.getYunHarborMirrorList(envId, moduleId);
+    responseDTO.success(mirrorList);
+    return JSONObject.toJSONString(responseDTO);
+  }
+  
   /**
    * 清理仓库没有被使用或者无效的镜像
    *

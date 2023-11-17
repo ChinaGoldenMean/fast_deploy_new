@@ -16,9 +16,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface ModulePackageService extends BaseService<ModulePackage, Integer> {
-  boolean gitAutoType(ModuleCertificate certificate, ModuleManage moduleManage, StatusDTO statusDTO, Session session, StringBuilder filePrefixBase);
+  boolean gitAutoType(ModuleCertificate certificate, ModuleManage moduleManage, StatusDTO statusDTO, Session session, StringBuilder filePrefixBase, Boolean isGreenChannel);
   
-  boolean saveGitModulePackage(ModuleCertificate certificate, ModuleManage moduleManage, List<ModulePackageParamVo> packageList, StringBuilder filePrefix, StatusDTO statusDTO, Session session);
+  boolean saveGitModulePackage(ModuleCertificate certificate, ModuleManage moduleManage, List<ModulePackageParamVo> packageList, StringBuilder filePrefix, StatusDTO statusDTO, Session session, Boolean isGreenChannel);
   
   //批量添加数据
   int insertAll(List<ModulePackage> list);
@@ -47,6 +47,8 @@ public interface ModulePackageService extends BaseService<ModulePackage, Integer
   boolean updateModuleAllCode(Integer moduleId, Session session) throws SVNException, FileNotFoundException;
   
   List<String> getRemoteBranches(Integer envId, Integer packageId);
+  
+  boolean chanageBranchByModuleId(Integer envId, Integer moduleId, String branchName);
   
   boolean chanageBranch(Integer envId, Integer packageId, String branchName);
 }

@@ -288,7 +288,7 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
           case GIT_AUTO_UP_SOURCE_CODE:
             
             moduleManage.setSvnAutoUrl(mangeVo.getSvnAutoUpUrl());
-            packageService.gitAutoType(certificate, moduleManage, null, null, filePrefix);
+            packageService.gitAutoType(certificate, moduleManage, null, null, filePrefix, null);
             break;
           case PROJECT_PACKAGE:
             //程序包类型的插入  //首先将模块相关数据存储到数据库
@@ -816,8 +816,7 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
           moduleManage.setModuleType(ModuleTypeEnum.SVN_SOURCE_CODE.getModuleTypeCode());
           break;
         case GIT_AUTO_UP_SOURCE_CODE:
-          
-          packageService.gitAutoType(certificate, moduleManage, null, null, null);
+          packageService.gitAutoType(certificate, moduleManage, null, null, null, null);
           
           break;
         case SVN_AUTO_UP_CODE:

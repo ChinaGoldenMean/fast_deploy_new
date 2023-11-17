@@ -8,26 +8,24 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.xc.fast_deploy.dao.master_dao.*;
+import com.xc.fast_deploy.dto.k8s.K8sParam.ReplaceParam;
+import com.xc.fast_deploy.dto.K8sYamlDTO;
 import com.xc.fast_deploy.dto.ResponseDTO;
-import com.xc.fast_deploy.dto.k8s.K8sContainerDTO;
-import com.xc.fast_deploy.dto.k8s.K8sPodDTO;
-import com.xc.fast_deploy.dto.k8s.K8sServiceDTO;
-import com.xc.fast_deploy.dto.k8s.K8sServicePortDTO;
+import com.xc.fast_deploy.dto.k8s.*;
 import com.xc.fast_deploy.dto.module.ModuleDeployEnvDTO;
+import com.xc.fast_deploy.model.base.ResultCode;
 import com.xc.fast_deploy.model.master_model.*;
 import com.xc.fast_deploy.model.master_model.example.ModuleDeployExample;
 import com.xc.fast_deploy.model.master_model.example.ModuleDeployYamlExample;
 import com.xc.fast_deploy.model.slave_model.BillingOpOnOff;
 import com.xc.fast_deploy.myException.DeployIsOnlineExcetion;
 import com.xc.fast_deploy.myException.K8SDeployException;
+import com.xc.fast_deploy.myException.ServiceException;
 import com.xc.fast_deploy.myException.TransYaml2K8sVoException;
 import com.xc.fast_deploy.myenum.IsOnlineYamlEnum;
 import com.xc.fast_deploy.myenum.ModuleMirrorUsedEnum;
 import com.xc.fast_deploy.myenum.UserRoleTypeEnum;
-import com.xc.fast_deploy.myenum.k8sEnum.K8sApiversionTypeEnum;
-import com.xc.fast_deploy.myenum.k8sEnum.K8sContainerStatusEnum;
-import com.xc.fast_deploy.myenum.k8sEnum.K8sDeploymentResourceEnum;
-import com.xc.fast_deploy.myenum.k8sEnum.K8sKindTypeEnum;
+import com.xc.fast_deploy.myenum.k8sEnum.*;
 import com.xc.fast_deploy.service.common.ModuleDeployLogService;
 import com.xc.fast_deploy.service.common.ModuleDeployService;
 import com.xc.fast_deploy.service.common.SyncService;
@@ -56,10 +54,9 @@ import io.kubernetes.client.Copy;
 import io.kubernetes.client.Exec;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.custom.V1Patch;
+import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.apis.AutoscalingV1Api;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.*;
 import io.kubernetes.client.openapi.apis.AutoscalingV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 
@@ -919,7 +916,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
    */
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean deployModuleInEnv(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser) {
+  public boolean deployModuleInEnv(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser, String mirrorNameStr) {
     //验证该模块是否在此环境中发布过
 //        if (judgeModuleIsOnlie(moduleId, envId)) {
 //            throw new DeployIsOnlineExcetion("当前模块在此环境中已做发布");
@@ -940,13 +937,14 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
         
         if (StringUtils.isNotBlank(deployYaml.getYamlJson())) {
           try {
-            k8sYamlVo = K8sUtils.transObject2Vo(Yaml.load(deployYaml.getYamlJson()));
+            k8sYamlVo = K8sUtils.transObject2Vo(Yaml.load(deployYaml.getYamlJson().replace("extensions/v1beta1", "apps/v1")));
           } catch (IOException e) {
             argsMap.put("error", "yaml文件转换为k8svo 出现错误: " + e.getMessage());
             syncService.saveModuleDeployLog(moduleDeployLogService,
                 moduleId, envId, deployId, OP_ONLINE_MODULE,
                 argsMap, false, moduleUser.getId(), moduleUser.getUsername());
-            e.printStackTrace();
+  
+            throw new TransYaml2K8sVoException("yaml文件转换为k8svo 出现错误: " + e.getMessage());
           }
         } else {
           try {
@@ -964,19 +962,23 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
             throw new TransYaml2K8sVoException("yaml文件转换为k8svo 出现错误: " + e.getMessage());
           }
         }
-        
+  
         ModuleDeploy moduleDeploy = deployMapper.selectByPrimaryKey(deployId);
-        
         String mirrorName = null;
-        ModuleMirror moduleMirror = mirrorMapper.selectByPrimaryKey(mirrorId);
-        if (moduleMirror != null && envId.equals(moduleMirror.getModuleEnvId())
-            && moduleId.equals(moduleMirror.getModuleId())
-            && moduleMirror.getIsAvailable() == 1) {
-          mirrorName = moduleMirror.getMirrorName();
+        ModuleMirror moduleMirror = null;
+        if (mirrorId != null) {
+          moduleMirror = mirrorMapper.selectByPrimaryKey(mirrorId);
+          if (moduleMirror != null && envId.equals(moduleMirror.getModuleEnvId())
+              && moduleId.equals(moduleMirror.getModuleId())
+              && moduleMirror.getIsAvailable() == 1) {
+            mirrorName = moduleMirror.getMirrorName();
+          } else {
+            throw new K8SDeployException("镜像不存在,请重新选择镜像");
+          }
         } else {
-          throw new K8SDeployException("镜像不存在,请重新选择镜像");
+          mirrorName = mirrorNameStr;
         }
-        
+  
         if (k8sYamlVo != null && moduleDeploy != null
             && k8sService.deploy(k8sYamlVo, moduleEnv, mirrorName)) {
           if ("offline deploy".equals(moduleDeploy.getDeployStatus())) {
@@ -1006,9 +1008,11 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
           deployMapper.updateByPrimaryKeySelective(moduleDeploy);
           deployYamlMapper.updateByPrimaryKeySelective(deployYaml);
           //先将该模块下其他的镜像标记为未使用
-          mirrorMapper.updateMirrorIsUsedByModuleId(moduleMirror.getModuleId());
-          moduleMirror.setIsUsed(ModuleMirrorUsedEnum.ISUSED.getCode());
-          mirrorMapper.updateByPrimaryKeySelective(moduleMirror);
+          if (moduleMirror != null) {
+            mirrorMapper.updateMirrorIsUsedByModuleId(moduleMirror.getModuleId());
+            moduleMirror.setIsUsed(ModuleMirrorUsedEnum.ISUSED.getCode());
+            mirrorMapper.updateByPrimaryKeySelective(moduleMirror);
+          }
           success = true;
           //argsMap.put("mirrorName", mirrorName);
         }
@@ -1143,7 +1147,7 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
    * @return
    */
   @Override
-  public ResponseDTO changeMirror(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser) {
+  public ResponseDTO changeMirror(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser, String mirrorName) {
     //首先查询是否已经该模块在该环境中是否已经上线
 //        if (!judgeModuleIsOnlie(moduleId, envId)) {
 //            throw new DeployIsOnlineExcetion("当前模块未上线");
@@ -1175,30 +1179,135 @@ public class ModuleDeployServiceImpl extends BaseServiceImpl<ModuleDeploy, Integ
     Map<String, Object> argsMap = new HashMap<>();
     Integer deployId = null;
     if (deployYamls != null && deployYamls.size() > 0) {
-      ModuleMirror mirror = new ModuleMirror();
-      mirror.setId(mirrorId);
-      mirror.setModuleEnvId(envId);
-      mirror.setModuleId(moduleId);
+      String mirrorNameStr = null;
       ModuleDeployYaml deployYaml = deployYamls.get(0);
-      deployId = deployYaml.getDeployId();
-      List<ModuleMirror> mirrorList = mirrorMapper.selectAvailableMirrorById(mirror);
-      if (mirrorList != null && mirrorList.size() > 0) {
-        ModuleEnv moduleEnv = envMapper.selectOne(envId);
-        success = k8sService.replaceNamespacedSourceMirror(deployYaml,
-            deployYaml.getYamlNamespace(), moduleEnv, mirrorList.get(0).getMirrorName());
-        if (success) {
-          //先将该模块下其他的镜像标记为未使用
-          mirrorMapper.updateMirrorIsUsedByModuleId(mirror.getModuleId());
-          mirror.setIsUsed(ModuleMirrorUsedEnum.ISUSED.getCode());
-          mirrorMapper.updateByPrimaryKeySelective(mirror);
-          responseDTO.success("发布成功");
+      ModuleMirror mirror = new ModuleMirror();
+      if (mirrorId != null) {
+    
+        mirror.setId(mirrorId);
+        mirror.setModuleEnvId(envId);
+        mirror.setModuleId(moduleId);
+        deployId = deployYaml.getDeployId();
+        List<ModuleMirror> mirrorList = mirrorMapper.selectAvailableMirrorById(mirror);
+        if (mirrorList != null && mirrorList.size() > 0) {
+          mirrorNameStr = mirrorList.get(0).getMirrorName();
         }
-        argsMap.put("mirrorName", mirrorList.get(0).getMirrorName());
+      } else {
+        mirrorNameStr = mirrorName;
+    
       }
+      ModuleEnv moduleEnv = envMapper.selectOne(envId);
+      success = k8sService.replaceNamespacedSourceMirror(deployYaml,
+          deployYaml.getYamlNamespace(), moduleEnv, mirrorNameStr);
+      if (success && mirrorId != null) {
+        //先将该模块下其他的镜像标记为未使用
+        mirrorMapper.updateMirrorIsUsedByModuleId(mirror.getModuleId());
+        mirror.setIsUsed(ModuleMirrorUsedEnum.ISUSED.getCode());
+        mirrorMapper.updateByPrimaryKeySelective(mirror);
+    
+      }
+      responseDTO.success("发布成功");
+      argsMap.put("mirrorName", mirrorNameStr);
     }
     syncService.saveModuleDeployLog(moduleDeployLogService, moduleId, envId, deployId,
         OP_CHANGE_MIRROR, argsMap, success, moduleUser.getId(), moduleUser.getUsername());
     return responseDTO;
+  }
+  
+  @Override
+  public void updateResource(K8sYamlDTO k8SYamlDTO, Integer envId) {
+    Object obj = k8SYamlDTO.getO();
+    String name = k8SYamlDTO.getMetadataName();
+    String nameSpace = k8SYamlDTO.getNamespace();
+    String kind = k8SYamlDTO.getKind();
+    if (StringUtils.isNotBlank(kind) && StringUtils.isNotBlank(name)) {
+      if (StringUtils.isBlank(nameSpace)) {
+        nameSpace = K8sObject.NAMESPACE;
+      }
+      KindEnum enumByType = KindEnum.getEnumByType(kind);
+      
+      ModuleEnv moduleEnv = envMapper.selectOne(envId);
+      CoreV1Api coreV1Api = k8sService.getCoreV1ApiByConfig(moduleEnv);
+      BatchV1Api batchV1Api = k8sService.getBatchV1Api(moduleEnv);
+      NetworkingV1Api extensionsV1beta1Api = k8sService.getNetworkingV1Api(moduleEnv);
+      AppsV1Api appsV1Api = k8sService.getAppsV1Api(moduleEnv);
+      AppsV1Api v1beta1Api = k8sService.getAppsV1Api(moduleEnv);
+      
+      try {
+        if (enumByType != null) {
+          switch (enumByType) {
+            case NAMESPACE:
+              
+              coreV1Api.replaceNamespace(name, K8sUtils.toObject(obj, V1Namespace.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              
+              return;
+            case DEPLOYMENT: //部署
+              
+              appsV1Api.replaceNamespacedDeployment(name, nameSpace, K8sUtils.toObject(obj, V1Deployment.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case POD://Pod
+              coreV1Api.replaceNamespacedPod(name, nameSpace, K8sUtils.toObject(obj, V1Pod.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case SERVICE:  //服务
+              coreV1Api.replaceNamespacedService(name, nameSpace, K8sUtils.toObject(obj, V1Service.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case DAEMON_SET://守护进程集
+              
+              appsV1Api.replaceNamespacedDaemonSet(name, nameSpace, K8sUtils.toObject(obj, V1DaemonSet.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case REPLICA_SET: //副本集
+              
+              appsV1Api.replaceNamespacedReplicaSet(name, nameSpace, K8sUtils.toObject(obj, V1ReplicaSet.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case REPLICATION_CONTROLLER://副本控制器
+              coreV1Api.replaceNamespacedReplicationController(name, nameSpace, K8sUtils.toObject(obj, V1ReplicationController.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              
+              return;
+            
+            case INGRESS://访问权
+              extensionsV1beta1Api.replaceNamespacedIngress(name, nameSpace, K8sUtils.toObject(obj, V1Ingress.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case CONFIG_MAP://配置字典
+              coreV1Api.replaceNamespacedConfigMap(name, nameSpace, K8sUtils.toObject(obj, V1ConfigMap.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            
+            case NODE://节点
+              coreV1Api.replaceNode(name, K8sUtils.toObject(obj, V1Node.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case STATEFUL_SET://有状态应用副本集
+              
+              appsV1Api.replaceNamespacedStatefulSet(name, nameSpace, K8sUtils.toObject(obj, V1StatefulSet.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            
+            case ENDPOINTS:
+              coreV1Api.replaceNamespacedEndpoints(name, nameSpace, K8sUtils.toObject(obj, V1Endpoints.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case JOB: //任务
+              batchV1Api.replaceNamespacedJob(name, nameSpace, K8sUtils.toObject(obj, V1Job.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case SECRET://保密字典
+              coreV1Api.replaceNamespacedSecret(name, nameSpace, K8sUtils.toObject(obj, V1Secret.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            
+            case PERSISTENT_VOLUME://持久化存储卷
+              coreV1Api.replacePersistentVolume(name, K8sUtils.toObject(obj, V1PersistentVolume.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case PERSISTENT_VOLUME_CLAIM:
+              coreV1Api.replaceNamespacedPersistentVolumeClaim(name, nameSpace, K8sUtils.toObject(obj, V1PersistentVolumeClaim.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            case SERVICE_ACCOUNT:
+              coreV1Api.replaceNamespacedServiceAccount(name, nameSpace, K8sUtils.toObject(obj, V1ServiceAccount.class), ReplaceParam.pretty, ReplaceParam.dryRun, ReplaceParam.fieldManager, ReplaceParam.fieldValidation);
+              return;
+            default:
+              return;
+          }
+          
+        }
+      } catch (ApiException e) {
+        
+        throw new ServiceException(K8sUtils.getMessage(e));
+      }
+    }
   }
   
   /**

@@ -109,6 +109,14 @@
             order by ${orderByClause}
         </if>
     </select>
+
+    <select id="selectHarborUri" resultType="string" parameterType="java.lang.Integer">
+        select tem.harbor_url
+        from module_temp tem
+                 left join module_manage man on man.module_name = tem.module_name
+        where man.env_id = #{envId,jdbcType=INTEGER}
+          and man.id = #{moduleId,jdbcType=INTEGER}
+    </select>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>

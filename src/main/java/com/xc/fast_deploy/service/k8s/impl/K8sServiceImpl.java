@@ -26,6 +26,7 @@ import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.BatchV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.apis.NetworkingV1Api;
 import io.kubernetes.client.openapi.models.*;
@@ -91,7 +92,6 @@ public class K8sServiceImpl implements K8sService {
               if (coreV1Api != null) {
                 switch (kindTypeEnum) {
                   case POD:
-  
                     log.info("发布pod");
                     V1Pod pod = K8sUtils.getObject(k8sYamlVo.getO(), V1Pod.class);
                     if (StringUtils.isNotBlank(mirrorName)) {
@@ -176,6 +176,10 @@ public class K8sServiceImpl implements K8sService {
                         beta1Deployment.getSpec().getTemplate().getSpec()
                             .setNodeSelector(null);
                       }
+  
+                      V1LabelSelector v1LabelSelector = new V1LabelSelector();
+                      v1LabelSelector.setMatchLabels(beta1Deployment.getSpec().getTemplate().getMetadata().getLabels());
+                      beta1Deployment.getSpec().setSelector(v1LabelSelector);
                       //12-2 针对生产和灾备的发布 resource资源limit必须要
                       // 设置值才能发布否则发布报错
                       if (env.getId().equals(34) || env.getId().equals(30)) {
@@ -1165,6 +1169,42 @@ public class K8sServiceImpl implements K8sService {
       }
     }
     return v1beta1Api;
+  }
+  
+  public BatchV1Api getBatchV1Api(ModuleEnv env) {
+    BatchV1Api coreV1Api = null;
+    if (env != null && StringUtils.isNotBlank(env.getK8sConfig())) {
+      try {
+        coreV1Api = K8sManagement.getBatchV1Api(env.getK8sConfig());
+      } catch (Exception e) {
+        log.error("初始化k8sconfig error", e);
+        e.printStackTrace();
+      }
+    }
+    
+    return coreV1Api;
+  }
+  
+  public NetworkingV1Api getNetworkingV1Api(ModuleEnv env) {
+    NetworkingV1Api coreV1Api = null;
+    if (env != null && StringUtils.isNotBlank(env.getK8sConfig())) {
+      return getNetworkingV1Api(env.getK8sConfig());
+    }
+    
+    return coreV1Api;
+  }
+  
+  public NetworkingV1Api getNetworkingV1Api(String config) {
+    NetworkingV1Api coreV1Api = null;
+    
+    try {
+      coreV1Api = K8sManagement.getNetworkingV1Api(config);
+    } catch (Exception e) {
+      log.error("初始化k8sconfig error", e);
+      e.printStackTrace();
+    }
+    
+    return coreV1Api;
   }
   
   /**

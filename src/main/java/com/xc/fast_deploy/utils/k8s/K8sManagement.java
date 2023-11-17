@@ -80,6 +80,11 @@ public class K8sManagement {
     return new AppsV1Api();
   }
   
+  public static BatchV1Api getBatchV1Api(String k8sConfig) {
+    init(k8sConfig);
+    return new BatchV1Api();
+  }
+  
   public static NetworkingV1Api getNetworkingV1Api(String k8sConfig) {
     init(k8sConfig);
     return new NetworkingV1Api();

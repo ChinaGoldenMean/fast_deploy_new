@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.xc.fast_deploy.dao.master_dao.ModuleEnvMapper;
+import com.xc.fast_deploy.dto.K8sYamlDTO;
 import com.xc.fast_deploy.dto.ResponseDTO;
 import com.xc.fast_deploy.dto.k8s.K8sPodDTO;
 import com.xc.fast_deploy.dto.k8s.K8sServiceDTO;
+import com.xc.fast_deploy.model.base.JsonResult;
 import com.xc.fast_deploy.model.master_model.ModuleDeployYaml;
 import com.xc.fast_deploy.model.master_model.ModuleEnv;
 import com.xc.fast_deploy.model.master_model.ModuleUser;
@@ -25,6 +27,7 @@ import com.xc.fast_deploy.utils.constant.K8sHttpUrlConstants;
 import com.xc.fast_deploy.utils.k8s.K8sUtils;
 import com.xc.fast_deploy.vo.k8s_vo.K8sStrategyParamVO;
 import com.xc.fast_deploy.vo.k8s_vo.K8sUpdateResourceParamVO;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,8 +56,6 @@ public class ModuleDeployController {
   private ModuleDeployService deployService;
   @Autowired
   private ModuleUserService userService;
-  @Autowired
-  private ModuleDeployYamlService deployYamlService;
   @Autowired
   private ModuleEnvMapper envMapper;
   
@@ -91,17 +92,17 @@ public class ModuleDeployController {
    * @return
    */
   @PostMapping(value = "/module/online")
-  public String deployOneModule(Integer moduleId, Integer envId, Integer mirrorId) {
+  public String deployOneModule(Integer moduleId, Integer envId, Integer mirrorId, String mirrorName) {
     // log.info("传入参数为moduleId: {},envid: {}", moduleId, envId);
     ResponseDTO responseDTO = new ResponseDTO();
     responseDTO.fail("发布失败");
-    if (moduleId != null && envId != null && mirrorId != null) {
+    if (moduleId != null && envId != null) {
       ModuleUser moduleUser = JwtUtil.getModuleUserInfo();
       //权限判断,判断用户在该环境下是否存在权限关联即可
       PermissionJudgeUtils.judgeUserPermission(userService, "module_module_online",
           moduleUser.getId(), envId);
       try {
-        if (deployService.deployModuleInEnv(moduleId, envId, mirrorId, moduleUser)) {
+        if (deployService.deployModuleInEnv(moduleId, envId, mirrorId, moduleUser, mirrorName)) {
           responseDTO.success("发布操作成功");
         }
       } catch (DeployIsOnlineExcetion | TransYaml2K8sVoException | K8SDeployException e) {
@@ -171,16 +172,16 @@ public class ModuleDeployController {
    * @return
    */
   @PostMapping(value = "/module/update/mirror")
-  public String changeMirror(Integer moduleId, Integer envId, Integer mirrorId) {
+  public String changeMirror(Integer moduleId, Integer envId, Integer mirrorId, String mirrorName) {
     // log.info("传入参数为moduleId: {},envid: {},mirrorId: {}", moduleId, envId, mirrorId);
     ResponseDTO responseDTO = new ResponseDTO();
     responseDTO.fail("发布失败");
-    if (moduleId != null && mirrorId != null && envId != null) {
+    if (moduleId != null && envId != null) {
       ModuleUser moduleUser = JwtUtil.getModuleUserInfo();
       //权限判断,判断用户在该环境下是否存在权限关联即可
       PermissionJudgeUtils.judgeUserPermission(userService,
           "module_update_image", moduleUser.getId(), envId);
-      responseDTO = deployService.changeMirror(moduleId, envId, mirrorId, moduleUser);
+      responseDTO = deployService.changeMirror(moduleId, envId, mirrorId, moduleUser, mirrorName);
     }
     return JSONObject.toJSONString(responseDTO);
   }
@@ -298,6 +299,15 @@ public class ModuleDeployController {
       responseDTO.success(deployService.clearMemoryPods(envId, moduleId, podNames, moduleUser));
     }
     return JSONObject.toJSONString(responseDTO);
+  }
+  
+  @PostMapping(value = "update")
+  @ApiOperation("更新资源")
+  public JsonResult<String> putResourceInfo(@RequestBody JSONObject yamlJson, Integer envId) {
+    log.debug("yamlJson: {} ", yamlJson);
+    K8sYamlDTO k8SYamlDTO = K8sUtils.transJson2Vo(yamlJson);
+    deployService.updateResource(k8SYamlDTO, envId);
+    return JsonResult.success("成功!");
   }
   
   /**

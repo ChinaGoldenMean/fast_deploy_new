@@ -48,6 +48,8 @@ public interface ModuleMirrorService extends BaseService<ModuleMirror, Integer> 
    */
   List<String> getHarborMirrorList(Integer envId, Integer moduleId);
   
+  List<String> getYunHarborMirrorList(Integer envId, Integer moduleId);
+  
   //清理对应环境的harbor仓库
   void clearHarborNotUsedMirror(Set<Integer> envIds);
 }

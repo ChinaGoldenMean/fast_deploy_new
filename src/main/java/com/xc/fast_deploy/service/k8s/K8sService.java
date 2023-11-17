@@ -5,7 +5,9 @@ import com.xc.fast_deploy.model.master_model.ModuleEnv;
 import com.xc.fast_deploy.vo.K8sYamlVo;
 import com.xc.fast_deploy.websocketConfig.K8sPodWatchWebsocketServer;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.BatchV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.apis.NetworkingV1Api;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1Service;
 
@@ -20,6 +22,10 @@ public interface K8sService {
   AppsV1Api getExtensionsV1beta1ApiByConfig(ModuleEnv env);
   
   CoreV1Api getCoreV1ApiByConfig(ModuleEnv env);
+  
+  NetworkingV1Api getNetworkingV1Api(ModuleEnv env);
+  
+  BatchV1Api getBatchV1Api(ModuleEnv env);
   
   AppsV1Api getAppsV1Api(ModuleEnv env);
   

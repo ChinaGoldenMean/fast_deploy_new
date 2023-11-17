@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModulePackageMapperModule">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModulePackage">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="code_reversion" property="codeReversion" jdbcType="INTEGER"/>
+        <result column="content_name" property="contentName" jdbcType="VARCHAR"/>
+        <result column="code_url" property="codeUrl" jdbcType="VARCHAR"/>
+        <result column="code_type" property="codeType" jdbcType="INTEGER"/>
+        <result column="package_path_name" property="packagePathName" jdbcType="VARCHAR"/>
+        <result column="module_id" property="moduleId" jdbcType="INTEGER"/>
+        <result column="git_branch" property="gitBranch" jdbcType="VARCHAR"/>
+        <result column="is_pom_folder" property="isPomFolder" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , code_reversion, content_name, code_url, code_type, package_path_name, module_id,
+        git_branch, is_pom_folder, create_time
+    </sql>
+    <select id="findBranch" resultType="integer">
+        select count(1)
+        from module_package
+        where module_id = #{id}
+          and git_branch not in ('master', 'release')
+
+
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModulePackageExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_package
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_package
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_package
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModulePackageExample">
+        delete from module_package
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModulePackage">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_package")
+        </selectKey>
+        insert into module_package (id,code_reversion, content_name, code_url,
+        code_type, package_path_name, module_id,
+        git_branch, is_pom_folder, create_time
+        )
+        values (#{id,jdbcType=INTEGER},#{codeReversion,jdbcType=INTEGER},
+        #{contentName,jdbcType=VARCHAR}, #{codeUrl,jdbcType=VARCHAR},
+        #{codeType,jdbcType=INTEGER}, #{packagePathName,jdbcType=VARCHAR}, #{moduleId,jdbcType=INTEGER},
+        #{gitBranch,jdbcType=VARCHAR}, #{isPomFolder,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModulePackage">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_package")
+        </selectKey>
+        insert into module_package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="codeReversion != null">
+                code_reversion,
+            </if>
+            <if test="contentName != null">
+                content_name,
+            </if>
+            <if test="codeUrl != null">
+                code_url,
+            </if>
+            <if test="codeType != null">
+                code_type,
+            </if>
+            <if test="packagePathName != null">
+                package_path_name,
+            </if>
+            <if test="moduleId != null">
+                module_id,
+            </if>
+            <if test="gitBranch != null">
+                git_branch,
+            </if>
+            <if test="isPomFolder != null">
+                is_pom_folder,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="codeReversion != null">
+                #{codeReversion,jdbcType=INTEGER},
+            </if>
+            <if test="contentName != null">
+                #{contentName,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="codeType != null">
+                #{codeType,jdbcType=INTEGER},
+            </if>
+            <if test="packagePathName != null">
+                #{packagePathName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null">
+                #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="gitBranch != null">
+                #{gitBranch,jdbcType=VARCHAR},
+            </if>
+            <if test="isPomFolder != null">
+                #{isPomFolder,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModulePackageExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_package
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_package
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.codeReversion != null">
+                code_reversion = #{record.codeReversion,jdbcType=INTEGER},
+            </if>
+            <if test="record.contentName != null">
+                content_name = #{record.contentName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.codeUrl != null">
+                code_url = #{record.codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.codeType != null">
+                code_type = #{record.codeType,jdbcType=INTEGER},
+            </if>
+            <if test="record.packagePathName != null">
+                package_path_name = #{record.packagePathName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleId != null">
+                module_id = #{record.moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="record.gitBranch != null">
+                git_branch = #{record.gitBranch,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isPomFolder != null">
+                is_pom_folder = #{record.isPomFolder,jdbcType=INTEGER},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_package
+        set id = #{record.id,jdbcType=INTEGER},
+        code_reversion = #{record.codeReversion,jdbcType=INTEGER},
+        content_name = #{record.contentName,jdbcType=VARCHAR},
+        code_url = #{record.codeUrl,jdbcType=VARCHAR},
+        code_type = #{record.codeType,jdbcType=INTEGER},
+        package_path_name = #{record.packagePathName,jdbcType=VARCHAR},
+        module_id = #{record.moduleId,jdbcType=INTEGER},
+        git_branch = #{record.gitBranch,jdbcType=VARCHAR},
+        is_pom_folder = #{record.isPomFolder,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModulePackage">
+        update module_package
+        <set>
+            <if test="codeReversion != null">
+                code_reversion = #{codeReversion,jdbcType=INTEGER},
+            </if>
+            <if test="contentName != null">
+                content_name = #{contentName,jdbcType=VARCHAR},
+            </if>
+            <if test="codeUrl != null">
+                code_url = #{codeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="codeType != null">
+                code_type = #{codeType,jdbcType=INTEGER},
+            </if>
+            <if test="packagePathName != null">
+                package_path_name = #{packagePathName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="gitBranch != null">
+                git_branch = #{gitBranch,jdbcType=VARCHAR},
+            </if>
+            <if test="isPomFolder != null">
+                is_pom_folder = #{isPomFolder,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModulePackage">
+        update module_package
+        set code_reversion    = #{codeReversion,jdbcType=INTEGER},
+            content_name      = #{contentName,jdbcType=VARCHAR},
+            code_url          = #{codeUrl,jdbcType=VARCHAR},
+            code_type         = #{codeType,jdbcType=INTEGER},
+            package_path_name = #{packagePathName,jdbcType=VARCHAR},
+            module_id         = #{moduleId,jdbcType=INTEGER},
+            git_branch        = #{gitBranch,jdbcType=VARCHAR},
+            is_pom_folder     = #{isPomFolder,jdbcType=INTEGER},
+            create_time       = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--self add-->
+    <select id="selectIdFirst" resultType="java.lang.Integer">
+        SELECT nextval("module_package")
+    </select>
+    <select id="updateVal" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT setval("module_package", #{val,jdbcType=INTEGER})
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into module_package
+        (id,git_branch,content_name,code_reversion,
+        code_type, code_url,package_path_name,module_id, create_time)
+        values
+        <foreach collection="list" item="modulePackage" index="index" separator=",">
+            (#{modulePackage.id,jdbcType=INTEGER},#{modulePackage.gitBranch,jdbcType=VARCHAR},
+            #{modulePackage.contentName,jdbcType=VARCHAR},
+            #{modulePackage.codeReversion,jdbcType=VARCHAR},#{modulePackage.codeType,jdbcType=INTEGER},
+            #{modulePackage.codeUrl,jdbcType=VARCHAR},#{modulePackage.packagePathName,jdbcType=VARCHAR},
+            #{modulePackage.moduleId,jdbcType=INTEGER},#{modulePackage.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <select id="selectCertInfoById" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.vo.module_vo.ModulePackageVo">
+        SELECT a.code_url          AS codeUrl,
+               c.username,
+               c.password,
+               b.module_type       AS codeType,
+               a.package_path_name AS packagePathName,
+               b.id                AS moduleId
+        FROM module_package a
+                 LEFT JOIN module_manage b
+                           ON a.module_id = b.id
+                 LEFT JOIN module_certificate c
+                           ON b.certificate_id = c.id
+        WHERE a.id = #{id,jdbcType=INTEGER}
+          AND b.is_delete = 0
+          AND c.is_deleted = 0
+    </select>
+
+    <select id="selectPackageInfoByModuleId" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.dto.module.ModulePackageDTO">
+        SELECT a.content_name        AS contentName,
+               a.code_url            AS codeUrl,
+               a.id                  AS id,
+               b.id                  AS moduleId,
+               b.module_project_code AS moduleProjectCode,
+               a.code_type           AS codeType,
+               a.git_branch          AS gitBranch,
+               a.package_path_name   AS packagePathName,
+               a.create_time         AS createTime,
+               b.module_type         AS moduleType,
+               b.module_name         AS moduleName,
+               b.module_content_name AS moduleContentName,
+               a.code_reversion      AS codeReversion
+        FROM module_package a
+                 LEFT JOIN module_manage b
+                           ON a.module_id = b.id
+        WHERE b.is_delete = 0
+          AND b.id = #{moduleId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectEnvIdByPackageId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT b.env_id
+        FROM module_package a
+                 LEFT JOIN module_manage b
+                           ON a.module_id = b.id
+        WHERE b.is_delete = 0
+          AND a.id = #{packageId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAllInfoWithCert" resultType="com.xc.fast_deploy.dto.module.ModulePackageCertDTO">
+        SELECT a.code_url          AS codeUrl,
+               c.username          AS username,
+               c.password          AS password,
+               a.package_path_name AS packagePathName
+        FROM module_package a
+                 LEFT JOIN module_manage b
+                           ON a.module_id = b.id
+                 LEFT JOIN module_certificate c
+                           ON b.certificate_id = c.id
+        WHERE b.is_delete = 0
+          AND c.is_deleted = 0
+          AND c.type = 1
+    </select>
+</mapper>

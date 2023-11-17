@@ -29,6 +29,9 @@ import java.util.*;
 
 @Slf4j
 public class GitUtils {
+  public static String RELEASE = "release";
+  public static String MASTER = "master";
+  
   public static void main(String[] args) {
     
     GitUtils.generateXML("E:\\Users\\litiewang\\Downloads\\", "svn-co-smt-bss-operation-outdubbo-trunk.sh");

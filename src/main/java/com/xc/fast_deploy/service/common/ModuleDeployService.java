@@ -1,5 +1,6 @@
 package com.xc.fast_deploy.service.common;
 
+import com.xc.fast_deploy.dto.K8sYamlDTO;
 import com.xc.fast_deploy.dto.ResponseDTO;
 import com.xc.fast_deploy.dto.k8s.K8sPodDTO;
 import com.xc.fast_deploy.dto.k8s.K8sServiceDTO;
@@ -20,17 +21,19 @@ import java.util.Set;
 
 public interface ModuleDeployService extends BaseService<ModuleDeploy, Integer> {
   
+  void updateResource(K8sYamlDTO yamlVo, Integer envId);
+  
   List<ModuleDeployEnvDTO> selectModuleEnvCenterAll(Set<Integer> envIds, String userId);
   
   List<K8sPodDTO> getDeployModuleInfo(Integer moduleId, Integer envId);
   
-  boolean deployModuleInEnv(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser);
+  boolean deployModuleInEnv(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser, String mirrorName);
   
   boolean scaleModuleSize(Integer moduleId, Integer moduleSize, Integer envId, ModuleUser moduleUser);
   
   boolean offline(Integer moduleId, Integer envId, ModuleUser moduleUser);
   
-  ResponseDTO changeMirror(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser);
+  ResponseDTO changeMirror(Integer moduleId, Integer envId, Integer mirrorId, ModuleUser moduleUser, String mirrorName);
   
   boolean deploySvc(Integer moduleId, Integer envId, ModuleUser moduleUser);
   

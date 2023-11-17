@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xc.fast_deploy.dao.master_dao.ModuleJobMapperModule">
+    <resultMap id="BaseResultMap" type="com.xc.fast_deploy.model.master_model.ModuleJob">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+        <result column="module_id" property="moduleId" jdbcType="INTEGER"/>
+        <result column="crontab_expression" property="crontabExpression" jdbcType="VARCHAR"/>
+        <result column="mirror_prefix" property="mirrorPrefix" jdbcType="VARCHAR"/>
+        <result column="compile_file_path" property="compileFilePath" jdbcType="VARCHAR"/>
+        <result column="compile_command" property="compileCommand" jdbcType="VARCHAR"/>
+        <result column="dockerfile_path" property="dockerfilePath" jdbcType="VARCHAR"/>
+        <result column="module_env_id" property="moduleEnvId" jdbcType="INTEGER"/>
+        <result column="is_delete" property="isDelete" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id
+        , job_name, module_id, crontab_expression, mirror_prefix, compile_file_path, compile_command,
+    dockerfile_path, module_env_id, is_delete, status, update_time, create_time
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.xc.fast_deploy.model.master_model.example.ModuleJobExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from module_job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from module_job
+        where id = #{id,jdbcType=INTEGER}
+        AND is_delete = 0
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from module_job
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleJobExample">
+        delete from module_job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.xc.fast_deploy.model.master_model.ModuleJob">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_job") AS id
+        </selectKey>
+        insert into module_job (id,job_name, module_id, crontab_expression,
+        mirror_prefix, compile_file_path, compile_command,
+        dockerfile_path, module_env_id, is_delete,
+        status, update_time, create_time
+        )
+        values (#{id,jdbcType=INTEGER},#{jobName,jdbcType=VARCHAR}, #{moduleId,jdbcType=INTEGER},
+        #{crontabExpression,jdbcType=VARCHAR},
+        #{mirrorPrefix,jdbcType=VARCHAR}, #{compileFilePath,jdbcType=VARCHAR}, #{compileCommand,jdbcType=VARCHAR},
+        #{dockerfilePath,jdbcType=VARCHAR}, #{moduleEnvId,jdbcType=INTEGER}, #{isDelete,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleJob">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE">
+            SELECT nextval("module_job") AS id
+        </selectKey>
+        insert into module_job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="jobName != null">
+                job_name,
+            </if>
+            <if test="moduleId != null">
+                module_id,
+            </if>
+            <if test="crontabExpression != null">
+                crontab_expression,
+            </if>
+            <if test="mirrorPrefix != null">
+                mirror_prefix,
+            </if>
+            <if test="compileFilePath != null">
+                compile_file_path,
+            </if>
+            <if test="compileCommand != null">
+                compile_command,
+            </if>
+            <if test="dockerfilePath != null">
+                dockerfile_path,
+            </if>
+            <if test="moduleEnvId != null">
+                module_env_id,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="jobName != null">
+                #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null">
+                #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="crontabExpression != null">
+                #{crontabExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="mirrorPrefix != null">
+                #{mirrorPrefix,jdbcType=VARCHAR},
+            </if>
+            <if test="compileFilePath != null">
+                #{compileFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="compileCommand != null">
+                #{compileCommand,jdbcType=VARCHAR},
+            </if>
+            <if test="dockerfilePath != null">
+                #{dockerfilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleEnvId != null">
+                #{moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.xc.fast_deploy.model.master_model.example.ModuleJobExample"
+            resultType="java.lang.Integer">
+        select count(*) from module_job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update module_job
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.jobName != null">
+                job_name = #{record.jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleId != null">
+                module_id = #{record.moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="record.crontabExpression != null">
+                crontab_expression = #{record.crontabExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="record.mirrorPrefix != null">
+                mirror_prefix = #{record.mirrorPrefix,jdbcType=VARCHAR},
+            </if>
+            <if test="record.compileFilePath != null">
+                compile_file_path = #{record.compileFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.compileCommand != null">
+                compile_command = #{record.compileCommand,jdbcType=VARCHAR},
+            </if>
+            <if test="record.dockerfilePath != null">
+                dockerfile_path = #{record.dockerfilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleEnvId != null">
+                module_env_id = #{record.moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="record.isDelete != null">
+                is_delete = #{record.isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="record.status != null">
+                status = #{record.status,jdbcType=INTEGER},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update module_job
+        set id = #{record.id,jdbcType=INTEGER},
+        job_name = #{record.jobName,jdbcType=VARCHAR},
+        module_id = #{record.moduleId,jdbcType=INTEGER},
+        crontab_expression = #{record.crontabExpression,jdbcType=VARCHAR},
+        mirror_prefix = #{record.mirrorPrefix,jdbcType=VARCHAR},
+        compile_file_path = #{record.compileFilePath,jdbcType=VARCHAR},
+        compile_command = #{record.compileCommand,jdbcType=VARCHAR},
+        dockerfile_path = #{record.dockerfilePath,jdbcType=VARCHAR},
+        module_env_id = #{record.moduleEnvId,jdbcType=INTEGER},
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+        status = #{record.status,jdbcType=INTEGER},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xc.fast_deploy.model.master_model.ModuleJob">
+        update module_job
+        <set>
+            <if test="jobName != null">
+                job_name = #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="crontabExpression != null">
+                crontab_expression = #{crontabExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="mirrorPrefix != null">
+                mirror_prefix = #{mirrorPrefix,jdbcType=VARCHAR},
+            </if>
+            <if test="compileFilePath != null">
+                compile_file_path = #{compileFilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="compileCommand != null">
+                compile_command = #{compileCommand,jdbcType=VARCHAR},
+            </if>
+            <if test="dockerfilePath != null">
+                dockerfile_path = #{dockerfilePath,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleEnvId != null">
+                module_env_id = #{moduleEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xc.fast_deploy.model.master_model.ModuleJob">
+        update module_job
+        set job_name           = #{jobName,jdbcType=VARCHAR},
+            module_id          = #{moduleId,jdbcType=INTEGER},
+            crontab_expression = #{crontabExpression,jdbcType=VARCHAR},
+            mirror_prefix      = #{mirrorPrefix,jdbcType=VARCHAR},
+            compile_file_path  = #{compileFilePath,jdbcType=VARCHAR},
+            compile_command    = #{compileCommand,jdbcType=VARCHAR},
+            dockerfile_path    = #{dockerfilePath,jdbcType=VARCHAR},
+            module_env_id      = #{moduleEnvId,jdbcType=INTEGER},
+            is_delete          = #{isDelete,jdbcType=INTEGER},
+            status             = #{status,jdbcType=INTEGER},
+            update_time        = #{updateTime,jdbcType=TIMESTAMP},
+            create_time        = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectJobVoPageByVo" parameterType="com.xc.fast_deploy.vo.module_vo.param.ModuleJobSelectParamVo"
+            resultType="com.xc.fast_deploy.vo.module_vo.ModuleJobVo">
+        SELECT a.id AS jobId,a.job_name AS jobName, b.module_name AS moduleName,b.id AS moduleId,b.module_type AS
+        moduleType,b.env_id AS envId,b.mark AS envName, d.id AS centerId,d.center_name AS centerName,a.create_time AS
+        createTime,
+        a.update_time AS updateTime,d.child_center_name AS childCenterName
+        FROM module_job a
+        LEFT JOIN module_manage b
+        ON a.module_id = b.id
+        LEFT JOIN module_center d
+        ON b.center_id = d.id
+        <where>
+            a.is_delete = 0
+            AND b.is_delete = 0
+            AND d.is_deleted = 0
+            <if test="moduleName != null and moduleName != ''">
+                AND (b.module_name LIKE concat('%',#{moduleName,jdbcType=VARCHAR},'%')
+                OR b.module_content_name LIKE concat('%',#{moduleName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="jobName != null and jobName != ''">
+                AND a.job_name LIKE concat('%',#{jobName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="envId != null and envId >= 0">
+                AND b.env_id = #{envId,jdbcType=INTEGER}
+            </if>
+            <if test="centerId != null and centerId >= 0">
+                AND d.id = #{centerId,jdbcType=INTEGER}
+            </if>
+            <if test="moduleType != null and moduleType >= 0">
+                AND b.module_type = #{moduleType,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND a.update_time &gt;= #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.update_time &lt;= #{endTime,jdbcType=VARCHAR}
+            </if>
+            <if test="envIds != null and envIds.size >0">
+                AND b.env_id
+                IN
+                <foreach collection="envIds" index="index" item="envId" open="(" separator="," close=")">
+                    #{envId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY a.update_time
+        DESC
+    </select>
+
+    <select id="selectJobDTOById" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.dto.module.ModuleJobDTO">
+        SELECT a.id                 AS jobId,
+               a.job_name           AS jobName,
+               a.crontab_expression AS crontabExpression,
+               d.id                 AS centerId,
+               a.module_id          AS moduleId,
+               b.module_name        AS moduleName,
+               b.module_type        AS moduleType,
+               d.center_name        AS centerName,
+               b.env_id             AS envId,
+               b.mark               AS envName,
+               a.compile_file_path  AS complieFilePath,
+               a.compile_command    AS compileCommand,
+               a.dockerfile_path    AS dockerfilePath,
+               d.child_center_name  AS childCenterName,
+               b.svn_auto_url       AS svnAutoUrl
+        FROM module_job a
+                 LEFT JOIN module_manage b
+                           ON a.module_id = b.id
+                 LEFT JOIN module_center d
+                           ON b.center_id = d.id
+        WHERE a.is_delete = 0
+          AND b.is_delete = 0
+          AND d.is_deleted = 0
+          AND a.id = #{jobId,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="selectJobModuleByEnvId" parameterType="java.lang.Integer"
+            resultType="com.xc.fast_deploy.dto.module.ModuleManageDTO">
+        SELECT DISTINCT c.id                AS moduleId,
+                        c.module_name       AS moduleName,
+                        c.module_type       AS moduleType,
+                        c.center_id         AS centerId,
+                        d.center_name       AS centerName,
+                        d.center_code       AS centerCode,
+                        d.child_center_name AS childCenterName
+        FROM module_job a
+                 LEFT JOIN module_manage c
+                           ON a.module_id = c.id
+                 LEFT JOIN module_center d
+                           ON d.id = c.center_id
+        WHERE a.is_delete = 0
+          AND c.is_delete = 0
+          AND c.env_id = #{envId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectJobModuleByEnvAndModuleId" parameterType="com.xc.fast_deploy.model.master_model.ModuleJob"
+            resultType="com.xc.fast_deploy.dto.module.ModuleManageDTO">
+        SELECT DISTINCT
+        c.id AS moduleId,c.module_name AS moduleName,c.module_type AS moduleType,c.center_id AS centerId,
+        d.center_name AS centerName,d.center_code AS centerCode,c.module_content_name AS moduleContentName,
+        d.center_path AS centerPath,d.child_center_name AS childCenterName
+        FROM module_job a
+        LEFT JOIN module_manage c
+        ON a.module_id = c.id
+        LEFT JOIN module_center d
+        ON d.id = c.center_id
+        WHERE a.is_delete = 0
+        AND c.is_delete = 0
+        <if test="moduleEnvId != null and moduleEnvId >= 0">
+            AND c.env_id = #{moduleEnvId,jdbcType=INTEGER}
+        </if>
+        <if test="moduleId != null and moduleId >= 0">
+            AND c.id = #{moduleId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM module_job
+        WHERE is_delete = 0
+    </select>
+</mapper>

@@ -68,6 +68,10 @@ myself:
     prodId: 25,22,45,46
     realprodid:
     oldversion: 22,24,25,26,27,30,32,33,35,36,37,38,39
+    harbor:
+      uri: 134.108.3.248:8101
+      account: oss_test
+      password: OssborZJ!920
   queue:
     size: 8
 redisConfig:

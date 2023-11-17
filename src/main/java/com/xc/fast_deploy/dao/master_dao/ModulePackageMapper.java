@@ -47,5 +47,7 @@ public interface ModulePackageMapper extends BaseMapper<ModulePackage, Integer> 
   
   Integer selectEnvIdByPackageId(Integer packageId);
   
+  Integer updateBranchNameById(@Param("branchName") String branchName, @Param("id") Integer id);
+  
   ModulePackageCertDTO selectAllInfoWithCert();
 }

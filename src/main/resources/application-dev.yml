@@ -59,9 +59,9 @@ spring:
 #    username: admin
 #    password: admin123
 jenkins:
-  url: http://134.96.253.71:8001/jenkins
-  username: luocb
-  password: Tasa!9$%
+  url: http://134.108.27.80:8001/jenkins/
+  username: jellf
+  password: jellf1q2w3e!@#$
 local:
   ipAddr: localhost:8093
 netty:

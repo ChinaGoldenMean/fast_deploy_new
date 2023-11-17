@@ -364,7 +364,11 @@
         WHERE b.is_delete = 0
           AND b.id = #{moduleId,jdbcType=INTEGER}
     </select>
-
+    <select id="updateBranchNameById" resultType="java.lang.Integer">
+        update module_package
+        set git_branch =#{branchName,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </select>
     <select id="selectEnvIdByPackageId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
         SELECT b.env_id
         FROM module_package a

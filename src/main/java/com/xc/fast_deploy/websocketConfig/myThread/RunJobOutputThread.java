@@ -34,11 +34,14 @@ public class RunJobOutputThread extends Thread {
                 jobDataVo.getToken(),
                 jobDataVo);
         } catch (Exception e) {
-            session.sendText(e.getMessage());
-            log.error("run job Error :{}", e.getCause().getMessage());
-            e.printStackTrace();
-            //抛出异常到主线程
-            throw new ServiceException(e.getMessage());
+          session.sendText(e.getMessage());
+          log.error(e.getMessage(), e);
+  
+          e.printStackTrace();
+          //抛出异常到主线程
+          throw new RuntimeException("caused by: ", e);
+  
+          //   throw new ServiceException(e.getMessage());
         } finally {
             PoolExcutorUtils.jobHashMap.remove(jobDataVo.getJobId());
         }

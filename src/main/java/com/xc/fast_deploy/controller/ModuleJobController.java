@@ -3,11 +3,13 @@ package com.xc.fast_deploy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Job;
+import com.xc.fast_deploy.dao.master_dao.ModuleBuildInfoMapper;
 import com.xc.fast_deploy.dto.MyPageInfo;
 import com.xc.fast_deploy.dto.ResponseDTO;
 import com.xc.fast_deploy.dto.jenkins.JobDetailsDTO;
 import com.xc.fast_deploy.dto.module.ModuleJobDTO;
 import com.xc.fast_deploy.dto.module.ModuleMirrorDTO;
+import com.xc.fast_deploy.model.master_model.ModuleBuildInfo;
 import com.xc.fast_deploy.model.master_model.ModuleJob;
 import com.xc.fast_deploy.model.master_model.ModuleManage;
 import com.xc.fast_deploy.model.master_model.ModuleMirror;
@@ -52,6 +54,9 @@ public class ModuleJobController {
   private ModuleUserService userService;
   @Autowired
   private ModuleMirrorService mirrorService;
+  
+  @Autowired
+  ModuleBuildInfoMapper infoMapper;
   
   /**
    * 添加一个模块镜像制作任务 formdata数据传输
@@ -207,6 +212,17 @@ public class ModuleJobController {
       }
     }
     return JSONObject.toJSONString(responseDTO);
+  }
+  
+  @PostMapping(value = "listBuildInfo")
+  public String listBuildInfo(Integer moduleId, Integer envId) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    List<ModuleBuildInfo> list = new ArrayList<>();
+    responseDTO.fail("查询失败");
+    if (moduleId != null && envId != null) {
+      list = infoMapper.listBuildInfo(moduleId, envId);
+    }
+    return JSONObject.toJSONString(list);
   }
   
   /**

@@ -70,6 +70,10 @@ myself:
     prodId: 30,32,34,35
     realprodid: 30,35
     oldversion: 22,24,25,26,27,30,32,33,35,36,37,38,39
+    harbor:
+      uri: 134.108.5.132:8001
+      account: isale
+      password: isAlezb#132
   queue:
     size: 8
 redisConfig:
