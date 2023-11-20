@@ -9,6 +9,12 @@ arthas:
 mybatis:
   configuration:
     log-prefix: executableSql.
+myself:
+  pspass:
+    harbor:
+      uri: 134.108.3.248:8101
+      account: oss_test
+      password: OssborZJ!920
 pagehelper:
   helper-dialect: mysql
   reasonable: true

@@ -46,6 +46,7 @@ public class OutputThread extends Thread {
       
       log.error("线程中断,线程关闭: {}", e.getMessage());
       e.printStackTrace();
+  
     } finally {
       log.info("当前线程执行完毕,session: {}", session);
       if (this.inputStream != null) {
