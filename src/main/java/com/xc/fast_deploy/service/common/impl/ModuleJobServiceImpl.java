@@ -342,11 +342,12 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                             }
                         } else {
                             packagePathName = packageDTOS.get(0).getPackagePathName();
-                            if (isGreenChannel != null) {
-            
-                                packageService.chanageBranchByModuleId(envId, moduleId, branch);
-                            }
-        
+                            //增量构建不处理
+                            //if (isGreenChannel != null) {
+                            //
+                            //    packageService.chanageBranchByModuleId(envId, moduleId, branch);
+                            //}
+    
                         }
                         
                         String compilePath = XMLUtils.genPOMXml(manageDTO, storgePrefix);
