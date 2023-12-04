@@ -57,6 +57,8 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
   String harborAccount;
   @Value("${myself.pspass.harbor.password}")
   String harborPassword;
+  @Value("${myself.pspass.prod}")
+  private boolean isProdEnv;
   @Autowired
   private ModuleMirrorMapper mirrorMapper;
   @Autowired
@@ -447,23 +449,28 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
       String uri = manageMapper.selectHarborUri(envId, moduleId);
       //mirrorName.append("crm-test-repo").append(CONTACT).
       mirrorName.append(uri.toLowerCase());
-      
+  
       StringBuilder sb = new StringBuilder();
       //形成访问harborapi的taglist的url路径
-      String mirrorTagsUrl = sb.append(HTTP_PREFIX).append(harborUri)
-          .append(CONTACT).append(API).append(CONTACT).append(REPOSTIRY).append(CONTACT)
+      String mirrorTagsUrl = sb.append(HTTP_PREFIX)
+          //.append(CONTACT).append(API).append(CONTACT).append(REPOSTIRY).append(CONTACT)
           .append(mirrorName).append(CONTACT).append(TAGS).toString();
       //http请求数据获取返回
-      String result = HttpUtils.doGetHarborInfo(mirrorTagsUrl,
-          harborAccount, harborPassword);
+      String result;
+      if (isProdEnv) {
+        result = HttpUtils.doGetHarborInfo(mirrorTagsUrl, moduleEnvVo.getUsername(), EncryptUtil.decrypt(moduleEnvVo.getPassword()));
+      } else {
+        result = HttpUtils.doGetHarborInfo(mirrorTagsUrl, harborAccount, harborPassword);
+      }
       if (StringUtils.isNotBlank(result)) {
         List<MirrorTagDTO> tagDTOList = JSONObject.parseArray(result, MirrorTagDTO.class);
         if (tagDTOList != null && tagDTOList.size() > 0) {
+          tagDTOList.sort(Comparator.comparing(MirrorTagDTO::getName).reversed());
           for (MirrorTagDTO mirrorTagDTO : tagDTOList) {
             String tagName = mirrorTagDTO.getName();
             StringBuffer mirrorTagName = new StringBuffer();
-            mirrorTagName.append(harborUri).append(CONTACT)
-                .append(mirrorName).append(":").append(tagName);
+            mirrorTagName
+                .append(uri.replace("/api/repositories", "")).append(":").append(tagName);
             mirrorNameList.add(mirrorTagName.toString());
           }
         }

@@ -111,9 +111,10 @@
     </select>
 
     <select id="selectHarborUri" resultType="string" parameterType="java.lang.Integer">
-        select concat(tem.harbor_project, '/', tem.harbor_url)
+        select concat(env.yun_harbor_host, '/api/repositories/', tem.harbor_project, '/', tem.harbor_url)
         from module_temp tem
                  left join module_manage man on man.module_name = tem.module_name
+                 left join module_env env on env.id = man.env_id
         where man.env_id = #{envId,jdbcType=INTEGER}
           and man.id = #{moduleId,jdbcType=INTEGER}
     </select>

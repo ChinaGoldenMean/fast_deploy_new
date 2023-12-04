@@ -71,7 +71,7 @@ myself:
     realprodid: 30,35
     oldversion: 22,24,25,26,27,30,32,33,35,36,37,38,39
     harbor:
-      uri: 134.108.5.132:8001
+      uri: 134.96.161.41:8000
       account: isale
       password: isAlezb#132
   queue:
