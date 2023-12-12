@@ -152,6 +152,9 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
                          MultipartFile codeExcelFile, MultipartFile yamlFile) {
     ModuleManage moduleManage = new ModuleManage();
     moduleManage.setUserId(userId);
+    String svnAutoUpUrl = mangeVo.getSvnAutoUpUrl();
+    svnAutoUpUrl.replace("git clone","").trim();
+    mangeVo.setSvnAutoUpUrl(svnAutoUpUrl);
     if (mangeVo != null) {
       BeanUtils.copyProperties(mangeVo, moduleManage);
       Integer centerId = Integer.valueOf(mangeVo.getCenterId());
@@ -282,14 +285,13 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
               throw new SvnUrlNotExistException(e.getMessage());
             }
           case GIT_SOURCE_CODE:
-            gitSourceSet(certificate, moduleManage, mangeVo, filePrefix);
-            
-            break;
+            return   gitSourceSet(certificate, moduleManage, mangeVo, filePrefix);
+   
           case GIT_AUTO_UP_SOURCE_CODE:
             
             moduleManage.setSvnAutoUrl(mangeVo.getSvnAutoUpUrl());
-            packageService.gitAutoType(certificate, moduleManage, null, null, filePrefix, null);
-            break;
+            return   packageService.gitAutoType(certificate, moduleManage, null, null, filePrefix, null);
+            
           case PROJECT_PACKAGE:
             //程序包类型的插入  //首先将模块相关数据存储到数据库
             moduleManage.setCertificateId(null);
@@ -384,7 +386,7 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
     return false;
   }
   
-  private void gitSourceSet(ModuleCertificate certificate, ModuleManage moduleManage, ModuleManageParamVo mangeVo, StringBuilder filePrefix) {
+  private Boolean gitSourceSet(ModuleCertificate certificate, ModuleManage moduleManage, ModuleManageParamVo mangeVo, StringBuilder filePrefix) {
     if (certificate != null && CertificateTypeEnum.
         GIT_CERTIFICATE_TYPE.getCode().equals(certificate.getType())) {
       manageMapper.insertSelective(moduleManage);
@@ -422,6 +424,7 @@ public class ModuleManageServiceImpl extends BaseServiceImpl<ModuleManage, Integ
       }
       packageService.insertAll(packageList);
     }
+    return true;
   }
   
   @Override

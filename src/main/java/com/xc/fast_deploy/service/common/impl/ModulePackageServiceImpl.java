@@ -818,7 +818,7 @@ public class ModulePackageServiceImpl extends BaseServiceImpl<ModulePackage, Int
       }
       insertAll(modulePackages);
     }
-    return false;
+    return true;
   }
 
 //@SneakyThrows

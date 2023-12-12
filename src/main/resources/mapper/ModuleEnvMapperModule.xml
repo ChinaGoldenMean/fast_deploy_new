@@ -35,7 +35,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM module_env a
-        LEFT JOIN ps_paas b
+        LEFT JOIN  zdyw.ps_paas b
         ON a.paas_id = b.paasid
         WHERE a.id = #{id,jdbcType=INTEGER}
     </select>
@@ -46,7 +46,7 @@
         ,
         <include refid="Blobs_Column_List"/>
         FROM module_env a
-        LEFT JOIN ps_paas b
+        LEFT JOIN  zdyw.ps_paas b
         ON a.paas_id = b.paasid
         WHERE a.id = #{id,jdbcType=INTEGER}
     </select>
@@ -80,7 +80,7 @@
     <select id="selectPsAll" resultMap="BaseResultMap" parameterType="java.util.Set">
         SELECT
         paas_id , paasname
-        FROM ps_paas a
+        FROM  zdyw.ps_paas a
         LEFT JOIN module_env b
         ON a.paasid = b.paas_id
         <if test="collection != null and collection.size > 0">
@@ -97,7 +97,7 @@
         select env.id AS id,env.env_code AS envCode,env.env_name AS envName,paas.paasname AS paasname,
         env.mvn_profile AS mvnProfile,env.is_prod AS isProd
         from module_env env
-        left join ps_paas paas
+        left join  zdyw.ps_paas paas
         ON env.paas_id = paas.paasid
         <if test="collection != null and collection.size > 0">
             WHERE env.id
@@ -155,7 +155,7 @@
                c.username,
                c.password
         FROM module_env a
-                 LEFT JOIN ps_paas b
+                 LEFT JOIN  zdyw.ps_paas b
                            ON a.paas_id = b.paasid
                  LEFT JOIN module_certificate c
                            ON a.certificate_id = c.id
@@ -168,7 +168,7 @@
         SELECT a.id, a.env_name AS envName ,a.env_code AS envCode,a.harbor_url AS harborUrl,
         c.username,c.name,a.create_time AS createTime,a.update_time AS updateTime
         FROM module_env a
-        LEFT JOIN ps_paas b
+        LEFT JOIN  zdyw.ps_paas b
         ON a.paas_id = b.paasid
         LEFT JOIN module_certificate c
         ON a.certificate_id = c.id
@@ -198,7 +198,7 @@
                c.name       AS certificateName,
                c.id         AS certificateId
         FROM module_env a
-                 LEFT JOIN ps_paas b
+                 LEFT JOIN  zdyw.ps_paas b
                            ON a.paas_id = b.paasid
                  LEFT JOIN module_certificate c
                            ON a.certificate_id = c.id
@@ -209,7 +209,7 @@
     <select id="getEnvIdByPaasId" resultType="com.xc.fast_deploy.model.master_model.ModuleEnv">
         SELECT b.paasid AS paasId, a.id AS id
         FROM module_env a
-                 LEFT JOIN ps_paas b
+                 LEFT JOIN  zdyw.ps_paas b
                            ON a.paas_id = b.paasid
     </select>
 
@@ -227,7 +227,7 @@
 
     <select id="selectPsAllData" resultType="com.xc.fast_deploy.vo.module_vo.PsPaasEnvVo">
         SELECT a.paasid AS paasid, a.paasname AS paasname, a.env AS env
-        FROM ps_paas a
+        FROM zdyw.ps_paas a
     </select>
 
 </mapper>
