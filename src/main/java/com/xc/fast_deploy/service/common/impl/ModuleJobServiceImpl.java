@@ -343,10 +343,9 @@ public class ModuleJobServiceImpl extends BaseServiceImpl<ModuleJob, Integer> im
                         } else {
                             packagePathName = packageDTOS.get(0).getPackagePathName();
                             //增量构建不处理
-                            //if (isGreenChannel != null) {
-                            //
-                            //    packageService.chanageBranchByModuleId(envId, moduleId, branch);
-                            //}
+                            if (isGreenChannel != null && isGreenChannel) {
+                                packageService.chanageBranchByModuleId(envId, moduleId, branch);
+                            }
     
                         }
                         
