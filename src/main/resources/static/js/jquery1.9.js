@@ -538,8 +538,8 @@
                     // Make sure the incoming data is actual JSON
                     // Logic borrowed from http://json.org/json2.js
                     if (rvalidchars.test(data.replace(rvalidescape, "@")
-                        .replace(rvalidtokens, "]")
-                        .replace(rvalidbraces, ""))) {
+                            .replace(rvalidtokens, "]")
+                            .replace(rvalidbraces, ""))) {
 
                         return (new Function("return " + data))();
                     }
@@ -4220,10 +4220,10 @@
             }
 
             if ((support.matchesSelector = isNative((matches = docElem.matchesSelector ||
-                docElem.mozMatchesSelector ||
-                docElem.webkitMatchesSelector ||
-                docElem.oMatchesSelector ||
-                docElem.msMatchesSelector)))) {
+                    docElem.mozMatchesSelector ||
+                    docElem.webkitMatchesSelector ||
+                    docElem.oMatchesSelector ||
+                    docElem.msMatchesSelector)))) {
 
                 assert(function (div) {
                     // Check to see if it's possible to do matchesSelector
@@ -4854,8 +4854,8 @@
                         var elemLang;
                         do {
                             if ((elemLang = documentIsXML ?
-                                elem.getAttribute("xml:lang") || elem.getAttribute("lang") :
-                                elem.lang)) {
+                                    elem.getAttribute("xml:lang") || elem.getAttribute("lang") :
+                                    elem.lang)) {
 
                                 elemLang = elemLang.toLowerCase();
                                 return elemLang === lang || elemLang.indexOf(lang + "-") === 0;
@@ -5042,7 +5042,7 @@
                 // Filters
                 for (type in Expr.filter) {
                     if ((match = matchExpr[type].exec(soFar)) && (!preFilters[type] ||
-                        (match = preFilters[type](match)))) {
+                            (match = preFilters[type](match)))) {
                         matched = match.shift();
                         tokens.push({
                             value: matched,
@@ -5477,9 +5477,9 @@
                         if ((find = Expr.find[type])) {
                             // Search, expanding context for leading sibling combinators
                             if ((seed = find(
-                                token.matches[0].replace(runescape, funescape),
-                                rsibling.test(tokens[0].type) && context.parentNode || context
-                            ))) {
+                                    token.matches[0].replace(runescape, funescape),
+                                    rsibling.test(tokens[0].type) && context.parentNode || context
+                                ))) {
 
                                 // If seed is empty or no tokens remain, we can return early
                                 tokens.splice(i, 1);
@@ -5650,8 +5650,8 @@
 
         add: function (selector, context) {
             var set = typeof selector === "string" ?
-                    jQuery(selector, context) :
-                    jQuery.makeArray(selector && selector.nodeType ? [selector] : selector),
+                jQuery(selector, context) :
+                jQuery.makeArray(selector && selector.nodeType ? [selector] : selector),
                 all = jQuery.merge(this.get(), set);
 
             return this.pushStack(jQuery.unique(all));
@@ -5823,7 +5823,7 @@
     }
 
     var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
-            "header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
+        "header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
         rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
         rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
         rleadingWhitespace = /^\s+/,
@@ -7011,10 +7011,10 @@
 
     function augmentWidthOrHeight(elem, name, extra, isBorderBox, styles) {
         var i = extra === (isBorderBox ? "border" : "content") ?
-                // If we already have the right measurement, avoid augmentation
-                4 :
-                // Otherwise initialize for horizontal or vertical properties
-                name === "width" ? 1 : 0,
+            // If we already have the right measurement, avoid augmentation
+            4 :
+            // Otherwise initialize for horizontal or vertical properties
+            name === "width" ? 1 : 0,
 
             val = 0;
 
@@ -9093,7 +9093,7 @@
             // show any hidden elements after setting opacity to 0
             return this.filter(isHidden).css("opacity", 0).show()
 
-                // animate to the value specified
+            // animate to the value specified
                 .end().animate({opacity: to}, speed, easing, callback);
         },
         animate: function (prop, speed, easing, callback) {
@@ -9247,7 +9247,7 @@
     jQuery.speed = function (speed, easing, fn) {
         var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
             complete: fn || !fn && easing ||
-                jQuery.isFunction(speed) && speed,
+            jQuery.isFunction(speed) && speed,
             duration: speed,
             easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
         };
@@ -9489,7 +9489,7 @@
 
                 if (val === undefined) {
                     return win ? (prop in win) ? win[prop] :
-                            win.document.documentElement[method] :
+                        win.document.documentElement[method] :
                         elem[method];
                 }
 

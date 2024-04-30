@@ -33,7 +33,7 @@ public class ResponseDTO implements Serializable {
   public ResponseDTO success(Object data) {
     setCode(ResponseEnum.SUCCESS.getStatus());
     setMsg(ResponseEnum.SUCCESS.getMsg());
-    setData(data);
+    this.data =data ;
     return this;
   }
   

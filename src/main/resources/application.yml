@@ -21,6 +21,8 @@ pagehelper:
   params: count=countSql
   support-methods-arguments: true
 spring:
+  application:
+    name: deploy
   http:
     encoding:
       force: true

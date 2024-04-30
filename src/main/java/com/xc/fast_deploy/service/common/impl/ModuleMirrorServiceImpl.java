@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import com.xc.fast_deploy.aop.LocalLock;
 import com.xc.fast_deploy.dao.master_dao.*;
 import com.xc.fast_deploy.dto.MyPageInfo;
 import com.xc.fast_deploy.dto.harborMirror.MirrorProjectDTO;
@@ -443,11 +444,11 @@ public class ModuleMirrorServiceImpl extends BaseServiceImpl<ModuleMirror, Integ
     ModuleEnvVo moduleEnvVo = envMapper.selectWithCertById(envId);
     ModuleManage moduleManage = manageMapper.selectByPrimaryKey(moduleId);
     //验证数据
-    if (moduleEnvVo != null && moduleManage != null && envId.equals(moduleManage.getEnvId())) {
-      //形成镜像名称
-      StringBuilder mirrorName = new StringBuilder();
-      String uri = manageMapper.selectHarborUri(envId, moduleId);
-      //mirrorName.append("crm-test-repo").append(CONTACT).
+      if (moduleEnvVo != null && moduleManage != null && envId.equals(moduleManage.getEnvId())) {
+        //形成镜像名称
+        StringBuilder mirrorName = new StringBuilder();
+        String uri = manageMapper.selectHarborUri(envId, moduleId);
+        //mirrorName.append("crm-test-repo").append(CONTACT).
       mirrorName.append(uri.toLowerCase());
   
       StringBuilder sb = new StringBuilder();
